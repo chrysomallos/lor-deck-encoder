@@ -1,9 +1,10 @@
 {
   "name": "lor-deck-encoder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Legends of Runeterra Deck Encoder",
   "main": "index.mjs",
   "author": "Chrysomallos",
+  "repository": "https://github.com/chrysomallos/lor-deck-encoder.git",
   "license": "MIT",
   "private": false,
   "type": "module",

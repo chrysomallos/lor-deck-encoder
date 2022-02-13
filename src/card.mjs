@@ -2,7 +2,7 @@ import Faction from './faction.mjs';
 import Factions from './factions.mjs';
 import pad from '../utils/pad.mjs';
 
-/** The Card */
+/** Class representing a card in a deck. */
 export default class Card {
   /**
    * The set number.
@@ -10,18 +10,21 @@ export default class Card {
    * @type {number}
    */
   set;
+
   /**
    * The card id
    *
    * @type {number}
    */
   id;
+
   /**
    * The faction
    *
    * @type {Faction}
    */
   faction;
+
   /**
    * The count of this card in an deck.
    *
@@ -77,7 +80,7 @@ export default class Card {
    * @param {Card} secondCard The second element for comparison.
    * @returns {number}
    */
-  static comparer(firstCard, secondCard) {
+  static compare(firstCard, secondCard) {
     let result = firstCard.set - secondCard.set;
     if (result === 0) result = firstCard.faction.id - secondCard.faction.id;
     if (result === 0) result = firstCard.id - secondCard.id;
@@ -87,7 +90,7 @@ export default class Card {
   /**
    * Initialize a new card based on the card code.
    *
-   * @param {string} code The 7 character code of the card, f.e. `'01DE001'`, or CODE and card count like `'01DE001:3'`.
+   * @param {string} code The 7 character code or 9 character code with count of the card, f.e. `'01DE001'`, or CODE and card count like `'01DE001:3'`.
    * @param {number} [count] The optional count of this card (override count in code), use count from code or the default `1`.
    * @returns {Card} The card parse of the code.
    */

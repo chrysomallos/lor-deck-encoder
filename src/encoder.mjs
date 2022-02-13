@@ -2,14 +2,13 @@ import Base32 from '../utils/base32.mjs';
 import Factions from './factions.mjs';
 import VarInt from '../utils/var-int.mjs';
 import Card from './card.mjs';
-import pad from '../utils/pad.mjs';
 
 /**
  * Port c# code from https://github.com/RiotGames/LoRDeckCodes/blob/main/LoRDeckCodes/LoRDeckEncoder.cs into es6
  */
 
 const FORMAT = 1;
-const INITAL_VERSION = 1;
+const INITIAL_VERSION = 1;
 
 /**
  * The encoding helper to generate a code for an deck or an deck from a code.
@@ -22,38 +21,38 @@ export default class Encoder {
    * @returns {Card[]} The decoded cards.
    */
   static decode(code) {
-    let values;
+    let bytes;
     try {
-      values = Base32.decode(code);
+      bytes = Base32.decode(code);
     } catch (error) {
       throw new TypeError(`Invalid deck code: ${error.message}`);
     }
 
-    const [firstVersion] = values.splice(0, 1);
-    const format = firstVersion >> 4;
-    const version = firstVersion & 0xf;
+    const [firstByte] = bytes.splice(0, 1);
+    const format = firstByte >> 4;
+    const version = firstByte & 0xf;
 
     if (format > FORMAT) throw new Error(`Deck format ${format} is not supported (supported format ${FORMAT})`);
     if (version > Factions.maxVersion) throw new Error(`Deck version ${version} is not supported (max supported version ${Factions.maxVersion})`);
 
     const result = new Array();
     for (let count = 3; count > 0; count -= 1) {
-      const groups = VarInt.pop(values);
+      const groups = VarInt.pop(bytes);
       for (let group = 0; group < groups; group += 1) {
-        const cards = VarInt.pop(values);
-        const set = VarInt.pop(values);
-        const faction = VarInt.pop(values);
+        const cards = VarInt.pop(bytes);
+        const set = VarInt.pop(bytes);
+        const faction = VarInt.pop(bytes);
         for (let card = 0; card < cards; card += 1) {
-          result.push(new Card(set, Factions.fromId(faction), VarInt.pop(values), count));
+          result.push(new Card(set, Factions.fromId(faction), VarInt.pop(bytes), count));
         }
       }
     }
 
-    while (values.length) {
-      const count = VarInt.pop(values);
-      const set = VarInt.pop(values);
-      const faction = VarInt.pop(values);
-      const id = VarInt.pop(values);
+    while (bytes.length) {
+      const count = VarInt.pop(bytes);
+      const set = VarInt.pop(bytes);
+      const faction = VarInt.pop(bytes);
+      const id = VarInt.pop(bytes);
       result.push(new Card(set, Factions.fromId(faction), id, count));
     }
 
@@ -72,7 +71,7 @@ export default class Encoder {
     version = Math.max(
       cards?.reduce((l, {factionVersion: v}) => Math.max(l, v), 0),
       version,
-      INITAL_VERSION
+      INITIAL_VERSION
     );
 
     const values = [];
@@ -109,7 +108,7 @@ export default class Encoder {
     });
 
     //Cards with 4+ are coded simply [count, set, faction, id] for each
-    grouped.x.sort(Card.comparer).forEach((card) => {
+    grouped.x.sort(Card.compare).forEach((card) => {
       values.push(card.count);
       values.push(card.set);
       values.push(card.faction.id);

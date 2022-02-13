@@ -1,20 +1,16 @@
 import Card from './card.mjs';
 import Encoder from './encoder.mjs';
 
-/**
- * The Riot Games Legends of Runeterra Deck.
- */
+/** Class represents the Riot Games - Legends of Runeterra - deck. */
 export default class Deck {
   /**
-   * The cards in this deck.
-   *
+   * The list of the cards in this deck.
    * @type {Card[]}
    */
   cards;
 
   /**
    * Initialize a new deck instance and assign the cards.
-   *
    * @param {Card[]} cards The list of cards.
    */
   constructor(cards = []) {
@@ -23,7 +19,6 @@ export default class Deck {
 
   /**
    * Parsed the code an returns an instance of the deck.
-   *
    * @param {string} code
    * @returns {Deck} The instance of the deck.
    */
@@ -33,7 +28,6 @@ export default class Deck {
 
   /**
    * Parsed the code an returns an instance of the deck.
-   *
    * @param {string[]} codes
    * @returns {Deck} The instance of the deck.
    */
@@ -43,6 +37,7 @@ export default class Deck {
 
   /**
    * Gets the maximum deck version of the cards.
+   * @type {number}
    */
   get version() {
     return this.cards?.reduce((last, {factionVersion: version}) => Math.max(last, version), 1);
@@ -50,7 +45,6 @@ export default class Deck {
 
   /**
    * Gets the encoded deck code.
-   *
    * @returns {string} The base32 based deck code.
    */
   get code() {
@@ -85,8 +79,8 @@ export default class Deck {
   /**
    * Adding a card in the deck
    *
-   * @param {Card|string}
-   * @param {number} [count]
+   * @param {Card|string} card Instance of an Card or an code parsable by {@see Card.fromCode}.
+   * @param {number} [count] The optional count if not defined in card or code.
    */
   add(card, count) {
     const usedCard = card instanceof Card ? card : Card.fromCode(card, count);

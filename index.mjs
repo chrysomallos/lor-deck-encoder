@@ -1,6 +1,4 @@
-import Card from './src/card.mjs';
-import Deck from "./src/deck.mjs";
-import Faction from "./src/faction.mjs";
-import Factions from './src/factions.mjs';
-
-export default {Card, Deck, Faction, Factions};
+export {default as Card} from './src/card.mjs';
+export {default as Deck} from './src/deck.mjs';
+export {default as Faction} from './src/faction.mjs';
+export {default as Factions} from './src/factions.mjs';

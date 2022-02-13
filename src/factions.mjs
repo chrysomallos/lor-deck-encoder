@@ -1,5 +1,8 @@
 import Faction from './faction.mjs';
 
+/**
+ * The list of the Legends of Runeterra factions, add here if new available.
+ */
 const AVAILABLE_FACTIONS = [
   new Faction(0, 1, 'DE', 'Demacia'),
   new Faction(1, 1, 'FR', 'Freljord'),
@@ -13,6 +16,9 @@ const AVAILABLE_FACTIONS = [
   new Faction(10, 4, 'BC', 'Bandle City'),
 ];
 
+/**
+ * 
+ */
 const MAX_KNOWN_VERSION = AVAILABLE_FACTIONS.reduce((last, {version}) => Math.max(last, version), 0);
 
 const FACTION_BY_ID = new Map(AVAILABLE_FACTIONS.map((faction) => [faction.id, faction]));
@@ -24,7 +30,7 @@ const FACTION_BY_CODE = new Map(AVAILABLE_FACTIONS.map((faction) => [faction.cod
  */
 export default class Factions {
   /**
-   * The max known version.
+   * The max known faction version.
    */
   static maxVersion = MAX_KNOWN_VERSION;
 

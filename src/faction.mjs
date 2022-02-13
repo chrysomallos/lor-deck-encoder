@@ -1,24 +1,25 @@
-/**
- * Faction class
- */
+/** Class representing a faction. */
 export default class Faction {
   /**
-   * The card deck faction id
+   * The unique faction id.
    * @type {number}
    */
   id;
+
   /**
-   * The card deck version number of the faction
+   * The version number of the faction.
    * @type {number}
    */
   version;
+
   /**
-   * The 2 character faction code, f.e. 'DE'
+   * The 2 character faction code, f.e. 'DE'.
    * @type {string}
    */
   code;
+
   /**
-   * The full name of the faction
+   * The full name of the faction.
    */
   name;
 
