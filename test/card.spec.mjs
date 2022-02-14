@@ -31,15 +31,15 @@ describe('[Card] class tests', () => {
 
   describe('compare method must return correct value', () => {
     it('(<0) sort a before b', () => {
-      assert.equal(Card.comparer(Card.fromCode('01DE001'), Card.fromCode('01DE002')) < 0, true);
+      assert.equal(Card.compare(Card.fromCode('01DE001'), Card.fromCode('01DE002')) < 0, true);
     })
 
     it('(=0) keep original order of a and b', () => {
-      assert.equal(Card.comparer(Card.fromCode('02DE002'), Card.fromCode('02DE002')) === 0, true);
+      assert.equal(Card.compare(Card.fromCode('02DE002'), Card.fromCode('02DE002')) === 0, true);
     })
 
     it('(>0) sort b before a', () => {
-      assert.equal(Card.comparer(Card.fromCode('02BC002'), Card.fromCode('02DE002')) > 0, true);
+      assert.equal(Card.compare(Card.fromCode('02BC002'), Card.fromCode('02DE002')) > 0, true);
     })
   });
 
