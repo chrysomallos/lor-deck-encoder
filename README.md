@@ -1,11 +1,20 @@
-# lor-deck-codes - Legends of Runeterra - Deck Codes
+# lor-deck-encoder - Legends of Runeterra - Deck Encoder
 
 This is a JavaScript ES6 port of the Legends of Runeterra deck encoder/decoder. The goal of this project is to keep up-to-date with Riot's [Implementation](https://github.com/RiotGames/LoRDeckCodes), stay as close to the original result schema as possible, and use zero external runtime dependencies (instead of testing).
 
 ## Installation
 
+The package require [Node.js](https://nodejs.org/en/) min version 17.5.0. 
+Use the package manager [yarn](https://yarnpkg.com/) to install this package.
+
 ```
 yarn add lor-deck-encoder
+```
+
+Or the package manager [npm](https://www.npmjs.com/).
+
+```
+npm install lor-deck-encoder
 ```
 
 ## Usage
@@ -14,6 +23,12 @@ yarn add lor-deck-encoder
 import {Deck} from 'lor-deck-encoder';
 
 const deck = Deck.fromCode('CEBQGAIFAMJC6BABAMCBGFJUAICAGAQRAICACBIWDQOS4AIBAM4AEAIEAUIQEBADAEHQ');
+/*
+Expected result:
+Deck {
+
+}
+*/
 
 console.log(deck.list);
 /*

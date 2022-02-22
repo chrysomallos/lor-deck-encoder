@@ -4,8 +4,8 @@
 
 ### Fixes
 
-- Fix export im index to fit correct style.
-- Fix LICENSE name and README
+- Fixed export im index to fit correct style.
+- Fixed LICENSE file name and README description.
 
 ### Improvements
 
