@@ -11,8 +11,8 @@ const AVAILABLE_FACTIONS = [
   new Faction(4, 1, 'PZ', 'Piltover & Zaun'),
   new Faction(5, 1, 'SI', 'Shadow Isles'),
   new Faction(6, 2, 'BW', 'Bilgewater'),
-  new Faction(7, 2, 'SH', 'Shurima'),
-  new Faction(9, 3, 'MT', 'Mount Targon'),
+  new Faction(9, 2, 'MT', 'Mount Targon'),
+  new Faction(7, 3, 'SH', 'Shurima'),
   new Faction(10, 4, 'BC', 'Bandle City'),
 ];
 

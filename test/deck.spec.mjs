@@ -66,8 +66,8 @@ describe('[Deck] class tests', () => {
   });
 
   it('version 3', () => {
-    const deck = new Deck([Card.fromCode('01MT001', 3), Card.fromCode('01BW001', 2), Card.fromCode('01DE001', 1)]);
-    assert.equal(deck.code, 'CMAQCAIJAEAQCAIGAEAQCAIAAE');
+    const deck = new Deck([Card.fromCode('01SH001', 3), Card.fromCode('01BW001', 2), Card.fromCode('01DE001', 1)]);
+    assert.equal(deck.code, 'CMAQCAIHAEAQCAIGAEAQCAIAAE');
   });
 
   it('version 4', () => {
@@ -210,7 +210,7 @@ describe('[Deck] class tests', () => {
         '01SI042:3','01SI043:3','01SI048:3','01SI001:2','01SI020:2','01SI029:2'],
       },
       {
-        code: 'CIAQCBAHBIAQCBAHAMAAIAQAAICQGBQE',
+        code: 'CMAQCBAHBIAQCBAHAMAAIAQAAICQGBQE',
         cards: ['04SH010:3','04SH003:2','02DE002:4','03BW004:5'],
       },
       {
