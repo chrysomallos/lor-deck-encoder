@@ -16,8 +16,19 @@ Or the package manager [npm](https://www.npmjs.com/).
 ```
 npm install lor-deck-encoder
 ```
+## Interface `Deck`
 
-## Usage
+The following headlines will describe the _Deck_ class interface.
+
+### _static_ fromCode(_string_) : _Deck_
+
+Example:
+```js
+import {Deck} from 'lor-deck-encoder';
+const deck = Deck.fromCode('CEBQGAIFAMJC6BABAMCBGFJUAICAGAQRAICACBIWDQOS4AIBAM4AEAIEAUIQEBADAEHQ');
+```
+
+## Example usage
 
 ```js
 import {Deck} from 'lor-deck-encoder';
@@ -327,8 +338,6 @@ Expected result:
 ]
 */
 ```
-
-## Interface `Deck`
 
 ## Test
 
