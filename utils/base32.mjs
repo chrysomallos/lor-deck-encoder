@@ -90,18 +90,25 @@ export default class Base32 {
    * Encode the values into a base32 string
    *
    * @param {byte[]} bytes the numbers array to encode
+   * @param {boolean} [padOutput=false] the option to pad '=' at the end
    * @returns {string} the encoded base32 value
    */
-  static encode(bytes) {
+  static encode(bytes, padOutput = false) {
     if (!bytes?.length) return '';
     if (bytes.length >= 1 << 28) throw new RangeError('Value is too long to encode as base32 string');
 
-    const result = Buffer.alloc(Math.floor((bytes.length * 8 + SHIFT - 1) / SHIFT));
+    const length = Math.floor((bytes.length * 8 + SHIFT - 1) / SHIFT);
+    let padding = 0;
+    if (padOutput) {
+      const rest = length % 8;
+      if (rest) padding = 8 - rest;
+    }
+    const result = Buffer.alloc(length + padding, padOutput && padding > 0 ? '=' : undefined);
 
     let buffer = bytes[0];
     let nextByte = 1;
     let bitsLeft = 8;
-    let resultOffset = 0;
+    let offset = 0;
     while (bitsLeft > 0 || nextByte < bytes.length) {
       if (bitsLeft < SHIFT) {
         if (nextByte < bytes.length) {
@@ -116,7 +123,7 @@ export default class Base32 {
       }
       const index = MASK & (buffer >> (bitsLeft - SHIFT));
       bitsLeft -= SHIFT;
-      result.write(CHARACTER[index], resultOffset++);
+      result.write(CHARACTER[index], offset++);
     }
     return result.toString('utf8');
   }

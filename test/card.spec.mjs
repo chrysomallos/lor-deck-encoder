@@ -29,18 +29,26 @@ describe('[Card] class tests', () => {
     assert.equal(card.count, 3);
   });
 
+  it('initialize from code and count', () => {
+    const card = Card.fromCodeAndCount({code: '01PZ001', count: 3});
+    assert.equal(card.set, 1);
+    assert.equal(card.faction.code, 'PZ');
+    assert.equal(card.id, 1);
+    assert.equal(card.count, 3);
+  });
+
   describe('compare method must return correct value', () => {
     it('(<0) sort a before b', () => {
       assert.equal(Card.compare(Card.fromCode('01DE001'), Card.fromCode('01DE002')) < 0, true);
-    })
+    });
 
     it('(=0) keep original order of a and b', () => {
       assert.equal(Card.compare(Card.fromCode('02DE002'), Card.fromCode('02DE002')) === 0, true);
-    })
+    });
 
     it('(>0) sort b before a', () => {
       assert.equal(Card.compare(Card.fromCode('02BC002'), Card.fromCode('02DE002')) > 0, true);
-    })
+    });
   });
 
   describe('must detect correct faction from code', () => {
@@ -73,6 +81,9 @@ describe('[Card] class tests', () => {
     });
     it('Bandle City', () => {
       assert.equal(Card.fromCode('01BC001').factionId, 10);
+    });
+    it('Runeterra', () => {
+      assert.equal(Card.fromCode('01RU001').factionId, 12);
     });
   });
 });

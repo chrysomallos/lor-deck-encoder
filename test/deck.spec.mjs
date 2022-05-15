@@ -1,6 +1,7 @@
 import Deck from '../src/deck.mjs';
 import assert from 'assert';
 import Card from '../src/card.mjs';
+import shuffle from '../utils/shuffle.mjs';
 
 describe('[Deck] class tests', () => {
   it('initialize from code with invalid value throws exception', () => {
@@ -58,6 +59,7 @@ describe('[Deck] class tests', () => {
   it('version 1 decode', () => {
     const deck = Deck.fromCode('CEAQCAIAAEAAA');
     assert.equal(deck.cards.length, 1);
+    assert.equal(deck.cards[0].factionVersion, 1);
   });
 
   it('version 2', () => {
@@ -73,6 +75,11 @@ describe('[Deck] class tests', () => {
   it('version 4', () => {
     const deck = new Deck([Card.fromCode('01BC001', 3)]);
     assert.equal(deck.code, 'CQAQCAIKAEAAA');
+  });
+
+  it('version 5', () => {
+    const deck = new Deck([Card.fromCode('01RU001', 3)]);
+    assert.equal(deck.code, 'CUAQCAIMAEAAA');
   });
 
   describe('must decode correctly', () => {
@@ -206,31 +213,32 @@ describe('[Deck] class tests', () => {
     const decks = [
       {
         code: 'CEAQSAIFBMHREHRAFEVCWMABAYAQKAIUDURSYLIBAEAQKGQ',
-        cards: ['01SI011:3','01SI035:2','01SI044:2','01SI045:2','01SI026:1','01SI015:3','01SI018:3','01SI030:3','01SI032:3','01SI041:3',
-        '01SI042:3','01SI043:3','01SI048:3','01SI001:2','01SI020:2','01SI029:2'],
+        cards: ['01SI011:3','01SI015:3','01SI018:3','01SI030:3','01SI032:3','01SI041:3','01SI042:3','01SI043:3','01SI048:3','01SI001:2',
+        '01SI020:2','01SI029:2','01SI035:2','01SI044:2','01SI045:2','01SI026:1'],
       },
       {
         code: 'CMAQCBAHBIAQCBAHAMAAIAQAAICQGBQE',
         cards: ['04SH010:3','04SH003:2','02DE002:4','03BW004:5'],
       },
       {
-        code: 'CQAQEAIKBIKAAAA',
-        cards: ['01BC020:3','01BC010:3'],
+        code: 'CEAQ2AIEAQEASCQSDEPSEJBMGM2DKAABAEAQIGY',
+        cards: ['01PZ004:3','01PZ008:3','01PZ009:3','01PZ010:3','01PZ018:3','01PZ025:3','01PZ031:3','01PZ034:3','01PZ036:3','01PZ044:3',
+        '01PZ051:3','01PZ052:3','01PZ053:3','01PZ027:1'],
       },
     ];
 
     decks.forEach(({code, cards}) => {
-      cards.sort();
-      it(`must encode correct with sorted cards [${cards.join(';')}]`, () => {
-        const deck = Deck.fromCardCodes(cards);
+      const sorted = cards.slice().sort();
+      it(`must encode correct with sorted cards [${sorted.join(';')}]`, () => {
+        const deck = Deck.fromCardCodes(sorted);
         assert.equal(deck.code, code, deck.list.join(';'));
       });
     });
 
     decks.forEach(({code, cards}) => {
-      cards.sort(() => (Math.random() >= 0.5 ? 1 : -1));
-      it(`must encode correct with shuffled cards [${cards.join(';')}]`, () => {
-        const deck = Deck.fromCardCodes(cards);
+      const shuffled = shuffle(cards.slice());
+      it(`must encode correct with shuffled cards [${shuffled.join(';')}]`, () => {
+        const deck = Deck.fromCardCodes(shuffled);
         assert.equal(deck.code, code, deck.list.join(';'));
       });
     });

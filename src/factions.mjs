@@ -14,10 +14,11 @@ const AVAILABLE_FACTIONS = [
   new Faction(9, 2, 'MT', 'Mount Targon'),
   new Faction(7, 3, 'SH', 'Shurima'),
   new Faction(10, 4, 'BC', 'Bandle City'),
+  new Faction(12, 5, 'RU', 'Runeterra'),
 ];
 
 /**
- * 
+ * The max known version.
  */
 const MAX_KNOWN_VERSION = AVAILABLE_FACTIONS.reduce((last, {version}) => Math.max(last, version), 0);
 

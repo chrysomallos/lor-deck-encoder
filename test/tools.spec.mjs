@@ -11,6 +11,27 @@ describe('[Utils] full tests', () => {
       const decoded = Base32.decode(encoded);
       assert.deepEqual(decoded, plain, 'decoded does not match plain');
     });
+
+    describe('speed test', () => {
+      const plain = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21].flatMap((v) => VarInt.get(v));
+      const encoded = Base32.encode(plain, true);
+      const decoded = Base32.decode(encoded);
+      it('encode with padding', () => {
+        for (let i = 0; i < 1000; i++)
+          Base32.encode(plain, true);
+      });
+      it('encode', () => {
+        for (let i = 0; i < 1000; i++)
+          Base32.encode(plain);
+      });
+      it('decode', () => {
+        for (let i = 0; i < 1000; i++)
+          Base32.decode(encoded);
+      });
+      it('validate', () => {
+        assert.deepEqual(decoded, plain, 'decoded does not match plain');
+      });
+    });
   });
 
   describe('pad', () => {

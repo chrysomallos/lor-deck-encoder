@@ -101,6 +101,18 @@ export default class Card {
   }
 
   /**
+   * Initialize a new card based on the card code object.
+   *
+   * @param {{code: string, count: number}} codeCount 
+   *   The 7 character code or 9 character code with count of the card, f.e. `'01DE001'`, or CODE and card count like `'01DE001:3'` and
+   *   the count of this card (override count in code), use count from code or the default `1`.
+   * @returns {Card} The card parse of the code.
+   */
+   static fromCodeAndCount({code, count}) {
+    return Card.fromCode(code, count);
+  }
+
+  /**
    * Returns the code for this card.
    *
    * @type {string}
@@ -112,7 +124,7 @@ export default class Card {
   /**
    * Returns the code and count for this card.
    *
-   * @type {Object}
+   * @type {{code: string, count: number}} The code object
    */
    get codeAndCount() {
     return {code: this.code, count: this.count};

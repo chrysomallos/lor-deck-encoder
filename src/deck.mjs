@@ -18,7 +18,7 @@ export default class Deck {
   }
 
   /**
-   * Parsed the code an returns an instance of the deck.
+   * Parse the code an returns an instance of the deck.
    * @param {string} code
    * @returns {Deck} The instance of the deck.
    */
@@ -27,12 +27,21 @@ export default class Deck {
   }
 
   /**
-   * Parsed the code an returns an instance of the deck.
+   * Parse the card codes an returns an instance of the deck including the cards.
    * @param {string[]} codes
    * @returns {Deck} The instance of the deck.
    */
   static fromCardCodes(codes) {
     return new this.prototype.constructor(codes.map((c) => Card.fromCode(c)));
+  }
+
+  /**
+   * Parse the cards with count and returns an instance of the deck.
+   * @param {{code:string, count: number}[]} cardCounts
+   * @returns {Deck} The instance of the deck.
+   */
+   static fromCardCodesAndCounts(cardCounts) {
+    return new this.prototype.constructor(cardCounts.map((c) => Card.fromCodeAndCount(c)));
   }
 
   /**
@@ -53,7 +62,6 @@ export default class Deck {
 
   /**
    * Gets the formatted card list from this deck.
-   *
    * @returns {string[]} The list of cards in the deck.
    */
   get list() {
@@ -62,7 +70,6 @@ export default class Deck {
 
   /**
    * Gets the formatted card list from this deck.
-   *
    * @returns {string[]} The list of cards in the deck.
    */
   get allCodeAndCount() {
@@ -70,15 +77,14 @@ export default class Deck {
   }
 
   /**
-   * Sorting the deck
+   * Sorting the cards of the deck in place using the card comparer.
    */
   sort() {
     this.cards.sort(Card.comparer);
   }
 
   /**
-   * Adding a card in the deck
-   *
+   * Adding a card in the deck, throws an error if the deck already contains the card.
    * @param {Card|string} card Instance of an Card or an code parsable by {@see Card.fromCode}.
    * @param {number} [count] The optional count if not defined in card or code.
    */
@@ -89,7 +95,9 @@ export default class Deck {
   }
 
   /**
-   * Return true if the card is already in the deck.
+   * Checks that the deck contains the defined card.
+   * @param {Card} card The card to check.
+   * @returns {boolean} True if deck contains the card otherwise false.
    */
   contains(card) {
     if (!card instanceof Card) return false;

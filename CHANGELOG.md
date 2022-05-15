@@ -1,5 +1,15 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
+## 1.1.0 - unreleased
+
+### Updates
+
+- Add new faction 'Runeterra'
+
+### Fixes
+
+- Fixes some descriptions and tests.
+
 ## 1.0.1 - 2022-03-26
 
 ### Fixes
