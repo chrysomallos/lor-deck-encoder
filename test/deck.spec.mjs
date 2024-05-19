@@ -32,8 +32,12 @@ describe('[Deck] class tests', function () {
       assert.equal(deck.cards.length, 0);
     });
 
-    it('validate version on decode deck code correctly', function () {
-      assert.throws(() => Deck.fromCode('EUAAAAA', false));
+    it('validate format on decode deck code correctly', function () {
+      assert.throws(() => Deck.fromCode('EUAAAAA', false), SyntaxError);
+    });
+
+    it('validate max version on decode deck code correctly', function () {
+      assert.throws(() => Deck.fromCode('CZAAAAA', false), Error);
     });
 
     it('fromCardCodes method must correct create a deck', function () {
@@ -89,34 +93,13 @@ describe('[Deck] class tests', function () {
 
     it('allCodeAndCount', function () {
       assert.deepEqual(deck.allCodeAndCount, [
-        {
-          code: '01SI003',
-          count: 3,
-        },
-        {
-          code: '01SI018',
-          count: 3,
-        },
-        {
-          code: '01SI022',
-          count: 2,
-        },
-        {
-          code: '01SI028',
-          count: 2,
-        },
-        {
-          code: '04NX001',
-          count: 1,
-        },
-        {
-          code: '04SI017',
-          count: 1,
-        },
-        {
-          code: '04NX015',
-          count: 5,
-        },
+        {code: '01SI003', count: 3},
+        {code: '01SI018', count: 3},
+        {code: '01SI022', count: 2},
+        {code: '01SI028', count: 2},
+        {code: '04NX001', count: 1},
+        {code: '04SI017', count: 1},
+        {code: '04NX015', count: 5},
       ]);
     });
   });

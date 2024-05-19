@@ -1,7 +1,8 @@
-import Base32 from '../utils/base32.mjs';
-import Factions from './factions.mjs';
-import VarInt from '../utils/var-int.mjs';
 import Card from './card.mjs';
+import {ArgumentError} from './errors.mjs';
+import Factions from './factions.mjs';
+import Base32 from '../utils/base32.mjs';
+import VarInt from '../utils/var-int.mjs';
 
 /**
  * Port c# code from https://github.com/RiotGames/LoRDeckCodes/blob/main/LoRDeckCodes/LoRDeckEncoder.cs into es6
@@ -32,8 +33,8 @@ export default class Encoder {
     const format = firstByte >> 4;
     const version = firstByte & 0xf;
 
-    if (!skipFormatCheck && format > SUPPORTED_FORMAT) throw new Error(`Deck format ${format} is not supported (supported format ${SUPPORTED_FORMAT})`);
-    if (version > Factions.maxVersion) throw new Error(`Deck version ${version} is not supported (max supported version ${Factions.maxVersion})`);
+    if (!skipFormatCheck && format > SUPPORTED_FORMAT) throw new SyntaxError(`Deck format ${format} is not supported (supported format ${SUPPORTED_FORMAT})`);
+    if (version > Factions.maxVersion) throw new ArgumentError('version', `Deck version ${version} is not supported (max supported version ${Factions.maxVersion})`);
 
     const result = new Array();
     for (let count = 3; count > 0; count -= 1) {

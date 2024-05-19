@@ -1,4 +1,5 @@
 import Encoder from '../src/encoder.mjs';
+import {ArgumentError} from '../src/errors.mjs';
 import assert from 'assert';
 
 describe('[Encoder] class tests', function () {
@@ -12,12 +13,21 @@ describe('[Encoder] class tests', function () {
         assert.equal(Encoder.decode('EUAAAAA', true).length, 0);
       });
 
-      it('no cards check version', function () {
-        assert.throws(() => Encoder.decode('EUAAAAA', false));
+      it('check version', function () {
+        assert.throws(() => Encoder.decode('CZAAAAA', false), ArgumentError);
+      });
+
+      it('check format', function () {
+        assert.throws(() => Encoder.decode('EUAAAAA', false), SyntaxError);
       });
 
       it('empty value', function () {
         assert.throws(() => Encoder.decode(''));
+      });
+
+      it('invalid deck', function () {
+        assert.throws(() => Encoder.encode([null]));
+        assert.throws(() => Encoder.encode([{count: 0}]));
       });
     });
   });
