@@ -90,6 +90,11 @@ describe('[Card] class tests', function () {
     it('(>0) sort b before a', function () {
       assert.equal(Card.compare(Card.fromCode('02BC002'), Card.fromCode('02DE002')) > 0, true);
     });
+
+    it('no card instance', function () {
+      assert.throws(() => Card.compare({}, Card.fromCode('02DE002')), TypeError);
+      assert.throws(() => Card.compare(Card.fromCode('02DE002'), {}), TypeError);
+    });
   });
 
   describe('equals method must return correct value', function () {
@@ -108,6 +113,10 @@ describe('[Card] class tests', function () {
     it('not equal faction', function () {
       assert.equal(Card.fromCode('01DE001').equals(Card.fromCode('01BW001')), false);
     });
+
+    it('no card instance', function () {
+      assert.equal(Card.fromCode('01DE001').equals({}), false);
+    });
   });
 
   describe('static equals method must return correct value', function () {
@@ -117,6 +126,11 @@ describe('[Card] class tests', function () {
 
     it('not equal id', function () {
       assert.equal(Card.equals(Card.fromCode('01DE001'), Card.fromCode('01DE002')), false);
+    });
+
+    it('no card instance', function () {
+      assert.equal(Card.equals({}, Card.fromCode('01DE002')), false);
+      assert.equal(Card.equals(Card.fromCode('01DE001'), {}), false);
     });
   });
 
