@@ -7,15 +7,11 @@ This is a JavaScript ES6 port of the Legends of Runeterra deck encoder/decoder. 
 The package require [Node.js](https://nodejs.org/en/) min version 18.15.
 Use the package manager [yarn](https://yarnpkg.com/) to install this package.
 
+Like:
 ```
-yarn add lor-deck-encoder
+yarn add lor-deck-encoder@https://github.com/chrysomallos/lor-deck-encoder.git
 ```
 
-Or the package manager [npm](https://www.npmjs.com/).
-
-```
-npm install lor-deck-encoder
-```
 ## Interface `Deck`
 
 The following headlines will describe the _Deck_ class interface.
@@ -104,9 +100,10 @@ Expected result:
 
 ## Test
 
-- first check out project
+To call the test first check out project and run `yarn install`.
 
-```
-yarn install
-yarn test
-```
+Included code tests:
+
+- `yarn test` executes the existing tests, using [mocha](https://mochajs.org/#arrow-functions)
+- `yarn coverage` generate coverage report, using [c8](https://github.com/bcoe/c8)
+- `yarn lint` generate code smells report, using [ESLint](https://eslint.org/)

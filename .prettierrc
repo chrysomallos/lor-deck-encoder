@@ -1,5 +1,8 @@
 {
+  "arrowParens": "avoid",
   "bracketSpacing": false,
+  "endOfLine":"lf",
+  "spaceBeforeFunctionParen": false,
   "singleQuote": true,
   "printWidth": 160
 }
