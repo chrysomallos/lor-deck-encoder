@@ -68,7 +68,7 @@ export default class Encoder {
    * @returns {string} The base32 deck code.
    */
   static encode(cards, version) {
-    if (cards.some((card) => !card?.count)) throw new Error('Invalid deck');
+    if (cards.some(card => !card?.count)) throw new Error('Invalid deck');
     version = Math.max(
       cards?.reduce((l, {factionVersion: v}) => Math.max(l, v), 0),
       version,
@@ -78,15 +78,15 @@ export default class Encoder {
     const values = [];
     const grouped = cards.reduce(
       (groups, card) => {
+        // cards with count > 3 are handled separatly
         if (card.count > 3) groups.x.push(card);
-        // cards with count > 3 are handles separate
-        else groups[card.count].push(card); //build groups of similar card counts
+        else groups[card.count].push(card);
         return groups;
       },
       {3: [], 2: [], 1: [], x: []}
     );
 
-    [3, 2, 1].forEach((count) => {
+    [3, 2, 1].forEach(count => {
       //build the map of set and faction combinations within the group of similar card counts
       const factionSetsMap = grouped[count].reduce((map, card) => {
         const sf = card.set * 100 + card.factionId;
@@ -99,23 +99,23 @@ export default class Encoder {
       //The sorting convention of this encoding scheme is
       //First by the number of set/faction combinations in each top-level list
       //Second by the alphanumeric order of the card codes within those lists.
-      [...factionSetsMap.keys()].sort().forEach((sf) => {
+      [...factionSetsMap.keys()].sort().forEach(sf => {
         const cards = factionSetsMap.get(sf);
         values.push(cards.length);
         values.push(cards[0].set);
         values.push(cards[0].factionId);
-        cards.sort((a, b) => a.id - b.id).forEach((card) => values.push(card.id));
+        cards.sort((a, b) => a.id - b.id).forEach(card => values.push(card.id));
       });
     });
 
     //Cards with 4+ are coded simply [count, set, faction, id] for each
-    grouped.x.sort(Card.compare).forEach((card) => {
+    grouped.x.sort(Card.compare).forEach(card => {
       values.push(card.count);
       values.push(card.set);
       values.push(card.faction.id);
       values.push(card.id);
     });
 
-    return Base32.encode([(SUPPORTED_FORMAT << 4) | (version & 0xf), ...values.flatMap((i) => VarInt.get(i))]);
+    return Base32.encode([(SUPPORTED_FORMAT << 4) | (version & 0xf), ...values.flatMap(i => VarInt.get(i))]);
   }
 }

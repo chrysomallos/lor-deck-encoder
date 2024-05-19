@@ -47,7 +47,7 @@ export default class Card {
     this.set = set;
     this.faction = faction;
     this.id = id;
-    this.count = count ?? 1;
+    this.count = count;
   }
 
   /**
@@ -57,7 +57,7 @@ export default class Card {
    * @returns {boolean} True if equals, otherwise false.
    */
   equals(other) {
-    if (!other || !other instanceof Card) return false;
+    if (!(other instanceof Card)) return false;
     return this.set === other.set && this.faction?.id === other.faction?.id && this.id === other.id;
   }
 
@@ -69,7 +69,7 @@ export default class Card {
    * @returns {boolean} True if equals, otherwise false.
    */
   static equals(firstCard, secondCard) {
-    if (!firstCard instanceof Card || !secondCard instanceof Card) return false;
+    if (!(firstCard instanceof Card) || !(secondCard instanceof Card)) return false;
     return firstCard.equals(secondCard);
   }
 
@@ -81,8 +81,8 @@ export default class Card {
    * @returns {number}
    */
   static compare(firstCard, secondCard) {
-    if (!firstCard instanceof Card) throw new TypeError('First card must be a valid instance.');
-    if (!secondCard instanceof Card) throw new TypeError('Second card must be a valid instance.');
+    if (!(firstCard instanceof Card)) throw new TypeError('First card must be a valid instance.');
+    if (!(secondCard instanceof Card)) throw new TypeError('Second card must be a valid instance.');
     let result = firstCard.set - secondCard.set;
     if (result === 0) result = firstCard.faction.id - secondCard.faction.id;
     if (result === 0) result = firstCard.id - secondCard.id;
@@ -97,7 +97,7 @@ export default class Card {
    * @returns {Card} The card parse of the code.
    */
   static fromCode(code, count) {
-    const [match, set, faction, id, matchCount] = code?.match(/^(\d{2})([A-Z]{2})(\d{3})(?:\:(\d+))*$/) ?? [];
+    const [match, set, faction, id, matchCount] = code?.match(/^(\d{2})([A-Z]{2})(\d{3})(?::(\d+))*$/) ?? [];
     if (!match) throw new TypeError('Code is not a valid card code');
     return new this.prototype.constructor(parseInt(set, 10), Factions.fromCode(faction), parseInt(id, 10), count ?? matchCount ?? 1);
   }
@@ -105,12 +105,12 @@ export default class Card {
   /**
    * Initialize a new card based on the card code object.
    *
-   * @param {{code: string, count: number}} codeCount 
+   * @param {{code: string, count: number}} codeCount
    *   The 7 character code or 9 character code with count of the card, f.e. `'01DE001'`, or CODE and card count like `'01DE001:3'` and
    *   the count of this card (override count in code), use count from code or the default `1`.
    * @returns {Card} The card parse of the code.
    */
-   static fromCodeAndCount({code, count}) {
+  static fromCodeAndCount({code, count}) {
     return Card.fromCode(code, count);
   }
 
