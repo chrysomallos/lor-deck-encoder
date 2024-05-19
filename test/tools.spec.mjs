@@ -9,18 +9,13 @@ describe('[Utils] full tests', function () {
       let plain;
 
       before(function () {
-        plain = [1, 20, 30, 400, 500, 600, 700, 800, 900].flatMap((v) => VarInt.get(v));
+        plain = [1, 20, 30, 400, 500, 600, 700, 800, 900].flatMap(v => VarInt.get(v));
       });
 
-      it(`encode and decode test`, function () {
+      it('encode and decode test', function () {
         const encoded = Base32.encode(plain);
         const decoded = Base32.decode(encoded);
         assert.deepEqual(decoded, plain, 'decoded does not match plain');
-      });
-
-      it(`encode test with padding`, function () {
-        const encoded = Base32.encode([0], true);
-        assert.equal(encoded, 'AA======');
       });
     });
 
@@ -38,13 +33,28 @@ describe('[Utils] full tests', function () {
       it('empty value', function () {
         assert.equal(Base32.encode([]), '');
       });
+
+      it('deck array with padding', function () {
+        const encoded = Base32.encode([(2 << 4) | (6 & 0xf)], true);
+        assert.equal(encoded, 'EY======');
+      });
+
+      it('empty array with padding', function () {
+        const encoded = Base32.encode([], true);
+        assert.equal(encoded, '========');
+      });
+
+      it('big byte array', function () {
+        // fake byte length to check exception
+        assert.throws(() => Base32.encode({length: 1 << 28}, true));
+      });
     });
 
     describe('speed test', function () {
       let plain, encoded, decoded;
 
       before(function () {
-        plain = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21].flatMap((v) => VarInt.get(v));
+        plain = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21].flatMap(v => VarInt.get(v));
         encoded = Base32.encode(plain, true);
         decoded = Base32.decode(encoded);
       });
