@@ -2,84 +2,195 @@ import Deck from '../src/deck.mjs';
 import assert from 'assert';
 import Card from '../src/card.mjs';
 import shuffle from '../utils/shuffle.mjs';
+import Factions from '../src/factions.mjs';
 
 describe('[Deck] class tests', () => {
-  it('initialize from code with invalid value throws exception', () => {
-    assert.throws(() => Deck.fromCode('!CEBQCAABAAAQEAABAA'));
+  describe('constructor tests', () => {
+    it('initialize from code with invalid value throws exception', () => {
+      assert.throws(() => Deck.fromCode('!CEBQCAABAAAQEAABAA'));
+    });
+
+    it('must initialize empty deck correctly', () => {
+      const deck = new Deck([]);
+      assert.equal(deck.code, 'CEAAAAA');
+    });
+
+    it('must initialize empty constructor correctly', () => {
+      const deck = new Deck();
+      assert.equal(deck.code, 'CEAAAAA');
+    });
+
+    it('must decode empty deck code correctly', () => {
+      const deck = Deck.fromCode('CEAAAAA');
+      assert.equal(deck.code, 'CEAAAAA');
+      assert.equal(deck.cards.length, 0);
+    });
+
+    it('skip version on decode deck code correctly', () => {
+      const deck = Deck.fromCode('EUAAAAA');
+      assert.equal(deck.code, 'CEAAAAA');
+      assert.equal(deck.cards.length, 0);
+    });
+
+    it('validate version on decode deck code correctly', () => {
+      assert.throws(() => Deck.fromCode('EUAAAAA', false));
+    });
+
+    it('fromCardCodes method must correct create a deck', () => {
+      const deck = Deck.fromCardCodes(['01SI003:3', '01SI018:3', '01SI022:2', '01SI028:2', '04SI017:1', '04NX001:1', '04NX015:5']);
+      assert.equal(deck.code, 'CEAQEAIFAMJACAQBAULBYAQBAQBQCAIEAUIQKBADB4');
+    });
+
+    it('fromCardCodesAndCounts method must correct create a deck', () => {
+      const deck = Deck.fromCardCodesAndCounts([
+        {code: '01SI003', count: 3},
+        {code: '01SI018', count: 3},
+        {code: '01SI022', count: 2},
+        {code: '01SI028', count: 2},
+        {code: '04SI017', count: 1},
+        {code: '04NX001', count: 1},
+        {code: '04NX015', count: 5},
+      ]);
+      assert.equal(deck.code, 'CEAQEAIFAMJACAQBAULBYAQBAQBQCAIEAUIQKBADB4');
+    });
+
+    it('must initialize deck with 17 cards from readme code correctly and encode to correct ordered code', () => {
+      const deck = Deck.fromCode('CEBQGAIFAMJC6BABAMCBGFJUAICAGAQRAICACBIWDQOS4AIBAM4AEAIEAUIQEBADAEHQ');
+      assert.equal(deck.version, 1);
+      assert.equal(deck.cards.length, 17);
+      // prettier-ignore
+      assert.deepEqual(deck.list, [
+        '01SI003:3', '01SI018:3', '01SI047:3', '01NX004:3', '01NX019:3', '01NX021:3', '01NX052:3', '04NX002:3', '04NX017:3', '01SI022:2',
+        '01SI028:2', '01SI029:2', '01SI046:2', '01NX056:2', '04SI017:1', '04NX001:1', '04NX015:1'
+      ]);
+      assert.equal(deck.code, 'CEBQIAIDAQJRKNADAECQGERPAICAGAQRAIAQCAZYAQAQKFQ4DUXAEAQEAMAQ6AIEAUIQ');
+      const deckOrder = Deck.fromCode(deck.code);
+      assert.deepEqual(deck.list.sort(), deckOrder.list.sort());
+    });
+
+    it('must initialize deck with 24 cards from example code correctly and encode to correct ordered code', () => {
+      const deck = Deck.fromCode('CEAAECABAQJRWHBIFU2DOOYIAEBAMCIMCINCILJZAICACBANE4VCYBABAILR2HRL');
+      assert.equal(deck.version, 1);
+      assert.equal(deck.cards.length, 24);
+      assert.equal(deck.code, 'CEAAECABAIDASDASDISC2OIIAECBGGY4FAWTINZ3AICACAQXDUPCWBABAQGSOKRM');
+    });
   });
 
-  it('must encode empty deck correctly', () => {
-    const deck = new Deck([]);
-    assert.equal(deck.code, 'CEAAAAA');
+  describe('validate getter methods', () => {
+    const deck = Deck.fromCode('CEAQEAIFAMJACAQBAULBYAQBAQBQCAIEAUIQKBADB4');
+    it('list', () => {
+      assert.deepEqual(deck.list, ['01SI003:3', '01SI018:3', '01SI022:2', '01SI028:2', '04NX001:1', '04SI017:1', '04NX015:5']);
+    });
+
+    it('allCodeAndCount', () => {
+      assert.deepEqual(deck.allCodeAndCount, [
+        {
+          code: '01SI003',
+          count: 3,
+        },
+        {
+          code: '01SI018',
+          count: 3,
+        },
+        {
+          code: '01SI022',
+          count: 2,
+        },
+        {
+          code: '01SI028',
+          count: 2,
+        },
+        {
+          code: '04NX001',
+          count: 1,
+        },
+        {
+          code: '04SI017',
+          count: 1,
+        },
+        {
+          code: '04NX015',
+          count: 5,
+        },
+      ]);
+    });
   });
 
-  it('must decode empty deck code correctly', () => {
-    const deck = Deck.fromCode('CEAAAAA');
-    assert.equal(deck.code, 'CEAAAAA');
-    assert.equal(deck.cards.length, 0);
+  describe('validate add method', () => {
+    let deck;
+    const cardIO = new Card(1, Factions.fromCode('IO'), 1, 1);
+    const cardBC = new Card(1, Factions.fromCode('BC'), 1, 1);
+    beforeEach(() => {
+      deck = new Deck([]);
+    })
+    it('valid code added', () => {
+      deck.add('01DE001');
+      assert.equal(deck.code, 'CEAAAAIBAEAAC');
+    });
+
+    it('duplicated card must throw exception', () => {
+      deck = new Deck([Card.fromCode('01DE001')]);
+      assert.throws(() => deck.add('01DE001'));
+    });
+
+    it('add card', () => {
+      deck.add(cardIO);
+      assert.equal(deck.size, 1);
+    });
+
+    it('contains card', () => {
+      deck.add(cardIO);
+      assert.equal(deck.contains(cardIO), true);
+      assert.equal(deck.contains(cardBC), false);
+    });
+
+    it('contains no card', () => {
+      assert.equal(deck.contains({}), false);
+    });
   });
 
-  it('add card and validate code', () => {
-    const deck = new Deck([]);
-    deck.add('01DE001');
-    assert.equal(deck.code, 'CEAAAAIBAEAAC');
+  describe('validate sort method', () => {
+    const deck = Deck.fromCardCodes(['01SI003:3', '01SI022:2', '01SI028:2', '01SI018:3', '04NX001:1', '04SI017:1', '04NX015:5']);
+    it('reponse deck is sorted', () => {
+      deck.sort();
+      assert.deepEqual(deck.list, ['01SI003:3', '01SI018:3', '01SI022:2', '01SI028:2', '04NX001:1', '04NX015:5', '04SI017:1']);
+    });
   });
 
-  it('add duplicated card must throw exception', () => {
-    const deck = new Deck([Card.fromCode('01DE001')]);
-    assert.throws(() => deck.add('01DE001'));
-  });
+  describe('must create corect version in code', () => {
+    it('version 1 encode', () => {
+      const deck = new Deck([Card.fromCode('01DE001', 3)]);
+      assert.equal(deck.code, 'CEAQCAIAAEAAA');
+    });
 
-  it('must initialize deck from readme code correctly and encode to correct ordered code', () => {
-    const deck = Deck.fromCode('CEBQGAIFAMJC6BABAMCBGFJUAICAGAQRAICACBIWDQOS4AIBAM4AEAIEAUIQEBADAEHQ');
-    assert.equal(deck.version, 1);
-    assert.equal(deck.cards.length, 17);
-    // prettier-ignore
-    assert.deepEqual(deck.list, [
-      '01SI003:3', '01SI018:3', '01SI047:3', '01NX004:3', '01NX019:3', '01NX021:3', '01NX052:3', '04NX002:3', '04NX017:3', '01SI022:2',
-      '01SI028:2', '01SI029:2', '01SI046:2', '01NX056:2', '04SI017:1', '04NX001:1', '04NX015:1'
-    ]);
-    assert.equal(deck.code, 'CEBQIAIDAQJRKNADAECQGERPAICAGAQRAIAQCAZYAQAQKFQ4DUXAEAQEAMAQ6AIEAUIQ');
-    const deckOrder = Deck.fromCode(deck.code);
-    assert.deepEqual(deck.list.sort(), deckOrder.list.sort());
-  });
+    it('version 1 decode', () => {
+      const deck = Deck.fromCode('CEAQCAIAAEAAA');
+      assert.equal(deck.cards.length, 1);
+      const [{set, factionVersion, count}] = deck.cards;
+      assert.equal(factionVersion, 1);
+      assert.equal(set, 1);
+      assert.equal(count, 3);
+    });
 
-  it('must initialize deck from example code correctly and encode to correct ordered code', () => {
-    const deck = Deck.fromCode('CEAAECABAQJRWHBIFU2DOOYIAEBAMCIMCINCILJZAICACBANE4VCYBABAILR2HRL');
-    assert.equal(deck.version, 1);
-    assert.equal(deck.cards.length, 24);
-    assert.equal(deck.code, 'CEAAECABAIDASDASDISC2OIIAECBGGY4FAWTINZ3AICACAQXDUPCWBABAQGSOKRM');
-  });
+    it('version 2', () => {
+      const deck = new Deck([Card.fromCode('01BW001', 3), Card.fromCode('01DE001', 2)]);
+      assert.equal(deck.code, 'CIAQCAIGAEAQCAIAAEAA');
+    });
 
-  it('version 1 encode', () => {
-    const deck = new Deck([Card.fromCode('01DE001', 3)]);
-    assert.equal(deck.code, 'CEAQCAIAAEAAA');
-  });
+    it('version 3', () => {
+      const deck = new Deck([Card.fromCode('01SH001', 3), Card.fromCode('01BW001', 2), Card.fromCode('01DE001', 1)]);
+      assert.equal(deck.code, 'CMAQCAIHAEAQCAIGAEAQCAIAAE');
+    });
 
-  it('version 1 decode', () => {
-    const deck = Deck.fromCode('CEAQCAIAAEAAA');
-    assert.equal(deck.cards.length, 1);
-    assert.equal(deck.cards[0].factionVersion, 1);
-  });
+    it('version 4', () => {
+      const deck = new Deck([Card.fromCode('01BC001', 3)]);
+      assert.equal(deck.code, 'CQAQCAIKAEAAA');
+    });
 
-  it('version 2', () => {
-    const deck = new Deck([Card.fromCode('01BW001', 3), Card.fromCode('01DE001', 2)]);
-    assert.equal(deck.code, 'CIAQCAIGAEAQCAIAAEAA');
-  });
-
-  it('version 3', () => {
-    const deck = new Deck([Card.fromCode('01SH001', 3), Card.fromCode('01BW001', 2), Card.fromCode('01DE001', 1)]);
-    assert.equal(deck.code, 'CMAQCAIHAEAQCAIGAEAQCAIAAE');
-  });
-
-  it('version 4', () => {
-    const deck = new Deck([Card.fromCode('01BC001', 3)]);
-    assert.equal(deck.code, 'CQAQCAIKAEAAA');
-  });
-
-  it('version 5', () => {
-    const deck = new Deck([Card.fromCode('01RU001', 3)]);
-    assert.equal(deck.code, 'CUAQCAIMAEAAA');
+    it('version 5', () => {
+      const deck = new Deck([Card.fromCode('01RU001', 3)]);
+      assert.equal(deck.code, 'CUAQCAIMAEAAA');
+    });
   });
 
   describe('must decode correctly', () => {

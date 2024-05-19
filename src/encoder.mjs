@@ -7,7 +7,7 @@ import Card from './card.mjs';
  * Port c# code from https://github.com/RiotGames/LoRDeckCodes/blob/main/LoRDeckCodes/LoRDeckEncoder.cs into es6
  */
 
-const FORMAT = 1;
+const SUPPORTED_FORMAT = 1;
 const INITIAL_VERSION = 1;
 
 /**
@@ -18,9 +18,10 @@ export default class Encoder {
    * Decodes the code into a list of cards.
    *
    * @param {string} code The base32 deck code.
+   * @param {boolean} [skipFormatCheck] skip format check
    * @returns {Card[]} The decoded cards.
    */
-  static decode(code) {
+  static decode(code, skipFormatCheck = false) {
     let bytes;
     try {
       bytes = Base32.decode(code);
@@ -32,7 +33,7 @@ export default class Encoder {
     const format = firstByte >> 4;
     const version = firstByte & 0xf;
 
-    if (format > FORMAT) throw new Error(`Deck format ${format} is not supported (supported format ${FORMAT})`);
+    if (!skipFormatCheck && format > SUPPORTED_FORMAT) throw new Error(`Deck format ${format} is not supported (supported format ${SUPPORTED_FORMAT})`);
     if (version > Factions.maxVersion) throw new Error(`Deck version ${version} is not supported (max supported version ${Factions.maxVersion})`);
 
     const result = new Array();
@@ -115,6 +116,6 @@ export default class Encoder {
       values.push(card.id);
     });
 
-    return Base32.encode([(FORMAT << 4) | (version & 0xf), ...values.flatMap((i) => VarInt.get(i))]);
+    return Base32.encode([(SUPPORTED_FORMAT << 4) | (version & 0xf), ...values.flatMap((i) => VarInt.get(i))]);
   }
 }

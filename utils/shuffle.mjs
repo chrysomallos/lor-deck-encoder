@@ -1,8 +1,9 @@
 /**
  * This method shuffles the elements of an array in place using the Fisher–Yates shuffle algorithm.
  *
- * @param {unknown[]} array The array to shuffle
- * @returns {unknown[]} The shuffled array
+ * @template T
+ * @param {T[]} array The array to shuffle
+ * @returns {T[]} The shuffled array
  */
 export default function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {

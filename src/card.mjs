@@ -56,7 +56,7 @@ export default class Card {
    * @param {Card} other The other instance to compare.
    * @returns {boolean} True if equals, otherwise false.
    */
-  isEqual(other) {
+  equals(other) {
     if (!other || !other instanceof Card) return false;
     return this.set === other.set && this.faction?.id === other.faction?.id && this.id === other.id;
   }
@@ -70,7 +70,7 @@ export default class Card {
    */
   static equals(firstCard, secondCard) {
     if (!firstCard instanceof Card || !secondCard instanceof Card) return false;
-    return firstCard.isEqual(secondCard);
+    return firstCard.equals(secondCard);
   }
 
   /**
@@ -81,6 +81,8 @@ export default class Card {
    * @returns {number}
    */
   static compare(firstCard, secondCard) {
+    if (!firstCard instanceof Card) throw new TypeError('First card must be a valid instance.');
+    if (!secondCard instanceof Card) throw new TypeError('Second card must be a valid instance.');
     let result = firstCard.set - secondCard.set;
     if (result === 0) result = firstCard.faction.id - secondCard.faction.id;
     if (result === 0) result = firstCard.id - secondCard.id;
@@ -95,9 +97,9 @@ export default class Card {
    * @returns {Card} The card parse of the code.
    */
   static fromCode(code, count) {
-    const match = code.match(/^(\d{2})([A-Z]{2})(\d{3})(?:\:(\d+))*$/);
+    const [match, set, faction, id, matchCount] = code?.match(/^(\d{2})([A-Z]{2})(\d{3})(?:\:(\d+))*$/) ?? [];
     if (!match) throw new TypeError('Code is not a valid card code');
-    return new this.prototype.constructor(parseInt(match[1], 10), Factions.fromCode(match[2]), parseInt(match[3], 10), count ?? match[4] ?? 1);
+    return new this.prototype.constructor(parseInt(set, 10), Factions.fromCode(faction), parseInt(id, 10), count ?? matchCount ?? 1);
   }
 
   /**
@@ -126,7 +128,7 @@ export default class Card {
    *
    * @type {{code: string, count: number}} The code object
    */
-   get codeAndCount() {
+  get codeAndCount() {
     return {code: this.code, count: this.count};
   }
 

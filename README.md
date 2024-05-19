@@ -4,7 +4,7 @@ This is a JavaScript ES6 port of the Legends of Runeterra deck encoder/decoder. 
 
 ## Installation
 
-The package require [Node.js](https://nodejs.org/en/) min version 17.5.0.
+The package require [Node.js](https://nodejs.org/en/) min version 18.15.
 Use the package manager [yarn](https://yarnpkg.com/) to install this package.
 
 ```
@@ -24,16 +24,16 @@ The following headlines will describe the _Deck_ class interface.
 
 Example:
 ```js
-import {Deck} from 'lor-deck-encoder';
-const deck = Deck.fromCode('CEBQGAIFAMJC6BABAMCBGFJUAICAGAQRAICACBIWDQOS4AIBAM4AEAIEAUIQEBADAEHQ');
+import createDeck from 'lor-deck-encoder';
+const deck = createDeck('CEBQGAIFAMJC6BABAMCBGFJUAICAGAQRAICACBIWDQOS4AIBAM4AEAIEAUIQEBADAEHQ');
 ```
 
 ## Example usage
 
 ```js
-import {Deck} from 'lor-deck-encoder';
+import createDeck, {Deck} from 'lor-deck-encoder';
 
-const deck = Deck.fromCode('CEBQGAIFAMJC6BABAMCBGFJUAICAGAQRAICACBIWDQOS4AIBAM4AEAIEAUIQEBADAEHQ');
+const deck = createDeck('CEBQGAIFAMJC6BABAMCBGFJUAICAGAQRAICACBIWDQOS4AIBAM4AEAIEAUIQEBADAEHQ');
 /*
 deck = Deck {
   cards: [
@@ -108,5 +108,5 @@ Expected result:
 
 ```
 yarn install
-mocha
+yarn test
 ```

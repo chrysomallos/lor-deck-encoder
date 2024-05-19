@@ -20,10 +20,11 @@ export default class Deck {
   /**
    * Parse the code an returns an instance of the deck.
    * @param {string} code
+   * @param {boolean} skipFormatCheck
    * @returns {Deck} The instance of the deck.
    */
-  static fromCode(code) {
-    return new this.prototype.constructor(Encoder.decode(code));
+  static fromCode(code, skipFormatCheck = true) {
+    return new this.prototype.constructor(Encoder.decode(code, skipFormatCheck));
   }
 
   /**
@@ -40,8 +41,15 @@ export default class Deck {
    * @param {{code:string, count: number}[]} cardCounts
    * @returns {Deck} The instance of the deck.
    */
-   static fromCardCodesAndCounts(cardCounts) {
+  static fromCardCodesAndCounts(cardCounts) {
     return new this.prototype.constructor(cardCounts.map((c) => Card.fromCodeAndCount(c)));
+  }
+
+  /**
+   * Returns the sum of all cards.
+   */
+  get size() {
+    return this.cards.reduce((l, {count: a}) => l + a, 0);
   }
 
   /**
@@ -49,7 +57,7 @@ export default class Deck {
    * @type {number}
    */
   get version() {
-    return this.cards?.reduce((last, {factionVersion: version}) => Math.max(last, version), 1);
+    return this.cards.reduce((last, {factionVersion: version}) => Math.max(last, version), 1);
   }
 
   /**
@@ -80,12 +88,12 @@ export default class Deck {
    * Sorting the cards of the deck in place using the card comparer.
    */
   sort() {
-    this.cards.sort(Card.comparer);
+    this.cards.sort(Card.compare);
   }
 
   /**
    * Adding a card in the deck, throws an error if the deck already contains the card.
-   * @param {Card|string} card Instance of an Card or an code parsable by {@see Card.fromCode}.
+   * @param {Card|string} card Instance of an Card or an code parsable from.
    * @param {number} [count] The optional count if not defined in card or code.
    */
   add(card, count) {
@@ -100,7 +108,6 @@ export default class Deck {
    * @returns {boolean} True if deck contains the card otherwise false.
    */
   contains(card) {
-    if (!card instanceof Card) return false;
-    return this.cards.some((c) => card.equals(c));
+    return card instanceof Card ? this.cards.some((c) => card.equals(c)) : false;
   }
 }

@@ -1,6 +1,6 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
-## 1.1.0 - unreleased
+## 1.1.0 - 2022-05-19
 
 ### Updates
 
@@ -9,6 +9,7 @@
 ### Fixes
 
 - Fixes some descriptions and tests.
+- Fix pure ESM module.
 
 ## 1.0.1 - 2022-03-26
 
