@@ -17,6 +17,11 @@ describe('[Utils] full tests', function () {
         const decoded = Base32.decode(encoded);
         assert.deepEqual(decoded, plain, 'decoded does not match plain');
       });
+
+      it(`encode test with padding`, function () {
+        const encoded = Base32.encode([0], true);
+        assert.equal(encoded, 'AA======');
+      });
     });
 
     describe('decode method', function () {

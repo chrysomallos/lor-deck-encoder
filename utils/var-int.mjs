@@ -23,6 +23,7 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
 THE POSSIBILITY OF SUCH DAMAGE. 
 */
+
 const ALL_BUT_MSB = 0x7f;
 const JUST_MSB = 0x80;
 
@@ -31,9 +32,14 @@ const JUST_MSB = 0x80;
  */
 export default class VarInt {
   /**
-   * Return the integer value and reduce the bytes array by read bytes. 
-   * @param {byte[]} bytes 
-   * @returns {number} 
+   * Decodes a variable-length encoded integer from the beginning of a byte array,
+   * and removes the bytes representing the integer from the array.
+   *
+   * The decoding scheme works by reading 7 bits of the integer from each byte,
+   * with the most significant bit (MSB) of each byte indicating whether there are more bytes.
+   * @param {Uint8Array} bytes The byte array to decode the integer from.
+   * @returns {number} The integer decoded from the byte array.
+   * @throws {TypeError} If the byte array does not contain valid variable-length encoded integers.
    */
   static pop(bytes) {
     let result = 0;
@@ -56,10 +62,16 @@ export default class VarInt {
   }
 
   /**
-   * Returns the bytes to use for the given integer.
+   * Encodes a given non-negative integer into a variable-length byte array using a custom encoding scheme.
    *
+   * The encoding scheme works by storing 7 bits of the integer in each byte,
+   * with the most significant bit (MSB) of each byte indicating whether there are more bytes.
+   *
+   * Example:
+   * - If `value` is 0, the function returns [0].
+   * - If `value` is 300, the function returns [172, 2].
    * @param {number} value The integer to convert into byte array.
-   * @returns {byte[]} The byte array for this integer.
+   * @returns {Uint8Array} The byte array for this integer.
    */
   static get(value) {
     if (value === 0) return [0];

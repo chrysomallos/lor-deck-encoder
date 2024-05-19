@@ -1,7 +1,10 @@
 import Card from './card.mjs';
 import Encoder from './encoder.mjs';
 
-/** Class represents the Riot Games - Legends of Runeterra - deck. */
+/**
+ * Class represents the Riot Games - Legends of Runeterra - deck.
+ * See [LoRDeckCodes](https://github.com/RiotGames/LoRDeckCodes?tab=readme-ov-file#cards--decks)
+ */
 export default class Deck {
   /**
    * The list of the cards in this deck.
@@ -18,9 +21,9 @@ export default class Deck {
   }
 
   /**
-   * Parse the code an returns an instance of the deck.
-   * @param {string} code
-   * @param {boolean} skipFormatCheck
+   * Parse the code and returns an instance of the deck.
+   * @param {string} code The Legends of Runeterra deck as a simple string.
+   * @param {boolean} [skipFormatCheck] Skip the format check, defaults to true.
    * @returns {Deck} The instance of the deck.
    */
   static fromCode(code, skipFormatCheck = true) {
@@ -28,8 +31,8 @@ export default class Deck {
   }
 
   /**
-   * Parse the card codes an returns an instance of the deck including the cards.
-   * @param {string[]} codes
+   * Parse the card codes and returns an instance of the deck including the cards.
+   * @param {string[]} codes The array of simplified card codes, like `['01DE123']`.
    * @returns {Deck} The instance of the deck.
    */
   static fromCardCodes(codes) {
@@ -38,7 +41,7 @@ export default class Deck {
 
   /**
    * Parse the cards with count and returns an instance of the deck.
-   * @param {{code:string, count: number}[]} cardCounts
+   * @param {{code: string, count: number}[]} cardCounts The list of cards as structure of card code and count.
    * @returns {Deck} The instance of the deck.
    */
   static fromCardCodesAndCounts(cardCounts) {
@@ -47,6 +50,7 @@ export default class Deck {
 
   /**
    * Returns the sum of all cards.
+   * @returns {number} The size of the deck, all cards (using count).
    */
   get size() {
     return this.cards.reduce((l, {count: a}) => l + a, 0);
@@ -93,7 +97,7 @@ export default class Deck {
 
   /**
    * Adding a card in the deck, throws an error if the deck already contains the card.
-   * @param {Card|string} card Instance of an Card or an code parsable from.
+   * @param {Card|string} card Instance of a card or a code parsable from.
    * @param {number} [count] The optional count if not defined in card or code.
    */
   add(card, count) {

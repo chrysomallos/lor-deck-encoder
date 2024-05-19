@@ -1,4 +1,6 @@
-/** Class representing a faction. */
+/**
+ * Class representing a faction.
+ */
 export default class Faction {
   /**
    * The unique faction id.
@@ -24,7 +26,7 @@ export default class Faction {
   name;
 
   /**
-   * Initialized a new instance of the faction
+   * Initialized a new instance of the faction.
    * @param {number} id faction id
    * @param {number} version version number
    * @param {string} code faction code
