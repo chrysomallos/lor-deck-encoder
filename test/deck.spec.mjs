@@ -4,44 +4,44 @@ import Card from '../src/card.mjs';
 import shuffle from '../utils/shuffle.mjs';
 import Factions from '../src/factions.mjs';
 
-describe('[Deck] class tests', () => {
-  describe('constructor tests', () => {
-    it('initialize from code with invalid value throws exception', () => {
+describe('[Deck] class tests', function () {
+  describe('constructor tests', function () {
+    it('initialize from code with invalid value throws exception', function () {
       assert.throws(() => Deck.fromCode('!CEBQCAABAAAQEAABAA'));
     });
 
-    it('must initialize empty deck correctly', () => {
+    it('must initialize empty deck correctly', function () {
       const deck = new Deck([]);
       assert.equal(deck.code, 'CEAAAAA');
     });
 
-    it('must initialize empty constructor correctly', () => {
+    it('must initialize empty constructor correctly', function () {
       const deck = new Deck();
       assert.equal(deck.code, 'CEAAAAA');
     });
 
-    it('must decode empty deck code correctly', () => {
+    it('must decode empty deck code correctly', function () {
       const deck = Deck.fromCode('CEAAAAA');
       assert.equal(deck.code, 'CEAAAAA');
       assert.equal(deck.cards.length, 0);
     });
 
-    it('skip version on decode deck code correctly', () => {
+    it('skip version on decode deck code correctly', function () {
       const deck = Deck.fromCode('EUAAAAA');
       assert.equal(deck.code, 'CEAAAAA');
       assert.equal(deck.cards.length, 0);
     });
 
-    it('validate version on decode deck code correctly', () => {
+    it('validate version on decode deck code correctly', function () {
       assert.throws(() => Deck.fromCode('EUAAAAA', false));
     });
 
-    it('fromCardCodes method must correct create a deck', () => {
+    it('fromCardCodes method must correct create a deck', function () {
       const deck = Deck.fromCardCodes(['01SI003:3', '01SI018:3', '01SI022:2', '01SI028:2', '04SI017:1', '04NX001:1', '04NX015:5']);
       assert.equal(deck.code, 'CEAQEAIFAMJACAQBAULBYAQBAQBQCAIEAUIQKBADB4');
     });
 
-    it('fromCardCodesAndCounts method must correct create a deck', () => {
+    it('fromCardCodesAndCounts method must correct create a deck', function () {
       const deck = Deck.fromCardCodesAndCounts([
         {code: '01SI003', count: 3},
         {code: '01SI018', count: 3},
@@ -54,7 +54,7 @@ describe('[Deck] class tests', () => {
       assert.equal(deck.code, 'CEAQEAIFAMJACAQBAULBYAQBAQBQCAIEAUIQKBADB4');
     });
 
-    it('must initialize deck with 17 cards from readme code correctly and encode to correct ordered code', () => {
+    it('must initialize deck with 17 cards from readme code correctly and encode to correct ordered code', function () {
       const deck = Deck.fromCode('CEBQGAIFAMJC6BABAMCBGFJUAICAGAQRAICACBIWDQOS4AIBAM4AEAIEAUIQEBADAEHQ');
       assert.equal(deck.version, 1);
       assert.equal(deck.cards.length, 17);
@@ -68,7 +68,7 @@ describe('[Deck] class tests', () => {
       assert.deepEqual(deck.list.sort(), deckOrder.list.sort());
     });
 
-    it('must initialize deck with 24 cards from example code correctly and encode to correct ordered code', () => {
+    it('must initialize deck with 24 cards from example code correctly and encode to correct ordered code', function () {
       const deck = Deck.fromCode('CEAAECABAQJRWHBIFU2DOOYIAEBAMCIMCINCILJZAICACBANE4VCYBABAILR2HRL');
       assert.equal(deck.version, 1);
       assert.equal(deck.cards.length, 24);
@@ -76,13 +76,18 @@ describe('[Deck] class tests', () => {
     });
   });
 
-  describe('validate getter methods', () => {
-    const deck = Deck.fromCode('CEAQEAIFAMJACAQBAULBYAQBAQBQCAIEAUIQKBADB4');
-    it('list', () => {
+  describe('validate getter methods', function () {
+    let deck;
+
+    before(function () {
+      deck = Deck.fromCode('CEAQEAIFAMJACAQBAULBYAQBAQBQCAIEAUIQKBADB4');
+    });
+
+    it('list', function () {
       assert.deepEqual(deck.list, ['01SI003:3', '01SI018:3', '01SI022:2', '01SI028:2', '04NX001:1', '04SI017:1', '04NX015:5']);
     });
 
-    it('allCodeAndCount', () => {
+    it('allCodeAndCount', function () {
       assert.deepEqual(deck.allCodeAndCount, [
         {
           code: '01SI003',
@@ -116,54 +121,59 @@ describe('[Deck] class tests', () => {
     });
   });
 
-  describe('validate add method', () => {
-    let deck;
-    const cardIO = new Card(1, Factions.fromCode('IO'), 1, 1);
-    const cardBC = new Card(1, Factions.fromCode('BC'), 1, 1);
-    beforeEach(() => {
+  describe('validate add method', function () {
+    let deck, cardIO, cardBC;
+
+    before(function () {
+      cardIO = new Card(1, Factions.fromCode('IO'), 1, 1);
+      cardBC = new Card(1, Factions.fromCode('BC'), 1, 1);
+    });
+
+    beforeEach(function () {
       deck = new Deck([]);
-    })
-    it('valid code added', () => {
+    });
+
+    it('valid code added', function () {
       deck.add('01DE001');
       assert.equal(deck.code, 'CEAAAAIBAEAAC');
     });
 
-    it('duplicated card must throw exception', () => {
+    it('duplicated card must throw exception', function () {
       deck = new Deck([Card.fromCode('01DE001')]);
       assert.throws(() => deck.add('01DE001'));
     });
 
-    it('add card', () => {
+    it('add card', function () {
       deck.add(cardIO);
       assert.equal(deck.size, 1);
     });
 
-    it('contains card', () => {
+    it('contains card', function () {
       deck.add(cardIO);
       assert.equal(deck.contains(cardIO), true);
       assert.equal(deck.contains(cardBC), false);
     });
 
-    it('contains no card', () => {
+    it('contains no card', function () {
       assert.equal(deck.contains({}), false);
     });
   });
 
-  describe('validate sort method', () => {
-    const deck = Deck.fromCardCodes(['01SI003:3', '01SI022:2', '01SI028:2', '01SI018:3', '04NX001:1', '04SI017:1', '04NX015:5']);
-    it('reponse deck is sorted', () => {
+  describe('validate sort method', function () {
+    it('reponse deck is sorted', function () {
+      const deck = Deck.fromCardCodes(['01SI003:3', '01SI022:2', '01SI028:2', '01SI018:3', '04NX001:1', '04SI017:1', '04NX015:5']);
       deck.sort();
       assert.deepEqual(deck.list, ['01SI003:3', '01SI018:3', '01SI022:2', '01SI028:2', '04NX001:1', '04NX015:5', '04SI017:1']);
     });
   });
 
-  describe('must create corect version in code', () => {
-    it('version 1 encode', () => {
+  describe('must create corect version in code', function () {
+    it('version 1 encode', function () {
       const deck = new Deck([Card.fromCode('01DE001', 3)]);
       assert.equal(deck.code, 'CEAQCAIAAEAAA');
     });
 
-    it('version 1 decode', () => {
+    it('version 1 decode', function () {
       const deck = Deck.fromCode('CEAQCAIAAEAAA');
       assert.equal(deck.cards.length, 1);
       const [{set, factionVersion, count}] = deck.cards;
@@ -172,28 +182,28 @@ describe('[Deck] class tests', () => {
       assert.equal(count, 3);
     });
 
-    it('version 2', () => {
+    it('version 2', function () {
       const deck = new Deck([Card.fromCode('01BW001', 3), Card.fromCode('01DE001', 2)]);
       assert.equal(deck.code, 'CIAQCAIGAEAQCAIAAEAA');
     });
 
-    it('version 3', () => {
+    it('version 3', function () {
       const deck = new Deck([Card.fromCode('01SH001', 3), Card.fromCode('01BW001', 2), Card.fromCode('01DE001', 1)]);
       assert.equal(deck.code, 'CMAQCAIHAEAQCAIGAEAQCAIAAE');
     });
 
-    it('version 4', () => {
+    it('version 4', function () {
       const deck = new Deck([Card.fromCode('01BC001', 3)]);
       assert.equal(deck.code, 'CQAQCAIKAEAAA');
     });
 
-    it('version 5', () => {
+    it('version 5', function () {
       const deck = new Deck([Card.fromCode('01RU001', 3)]);
       assert.equal(deck.code, 'CUAQCAIMAEAAA');
     });
   });
 
-  describe('must decode correctly', () => {
+  describe('must decode correctly', function () {
     // prettier-ignore
     const decks = [
       {
@@ -311,15 +321,16 @@ describe('[Deck] class tests', () => {
       },
     ];
 
-    decks.forEach(({code, cards}) => {
-      it(`from code ${code}`, () => {
+    // eslint-disable-next-line mocha/no-setup-in-describe
+    return decks.map(({code, cards}) => {
+      it(`from code ${code}`, function () {
         const deck = Deck.fromCode(code);
         assert.deepEqual(deck.list, cards);
       });
     });
   });
 
-  describe('order of cards does not matter to get same valid code', () => {
+  describe('order of cards does not matter to get same valid code', function () {
     // prettier-ignore
     const decks = [
       {
@@ -338,20 +349,23 @@ describe('[Deck] class tests', () => {
       },
     ];
 
-    decks.forEach(({code, cards}) => {
-      const sorted = cards.slice().sort();
-      it(`must encode correct with sorted cards [${sorted.join(';')}]`, () => {
-        const deck = Deck.fromCardCodes(sorted);
-        assert.equal(deck.code, code, deck.list.join(';'));
-      });
-    });
-
-    decks.forEach(({code, cards}) => {
-      const shuffled = shuffle(cards.slice());
-      it(`must encode correct with shuffled cards [${shuffled.join(';')}]`, () => {
-        const deck = Deck.fromCardCodes(shuffled);
-        assert.equal(deck.code, code, deck.list.join(';'));
-      });
-    });
+    return [
+      // eslint-disable-next-line mocha/no-setup-in-describe
+      ...decks.map(({code, cards}) => {
+        const sorted = cards.slice().sort();
+        it(`must encode correct with sorted cards [${sorted.join(';')}]`, function () {
+          const deck = Deck.fromCardCodes(sorted);
+          assert.equal(deck.code, code, deck.list.join(';'));
+        });
+      }),
+      // eslint-disable-next-line mocha/no-setup-in-describe
+      ...decks.map(({code, cards}) => {
+        const shuffled = shuffle(cards.slice());
+        it(`must encode correct with shuffled cards [${shuffled.join(';')}]`, function () {
+          const deck = Deck.fromCardCodes(shuffled);
+          assert.equal(deck.code, code, deck.list.join(';'));
+        });
+      }),
+    ];
   });
 });
