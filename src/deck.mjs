@@ -33,7 +33,7 @@ export default class Deck {
    * @returns {Deck} The instance of the deck.
    */
   static fromCardCodes(codes) {
-    return new this.prototype.constructor(codes.map((c) => Card.fromCode(c)));
+    return new this.prototype.constructor(codes.map(c => Card.fromCode(c)));
   }
 
   /**
@@ -42,7 +42,7 @@ export default class Deck {
    * @returns {Deck} The instance of the deck.
    */
   static fromCardCodesAndCounts(cardCounts) {
-    return new this.prototype.constructor(cardCounts.map((c) => Card.fromCodeAndCount(c)));
+    return new this.prototype.constructor(cardCounts.map(c => Card.fromCodeAndCount(c)));
   }
 
   /**
@@ -108,6 +108,6 @@ export default class Deck {
    * @returns {boolean} True if deck contains the card otherwise false.
    */
   contains(card) {
-    return card instanceof Card ? this.cards.some((c) => card.equals(c)) : false;
+    return card instanceof Card ? this.cards.some(c => card.equals(c)) : false;
   }
 }
