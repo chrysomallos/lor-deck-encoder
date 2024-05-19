@@ -38,6 +38,7 @@ const CHARACTER = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'];
 const CHARACTER_MAP = new Map(CHARACTER.map((d, i) => [d, i]));
 const MASK = CHARACTER.length - 1;
 const SHIFT = numberOfTrailingZeros(CHARACTER.length);
+const PADDING = '========';
 
 /**
  * The base32 en/decoder.
@@ -82,7 +83,7 @@ export default class Base32 {
    * @returns {string} the encoded base32 value
    */
   static encode(bytes, padOutput = false) {
-    if (!bytes?.length) return '';
+    if (!bytes?.length) return padOutput ? PADDING : '';
     if (bytes.length >= 1 << 28) throw new RangeError('Value is too long to encode as base32 string');
 
     const length = Math.floor((bytes.length * 8 + SHIFT - 1) / SHIFT);
@@ -113,7 +114,7 @@ export default class Base32 {
       bitsLeft -= SHIFT;
       result.write(CHARACTER[index], offset++);
     }
-    if (padOutput && padding > 0) result.write('========'.slice(0, padding), offset);
+    if (padOutput && padding > 0) result.write(PADDING.slice(0, padding), offset);
     return result.toString('utf8');
   }
 }
