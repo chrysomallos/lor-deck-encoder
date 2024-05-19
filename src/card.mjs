@@ -6,39 +6,34 @@ import pad from '../utils/pad.mjs';
 export default class Card {
   /**
    * The set number.
-   *
    * @type {number}
    */
   set;
 
   /**
    * The card id
-   *
    * @type {number}
    */
   id;
 
   /**
    * The faction
-   *
    * @type {Faction}
    */
   faction;
 
   /**
-   * The count of this card in an deck.
-   *
+   * The count of this card in a deck.
    * @type {number}
    */
   count;
 
   /**
    * Initialize a new instance of the Card.
-   *
    * @param {number} set The set number.
    * @param {Faction} faction The faction.
    * @param {number} id The card id.
-   * @param {number} [count] The count of this card.
+   * @param {number} [count] The count of this card, defaults to one.
    */
   constructor(set, faction, id, count = 1) {
     if (!set || set > 99) throw new TypeError('Set is not a valid number');
@@ -52,7 +47,6 @@ export default class Card {
 
   /**
    * Return true, if the instance ist equal.
-   *
    * @param {Card} other The other instance to compare.
    * @returns {boolean} True if equals, otherwise false.
    */
@@ -63,7 +57,6 @@ export default class Card {
 
   /**
    * Return true, if the instances are equal.
-   *
    * @param {Card} firstCard The first element for comparison.
    * @param {Card} secondCard The second element for comparison.
    * @returns {boolean} True if equals, otherwise false.
@@ -74,11 +67,10 @@ export default class Card {
   }
 
   /**
-   * Compares the cards. The order uses first set, then faction id and last card id.
-   *
+   * Returns an integer indicating whether the firstCard comes before, after or is equivalent to the secondCard.
    * @param {Card} firstCard The first element for comparison.
-   * @param {Card} secondCard The second element for comparison.
-   * @returns {number}
+   * @param {Card} secondCard The card against which the first card is compared.
+   * @returns {number} A negative number if first card occurs before second card; positive if the first card occurs after second card; 0 if they are equivalent. 
    */
   static compare(firstCard, secondCard) {
     if (!(firstCard instanceof Card)) throw new TypeError('First card must be a valid instance.');
@@ -91,7 +83,6 @@ export default class Card {
 
   /**
    * Initialize a new card based on the card code.
-   *
    * @param {string} code The 7 character code or 9 character code with count of the card, f.e. `'01DE001'`, or CODE and card count like `'01DE001:3'`.
    * @param {number} [count] The optional count of this card (override count in code), use count from code or the default `1`.
    * @returns {Card} The card parse of the code.
@@ -104,7 +95,6 @@ export default class Card {
 
   /**
    * Initialize a new card based on the card code object.
-   *
    * @param {{code: string, count: number}} codeCount
    *   The 7 character code or 9 character code with count of the card, f.e. `'01DE001'`, or CODE and card count like `'01DE001:3'` and
    *   the count of this card (override count in code), use count from code or the default `1`.
@@ -116,7 +106,6 @@ export default class Card {
 
   /**
    * Returns the code for this card.
-   *
    * @type {string}
    */
   get code() {
@@ -125,7 +114,6 @@ export default class Card {
 
   /**
    * Returns the code and count for this card.
-   *
    * @type {{code: string, count: number}} The code object
    */
   get codeAndCount() {
@@ -134,7 +122,6 @@ export default class Card {
 
   /**
    * Returns the faction version.
-   *
    * @type {number}
    */
   get factionVersion() {
@@ -143,7 +130,6 @@ export default class Card {
 
   /**
    * Returns the faction code.
-   *
    * @type {string}
    */
   get factionCode() {
@@ -152,7 +138,6 @@ export default class Card {
 
   /**
    * Returns the faction id.
-   *
    * @type {number}
    */
   get factionId() {

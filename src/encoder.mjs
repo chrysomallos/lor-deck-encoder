@@ -11,12 +11,11 @@ const SUPPORTED_FORMAT = 1;
 const INITIAL_VERSION = 1;
 
 /**
- * The encoding helper to generate a code for an deck or an deck from a code.
+ * The encoding helper to generate a code for a deck or a deck from a code.
  */
 export default class Encoder {
   /**
    * Decodes the code into a list of cards.
-   *
    * @param {string} code The base32 deck code.
    * @param {boolean} [skipFormatCheck] skip format check
    * @returns {Card[]} The decoded cards.
@@ -62,7 +61,6 @@ export default class Encoder {
 
   /**
    * Encodes the deck into a base32 deck code.
-   *
    * @param {Card[]} cards The deck cards to encode.
    * @param {number} [version] The deck version.
    * @returns {string} The base32 deck code.

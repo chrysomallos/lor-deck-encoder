@@ -18,31 +18,20 @@
  */
 import {Buffer} from 'node:buffer';
 
-function numberOfTrailingZeros(i) {
-  let y;
-  if (i == 0) return 32;
-  let n = 31;
-  y = i << 16;
-  if (y != 0) {
-    n = n - 16;
-    i = y;
-  }
-  y = i << 8;
-  if (y != 0) {
-    n = n - 8;
-    i = y;
-  }
-  y = i << 4;
-  if (y != 0) {
-    n = n - 4;
-    i = y;
-  }
-  y = i << 2;
-  if (y != 0) {
-    n = n - 2;
-    i = y;
-  }
-  return n - ((i << 1) >> 31);
+/**
+ * Calculates the number of trailing zeros in the binary representation of a given 32-bit integer.
+ * This function determines the number of consecutive zero bits following the least significant one bit in the binary representation of the input number.
+ * @param {number} int - The 32-bit integer to check. If the integer is 0, the function returns 32 since there are 32 trailing zeros in the binary representation of 0.
+ * @returns {number} The count of trailing zeros in the binary representation of the input number.
+ */
+// prettier-ignore
+function numberOfTrailingZeros(int) {
+  if (int == 0) return 32; let y; let n = 31;
+  y = int << 16; if (y != 0) { n = n - 16; int = y; }
+  y = int << 8;  if (y != 0) { n = n - 8;  int = y; }
+  y = int << 4;  if (y != 0) { n = n - 4;  int = y; }
+  y = int << 2;  if (y != 0) { n = n - 2;  int = y; }
+  return n - ((int << 1) >> 31);
 }
 
 const CHARACTER = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'];
@@ -56,9 +45,8 @@ const SHIFT = numberOfTrailingZeros(CHARACTER.length);
 export default class Base32 {
   /**
    * Decode the base32 value into a number array
-   *
    * @param {string} code the encoded as base 32 string
-   * @returns {byte[]} the decoded values
+   * @returns {Uint8Array} the decoded bytes
    */
   static decode(code) {
     const trimmed = code.toUpperCase().trim().replace(/[=-]/g, '');
@@ -89,9 +77,8 @@ export default class Base32 {
 
   /**
    * Encode the values into a base32 string
-   *
-   * @param {byte[]} bytes the numbers array to encode
-   * @param {boolean} [padOutput=false] the option to pad '=' at the end
+   * @param {Uint8Array} bytes the bytes to encode
+   * @param {boolean} [padOutput] the option to pad '=' at the end
    * @returns {string} the encoded base32 value
    */
   static encode(bytes, padOutput = false) {
@@ -104,7 +91,7 @@ export default class Base32 {
       const rest = length % 8;
       if (rest) padding = 8 - rest;
     }
-    const result = Buffer.alloc(length + padding, padOutput && padding > 0 ? '=' : undefined);
+    const result = Buffer.alloc(length + padding);
 
     let buffer = bytes[0];
     let nextByte = 1;
@@ -126,6 +113,7 @@ export default class Base32 {
       bitsLeft -= SHIFT;
       result.write(CHARACTER[index], offset++);
     }
+    if (padOutput && padding > 0) result.write('========'.slice(0, padding), offset);
     return result.toString('utf8');
   }
 }

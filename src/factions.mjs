@@ -2,6 +2,7 @@ import Faction from './faction.mjs';
 
 /**
  * The list of the Legends of Runeterra factions, add here if new available.
+ * List can be found on [RiotGames/LoRDeckCodes](https://github.com/RiotGames/LoRDeckCodes?tab=readme-ov-file#faction-identifiers)
  */
 // prettier-ignore
 const AVAILABLE_FACTIONS = [
@@ -28,7 +29,7 @@ const FACTION_BY_ID = new Map(AVAILABLE_FACTIONS.map(faction => [faction.id, fac
 const FACTION_BY_CODE = new Map(AVAILABLE_FACTIONS.map(faction => [faction.code, faction]));
 
 /**
- * The Faction's helper to get a faction
+ * The faction's helper to get a faction.
  */
 export default class Factions {
   /**
@@ -38,7 +39,6 @@ export default class Factions {
 
   /**
    * Get the faction by code
-   *
    * @param {string} code The faction code
    * @returns {Faction} the faction or <undefined>
    */
@@ -48,7 +48,6 @@ export default class Factions {
 
   /**
    * Get the faction by id
-   *
    * @param {number} id The faction id
    * @returns {Faction} the faction or <undefined>
    */
