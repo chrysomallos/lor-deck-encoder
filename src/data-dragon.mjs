@@ -1,10 +1,10 @@
-import got from 'got';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import stringify from 'json-stringify-pretty-compact';
 import hash from 'object-hash';
 
+import request from '../utils/request.mjs';
 import Deck from './deck.mjs';
 
 /**
@@ -14,7 +14,7 @@ import Deck from './deck.mjs';
  * Assets and data are made available over the internet and are updated in tandem with game releases so the community can update their products with the latest and greatest data.
  * @type {string}
  */
-export const DATA_DRAGON_BASE_URL = 'https://dd.b.pvp.net/latest';
+export const DATA_DRAGON_BASE_URL = 'https://dd.b.pvp.net/latest/';
 
 /**
  * @typedef {object} Asset
@@ -93,12 +93,12 @@ export default class DataDragon {
       }
     }
     if (!this.cards) {
-      this.core = await got.get(`${DATA_DRAGON_BASE_URL}/core/${language.toLocaleLowerCase()}/data/globals-${language.toLocaleLowerCase()}.json`).json();
+      this.core = await request(new URL(`core/${language.toLocaleLowerCase()}/data/globals-${language.toLocaleLowerCase()}.json`, DATA_DRAGON_BASE_URL));
       const setNames = this.core.sets.map(({nameRef}) => nameRef.toLowerCase());
       this.cards = (
         await Promise.allSettled(
           setNames.map(name =>
-            got.get(`${DATA_DRAGON_BASE_URL}/${name}/${language.toLocaleLowerCase()}/data/${name}-${language.toLocaleLowerCase()}.json`).json()
+            request(new URL(`${name}/${language.toLocaleLowerCase()}/data/${name}-${language.toLocaleLowerCase()}.json`, DATA_DRAGON_BASE_URL))
           )
         )
       )

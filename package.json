@@ -8,7 +8,6 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "got": "^14.3.0",
     "json-stringify-pretty-compact": "^4.0.0",
     "object-hash": "^3.0.0"
   },
@@ -17,8 +16,8 @@
     "@babel/plugin-syntax-import-assertions": "^7.24.1",
     "@eslint/js": "^9.3.0",
     "c8": "^9.1.0",
-    "eslint": "^9.3.0",
-    "eslint-plugin-jsdoc": "^48.2.5",
+    "eslint": "^9.4.0",
+    "eslint-plugin-jsdoc": "^48.2.9",
     "eslint-plugin-mocha": "^10.4.3",
     "globals": "^15.2.0",
     "mocha": "^10.4.0",
@@ -32,5 +31,6 @@
     "test": "mocha",
     "coverage": "c8 mocha",
     "lint": "eslint"
-  }
+  },
+  "packageManager": "yarn@4.2.2"
 }

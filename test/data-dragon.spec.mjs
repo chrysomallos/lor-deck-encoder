@@ -2,12 +2,10 @@ import assert from 'assert';
 import quibble from 'quibble';
 import hash from 'object-hash';
 
-import {DATA_DRAGON_BASE_URL} from '../src/data-dragon.mjs';
 // eslint-disable-next-line
 import coreData from './resources/core.json' with { type: "json" };
 // eslint-disable-next-line
 import setData from './resources/set.json' with { type: "json" };
-
 
 describe('[Card] class tests', function () {
   let dataDragon, DataDragon;
@@ -15,18 +13,12 @@ describe('[Card] class tests', function () {
   let readFileSyncResult = "{}";
 
   beforeEach(async function () {
-    await quibble.esm('got', {
-      default: {
-        get: url => {
-          if (url.startsWith(`${DATA_DRAGON_BASE_URL}/core`))
-            return {
-              json: () => coreData,
-            };
-          return {
-            json: () => setData,
-          };
+    await quibble.esm('../utils/request.mjs', {
+      default: url => {
+          if (url.pathname.startsWith('/latest/core'))
+            return coreData;
+          return setData;
         },
-      },
     });
     await quibble.esm('node:fs', {
       default: {
