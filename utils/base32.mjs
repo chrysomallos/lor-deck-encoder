@@ -45,9 +45,10 @@ const PADDING = '========';
  */
 export default class Base32 {
   /**
-   * Decode the base32 value into a number array
-   * @param {string} code the encoded as base 32 string
-   * @returns {Uint8Array} the decoded bytes
+   * Decode the base32 value into a byte array.
+   * @param {string} code The encoded base32 string.
+   * @returns {Uint8Array} The decoded bytes.
+   * @throws {TypeError} If the input contains illegal characters.
    */
   static decode(code) {
     const trimmed = code.toUpperCase().trim().replace(/[=-]/g, '');
@@ -77,10 +78,11 @@ export default class Base32 {
   }
 
   /**
-   * Encode the values into a base32 string
-   * @param {Uint8Array} bytes the bytes to encode
-   * @param {boolean} [padOutput] the option to pad '=' at the end
-   * @returns {string} the encoded base32 value
+   * Encode the byte array into a base32 string.
+   * @param {Uint8Array} bytes The bytes to encode.
+   * @param {boolean} [padOutput] Whether to pad the output with '=' characters.
+   * @returns {string} The encoded base32 string.
+   * @throws {RangeError} If the input is too long to encode as a base32 string.
    */
   static encode(bytes, padOutput = false) {
     if (!bytes?.length) return padOutput ? PADDING : '';
