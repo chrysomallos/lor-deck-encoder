@@ -1,6 +1,24 @@
 import https from 'node:https';
 
 /**
+ * Base class for HTTP errors.
+ * Extends the built-in Error class to include an HTTP status code.
+ */
+export class HttpError extends Error {
+  /**
+   * Constructs a new HttpError instance.
+   * @param {number} status The HTTP status code.
+   * @param {string} message The error message.
+   */
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+/**
  * Makes an HTTP request with the provided options and body.
  * @template T
  * @param {string|URL|https.RequestOptions} options The options for the HTTP request.
@@ -10,8 +28,10 @@ import https from 'node:https';
 export default async function request(options, body) {
   return new Promise(function (resolve, reject) {
     const request = https.request(options, response => {
-      const {statusCode} = response;
-      if (statusCode < 200 || statusCode >= 300) return reject(new Error(`HTTP Error with status ${statusCode}`));
+      const {statusCode, statusMessage} = response;
+      if (statusCode < 200 || statusCode >= 300) {
+        return reject(new HttpError(statusCode, statusMessage));
+      }
       let chunks = [];
       response.on('data', chunk => chunks.push(chunk));
       response.on('end', () => {

@@ -5,7 +5,7 @@ import quibble from 'quibble';
 const expectedResponse = {success: true};
 
 describe('[Utils] request', function () {
-  let request, buffer;
+  let request, buffer, HttpError;
 
   beforeEach(async function () {
     buffer = Buffer.from(JSON.stringify(expectedResponse));
@@ -17,7 +17,7 @@ describe('[Utils] request', function () {
           response.headers = {
             'content-type': 'text/json',
             'content-length': `${response.statusCode === 200 ? buffer.length : 0}`,
-            connection: 'close'
+            connection: 'close',
           };
           callback(response);
           return {
@@ -33,7 +33,7 @@ describe('[Utils] request', function () {
         },
       },
     });
-    request = (await import('../utils/request.mjs')).default;
+    ({default: request, HttpError} = await import('../utils/request.mjs'));
   });
 
   it('should make a successful HTTP GET request', async function () {
@@ -65,7 +65,7 @@ describe('[Utils] request', function () {
       method: 'GET',
     };
 
-    await assert.rejects(request(options), Error);
+    await assert.rejects(request(options), HttpError);
   });
 
   it('should reject the promise on HTTP error for invalid json response', async function () {
@@ -75,7 +75,7 @@ describe('[Utils] request', function () {
       method: 'GET',
     };
 
-    await assert.rejects(request(options), Error);
+    await assert.rejects(request(options), SyntaxError);
   });
 
   afterEach(function () {
