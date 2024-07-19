@@ -1,15 +1,22 @@
+import camelCase from 'camelcase';
 import fs from 'node:fs/promises';
+import minimist from 'minimist';
 import stringify from 'json-stringify-pretty-compact';
 import {Deck, generateDataDragon} from './index.mjs';
 
-const parameters = process.argv.slice(2);
+const [code, ...parameters] = process.argv.slice(2);
 
-if (parameters[0] === 'show') {
-  console.log(Deck.fromCode(parameters[1]));
-}
-if (parameters[0] === 'json') {
-  await fs.writeFile(parameters[1], stringify(await generateDataDragon().fetchData(parameters[2], parameters[3]), {indent: 2, maxLength: 180}));
-}
-if (parameters[0] === 'html') {
-  await fs.writeFile(parameters[1], await generateDataDragon().generatePageFromCode(parameters[2], parameters[3]));
+console.log(Deck.fromCode(code));
+
+if (parameters?.length) {
+  const dragon = generateDataDragon();
+
+  const {style, language, outFile} = Object.fromEntries(Object.entries(minimist(parameters)).map(([k, v]) => [camelCase(k), v]));
+
+  const data =
+    style === 'html' || outFile.endsWith('.html')
+      ? await dragon.generatePageFromCode(code, language)
+      : stringify(await dragon.fetchData(code, language), {indent: 2, maxLength: 180});
+
+  await fs.writeFile(outFile, data);
 }

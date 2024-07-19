@@ -98,6 +98,12 @@ Expected result:
 */
 ```
 
+## Command line
+
+Use `yarn cli <code>` to show code output, with `--out-file` you can write additional deck information from [Data Dragon](https://developer.riotgames.com/docs/lor#data-dragon) into a file (html or json), optional you can change the `--language` (default is `en_us`).
+
+Example `yarn cli CEAAECABAQJRWHBIFU2DOOYIAEBAMCIMCINCILJZAICACBANE4VCYBABAILR2HRL --out-file test.hml`.
+
 ## Test
 
 To call the test first check out project and run `yarn install`.

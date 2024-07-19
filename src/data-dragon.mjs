@@ -7,6 +7,22 @@ import hash from 'object-hash';
 import request from '../utils/request.mjs';
 import Deck from './deck.mjs';
 
+export const LANGUAGES = {
+  en_us: 'English',
+  ko_kr: 'Korean',
+  ja_jp: 'Japanese',
+  es_es: 'Spanish',
+  es_mx: 'Mexico',
+  fr_fr: 'French',
+  de_de: 'German',
+  it_it: 'Italian',
+  pl_pl: 'Polish',
+  pt_br: 'Brazil',
+  ru_ru: 'Russian',
+  tr_tr: 'Turkish',
+  zh_cn: 'Chinese',
+};
+
 /**
  * Base URL for data grabbing, see [Data Dragon](https://developer.riotgames.com/docs/lor#data-dragon).
  *
@@ -74,11 +90,15 @@ export default class DataDragon {
 
   /**
    * Initializes the DataDragon instance by fetching core data and card data for the specified language.
-   * @param {string} language The language code (e.g. 'en_US') to fetch data for.
+   * @param {string} language The language code (e.g. 'en_us') to fetch data for.
    * @returns {Promise<void>}
    */
   async initialize(language) {
     if (this.cardsByCode) return;
+    if (!LANGUAGES[language]) {
+      language = Object.keys(LANGUAGES).find(key => key === language || key.split('_').includes(language));
+      if (!language) language = 'en_us';
+    }
     const tempFile = path.join(os.tmpdir(), `lor-data-dragon-temp-data-${language}.json`);
 
     if (fs.existsSync(tempFile)) {
@@ -125,7 +145,7 @@ export default class DataDragon {
    * @param {string} [language] The language code (e.g. 'en_us') to fetch data for.
    * @returns {Promise<FetchedData>} The fetched data, including the deck and matching cards.
    */
-  async fetchData(code, language = 'en_US') {
+  async fetchData(code, language) {
     await this.initialize(language);
     const deck = Deck.fromCode(code);
     return {
@@ -157,7 +177,7 @@ export default class DataDragon {
    * @param {string} [language] The language code (e.g. 'en_us') to generate for.
    * @returns {Promise<string>} The generated HTML content.
    */
-  async generatePageFromCode(code, language = 'en_US') {
+  async generatePageFromCode(code, language) {
     const {deck, cardTypes, matchedCards, matchedRegions} = await this.fetchData(code, language);
     return `<html>
 <head>

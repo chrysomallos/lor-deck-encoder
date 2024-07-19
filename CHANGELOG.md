@@ -1,10 +1,17 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
+## 1.2.0 - 2024-07-19
+
+### Features
+
+- Add [Data Dragon](https://developer.riotgames.com/docs/lor#data-dragon) to generate deck information.
+- Added a command line for direct usage or testing.
+
 ## 1.1.0 - 2022-05-19
 
 ### Updates
 
-- Add new faction 'Runeterra'
+- Add new faction 'Runeterra'.
 
 ### Fixes
 
