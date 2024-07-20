@@ -94,7 +94,6 @@ export default class DataDragon {
    * @returns {Promise<void>}
    */
   async initialize(language) {
-    if (this.cardsByCode) return;
     if (!LANGUAGES[language]) {
       language = Object.keys(LANGUAGES).find(key => key === language || key.split('_').includes(language));
       if (!language) language = 'en_us';

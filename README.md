@@ -1,6 +1,6 @@
 # lor-deck-encoder - Legends of Runeterra - Deck Encoder
 
-This is a JavaScript ES6 port of the Legends of Runeterra deck encoder/decoder. The goal of this project is to keep up-to-date with Riot's [Implementation](https://github.com/RiotGames/LoRDeckCodes), stay as close to the original result schema as possible, and use zero external runtime dependencies (instead of testing).
+This is a JavaScript ES6 port of the Legends of Runeterra deck encoder/decoder. The goal of this project is to keep up-to-date with Riot's [Implementation](https://github.com/RiotGames/LoRDeckCodes), stay as close to the original result schema as possible, and use minimal runtime dependencies (instead of testing).
 
 ## Installation
 
@@ -21,7 +21,7 @@ The following headlines will describe the _Deck_ class interface.
 Example:
 ```js
 import createDeck from 'lor-deck-encoder';
-const deck = createDeck('CEBQGAIFAMJC6BABAMCBGFJUAICAGAQRAICACBIWDQOS4AIBAM4AEAIEAUIQEBADAEHQ');
+const deck = createDeck('CEBQEBADAIIQGAIFAMJC6BABAMCBGFJUAIAQCAZYAQAQKFQ4DUXAEAIEAUIQEBADAEHQ');
 ```
 
 ## Example usage

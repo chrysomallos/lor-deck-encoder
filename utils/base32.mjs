@@ -88,13 +88,13 @@ export default class Base32 {
     if (!bytes?.length) return padOutput ? PADDING : '';
     if (bytes.length >= 1 << 28) throw new RangeError('Value is too long to encode as base32 string');
 
-    const length = Math.floor((bytes.length * 8 + SHIFT - 1) / SHIFT);
+    const calculatedLength = Math.floor((bytes.length * 8 + SHIFT - 1) / SHIFT);
     let padding = 0;
     if (padOutput) {
-      const rest = length % 8;
-      if (rest) padding = 8 - rest;
+      const remainder = calculatedLength % 8;
+      if (remainder) padding = 8 - remainder;
     }
-    const result = Buffer.alloc(length + padding);
+    const result = Buffer.alloc(calculatedLength + padding);
 
     let buffer = bytes[0];
     let nextByte = 1;
