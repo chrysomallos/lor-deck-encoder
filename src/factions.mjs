@@ -20,7 +20,7 @@ const AVAILABLE_FACTIONS = [
 ];
 
 /**
- * The max known version.
+ * The max known version, based on the available factions.
  */
 const MAX_KNOWN_VERSION = AVAILABLE_FACTIONS.reduce((last, {version}) => Math.max(last, version), 0);
 
