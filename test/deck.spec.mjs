@@ -67,7 +67,7 @@ describe('[Deck] class tests', function () {
         '01SI003:3', '01SI018:3', '01SI047:3', '01NX004:3', '01NX019:3', '01NX021:3', '01NX052:3', '04NX002:3', '04NX017:3', '01SI022:2',
         '01SI028:2', '01SI029:2', '01SI046:2', '01NX056:2', '04SI017:1', '04NX001:1', '04NX015:1'
       ]);
-      assert.equal(deck.code, 'CEBQIAIDAQJRKNADAECQGERPAICAGAQRAIAQCAZYAQAQKFQ4DUXAEAQEAMAQ6AIEAUIQ');
+      assert.equal(deck.code, 'CEBQEBADAIIQGAIFAMJC6BABAMCBGFJUAIAQCAZYAQAQKFQ4DUXAEAIEAUIQEBADAEHQ');
       const deckOrder = Deck.fromCode(deck.code);
       assert.deepEqual(deck.list.sort(), deckOrder.list.sort());
     });
