@@ -90,9 +90,9 @@ export default class Encoder {
     for (let count = 3; count > 0; count--) {
       //build the map of set and faction combinations within the group of similar card counts
       const factionSetsMap = grouped[count].reduce((map, card) => {
-        const sf = card.set * 100 + card.factionId;
-        if (map.has(sf)) map.get(sf).push(card);
-        else map.set(sf, [card]);
+        const setFaction = card.set * 100 + card.factionId;
+        if (map.has(setFaction)) map.get(setFaction).push(card);
+        else map.set(setFaction, [card]);
         return map;
       }, new Map());
 
@@ -101,7 +101,9 @@ export default class Encoder {
       //First by the number of set/faction combinations in each top-level list
       //Second by the alphanumeric order of the card codes within those lists.
       [...factionSetsMap.entries()]
-        .sort(([a], [b]) => a - b)
+        .sort(([firstSetFaction, {length: firstCardsLength}], [secondSetFaction, {length: secondCardLength}]) =>
+          firstCardsLength - secondCardLength !== 0 ? firstCardsLength - secondCardLength : firstSetFaction - secondSetFaction
+        )
         .forEach(([, groupCards]) => {
           const [firstCard] = groupCards;
           values.push(groupCards.length);
