@@ -1,5 +1,12 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
+## 2.0.0 - 2024-08-17
+
+### Changes
+
+- Use node 22.x as base version and update some implementations.
+- Use correct sorting algorithm for deck code generator.
+
 ## 1.2.0 - 2024-07-19
 
 ### Features
