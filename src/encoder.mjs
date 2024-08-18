@@ -75,54 +75,30 @@ export default class Encoder {
       INITIAL_VERSION
     );
 
-    const values = [];
-
     // cards with count > 3 are handled separately
-    const grouped = cards.reduce(
-      (groups, card) => {
-        if (card.count > 3) groups.x.push(card);
-        else groups[card.count].push(card);
-        return groups;
-      },
-      {3: [], 2: [], 1: [], x: []}
-    );
+    const grouped = Object.groupBy(cards, ({count}) => (count > 3 ? 'x' : count));
 
-    for (let count = 3; count > 0; count--) {
-      //build the map of set and faction combinations within the group of similar card counts
-      const factionSetsMap = grouped[count].reduce((map, card) => {
-        const setFaction = card.set * 1000 + card.factionSort;
-        if (map.has(setFaction)) map.get(setFaction).push(card);
-        else map.set(setFaction, [card]);
-        return map;
-      }, new Map());
-
-      values.push(factionSetsMap.size);
-      //The sorting convention of this encoding scheme is
-      //First by the number of set/faction combinations in each top-level list
-      //Second by the alphanumeric order of the card codes within those lists.
-      [...factionSetsMap.entries()]
-        .sort(([firstSetFaction, {length: firstCardsLength}], [secondSetFaction, {length: secondCardLength}]) =>
-          firstCardsLength - secondCardLength !== 0 ? firstCardsLength - secondCardLength : firstSetFaction - secondSetFaction
-        )
-        .forEach(([, groupCards]) => {
-          const [firstCard] = groupCards;
-          values.push(groupCards.length);
-          values.push(firstCard.set);
-          values.push(firstCard.factionId);
-          groupCards
-            .map(({id}) => id)
-            .sort((a, b) => a - b)
-            .forEach(id => values.push(id));
-        });
-    }
-
-    //Cards with 4+ are coded simply [count, set, faction, id] for each
-    grouped.x?.sort(Card.compare).forEach(card => {
-      values.push(card.count);
-      values.push(card.set);
-      values.push(card.faction.id);
-      values.push(card.id);
-    });
+    const values = [3, 2, 1]
+      .flatMap(count => {
+        if (!grouped[count]?.length) return [0];
+        // build the map of set and faction combinations within the group of similar card counts
+        const factionSets = [...Map.groupBy(grouped[count], ({set, factionSort: sort}) => set * 1000 + sort).entries()];
+        return [
+          factionSets.length,
+          // The sorting convention of this encoding scheme is:
+          // - First by the number of set/faction combinations in each top-level list
+          // - Second by the alphanumeric order of the card codes within those lists.
+          ...factionSets
+            .sort(([firstSort, {length: firstCount}], [secondSort, {length: secondCount}]) =>
+              firstCount - secondCount !== 0 ? firstCount - secondCount : firstSort - secondSort
+            )
+            .flatMap(([, cards]) => [cards.length, cards[0].set, cards[0].factionId, ...cards.map(({id}) => id).sort((a, b) => a - b)]),
+        ];
+      })
+      .concat(
+        //Cards with 4+ are coded simply [count, set, faction, id] for each
+        grouped.x?.sort(Card.compare).flatMap(card => [card.count, card.set, card.faction.id, card.id]) ?? []
+      );
 
     return Base32.encode([(SUPPORTED_FORMAT << 4) | (version & 0xf), ...values.flatMap(i => VarInt.get(i))]);
   }

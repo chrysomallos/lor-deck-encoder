@@ -4,7 +4,7 @@ This is a JavaScript ES6 port of the Legends of Runeterra deck encoder/decoder. 
 
 ## Installation
 
-The package require [Node.js](https://nodejs.org/en/) min version 18.15.
+The package require [Node.js](https://nodejs.org/en/) min version 22.x, because we using [Object.groupBy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy) and [Map.groupBy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy).
 Use the package manager [yarn](https://yarnpkg.com/) to install this package.
 
 Like:
