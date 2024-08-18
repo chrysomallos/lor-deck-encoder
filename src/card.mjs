@@ -70,13 +70,13 @@ export default class Card {
    * Returns an integer indicating whether the firstCard comes before, after or is equivalent to the secondCard.
    * @param {Card} firstCard The first element for comparison.
    * @param {Card} secondCard The card against which the first card is compared.
-   * @returns {number} A negative number if first card occurs before second card; positive if the first card occurs after second card; 0 if they are equivalent. 
+   * @returns {number} A negative number if first card occurs before second card; positive if the first card occurs after second card; 0 if they are equivalent.
    */
   static compare(firstCard, secondCard) {
     if (!(firstCard instanceof Card)) throw new TypeError('First card must be a valid instance.');
     if (!(secondCard instanceof Card)) throw new TypeError('Second card must be a valid instance.');
     let result = firstCard.set - secondCard.set;
-    if (result === 0) result = firstCard.faction.id - secondCard.faction.id;
+    if (result === 0) result = firstCard.faction.sort - secondCard.faction.sort;
     if (result === 0) result = firstCard.id - secondCard.id;
     return result;
   }
@@ -142,5 +142,13 @@ export default class Card {
    */
   get factionId() {
     return this.faction.id;
+  }
+
+  /**
+   * Returns the faction alphanumeric sort.
+   * @type {number}
+   */
+  get factionSort() {
+    return this.faction.sort;
   }
 }

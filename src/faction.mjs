@@ -15,6 +15,12 @@ export default class Faction {
   version;
 
   /**
+   * The alphanumeric sort number.
+   * @type {number}
+   */
+  sort;
+
+  /**
    * The 2 character faction code, f.e. 'DE'.
    * @type {string}
    */
@@ -36,6 +42,7 @@ export default class Faction {
     this.id = id;
     this.version = version;
     this.code = code;
+    this.sort = ((code.charCodeAt(0) - 65) * 26) + (code.charCodeAt(1) - 65);
     this.name = name;
   }
 }

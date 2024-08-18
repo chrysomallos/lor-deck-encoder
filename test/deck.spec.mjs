@@ -144,7 +144,7 @@ describe('[Deck] class tests', function () {
 
   describe('validate sort method', function () {
     it('reponse deck is sorted', function () {
-      const deck = Deck.fromCardCodes(['01SI003:3', '01SI022:2', '01SI028:2', '01SI018:3', '04NX001:1', '04SI017:1', '04NX015:5']);
+      const deck = Deck.fromCardCodes(['01SI022:2', '01SI003:3', '01SI028:2', '01SI018:3', '04NX001:1', '04SI017:1', '04NX015:5']);
       deck.sort();
       assert.deepEqual(deck.list, ['01SI003:3', '01SI018:3', '01SI022:2', '01SI028:2', '04NX001:1', '04NX015:5', '04SI017:1']);
     });

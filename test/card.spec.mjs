@@ -88,7 +88,7 @@ describe('[Card] class tests', function () {
     });
 
     it('(>0) sort b before a', function () {
-      assert.equal(Card.compare(Card.fromCode('02BC002'), Card.fromCode('02DE002')) > 0, true);
+      assert.equal(Card.compare(Card.fromCode('02DE002'), Card.fromCode('02BW002')) > 0, true);
     });
 
     it('no card instance', function () {

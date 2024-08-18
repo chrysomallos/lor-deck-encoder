@@ -90,7 +90,7 @@ export default class Encoder {
     for (let count = 3; count > 0; count--) {
       //build the map of set and faction combinations within the group of similar card counts
       const factionSetsMap = grouped[count].reduce((map, card) => {
-        const setFaction = card.set * 100 + card.factionId;
+        const setFaction = card.set * 1000 + card.factionSort;
         if (map.has(setFaction)) map.get(setFaction).push(card);
         else map.set(setFaction, [card]);
         return map;
