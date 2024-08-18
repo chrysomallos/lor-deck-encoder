@@ -1,5 +1,15 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
+## 2.0.1 - unreleased
+
+### Fixes
+
+- Fixed alphanumeric faction sort issue, by using a generated faction sort value.
+
+### Changes
+
+- Additional using group by methods to optimize deck encoder and makes them side effect free.
+
 ## 2.0.0 - 2024-08-17
 
 ### Changes
