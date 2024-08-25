@@ -32,6 +32,7 @@
   "scripts": {
     "cli": "node ./cli.mjs",
     "test": "mocha",
+    "performance": "mocha ./performance/*.perf.mjs",
     "coverage": "c8 mocha",
     "lint": "eslint"
   },
