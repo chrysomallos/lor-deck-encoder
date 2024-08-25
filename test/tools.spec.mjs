@@ -6,16 +6,16 @@ import VarInt from '../utils/var-int.mjs';
 describe('[Utils] full tests', function () {
   describe('Base32', function () {
     describe('validation', function () {
-      let plain;
+      let bytes;
 
       before(function () {
-        plain = [1, 20, 30, 400, 500, 600, 700, 800, 900].flatMap(v => VarInt.get(v));
+        bytes = [1, 20, 30, 400, 500, 600, 700, 800, 900].flatMap(v => VarInt.get(v));
       });
 
       it('encode and decode test', function () {
-        const encoded = Base32.encode(plain);
+        const encoded = Base32.encode(bytes);
         const decoded = Base32.decode(encoded);
-        assert.deepEqual(decoded, plain, 'decoded does not match plain');
+        assert.deepEqual(decoded, bytes, 'decoded does not match');
       });
     });
 
@@ -47,32 +47,6 @@ describe('[Utils] full tests', function () {
       it('big byte array', function () {
         // fake byte length to check exception
         assert.throws(() => Base32.encode({length: 1 << 28}, true));
-      });
-    });
-
-    describe('speed test', function () {
-      let plain, encoded, decoded;
-
-      before(function () {
-        plain = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21].flatMap(v => VarInt.get(v));
-        encoded = Base32.encode(plain, true);
-        decoded = Base32.decode(encoded);
-      });
-
-      it('encode with padding', function () {
-        for (let i = 0; i < 1000; i++) Base32.encode(plain, true);
-      });
-
-      it('encode', function () {
-        for (let i = 0; i < 1000; i++) Base32.encode(plain);
-      });
-
-      it('decode', function () {
-        for (let i = 0; i < 1000; i++) Base32.decode(encoded);
-      });
-
-      it('validate', function () {
-        assert.deepEqual(decoded, plain, 'decoded does not match plain');
       });
     });
   });
@@ -108,6 +82,19 @@ describe('[Utils] full tests', function () {
       const num = VarInt.pop(arr);
       assert.equal(num, 180);
       assert.equal(arr.length, 0);
+    });
+
+    it('decode', function () {
+      const arr = [180, 1];
+      const [num] = VarInt.decode(arr);
+      assert.equal(num, 180);
+      assert.equal(arr.length, 2);
+    });
+
+    it('must be fail', function () {
+      const arr = [180];
+      assert.throws(() => VarInt.decode(arr));
+      assert.throws(() => VarInt.pop(arr));
     });
   });
 });

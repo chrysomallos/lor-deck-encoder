@@ -62,6 +62,34 @@ export default class VarInt {
   }
 
   /**
+   * Decodes an array of bytes into an array of integers, using a variable-length encoding scheme.
+   * The method processes each byte in the input array, combining them into integers until the most significant bit (MSB)
+   * indicates the end of an integer. It then stores the decoded integers in an output array.
+   * @param {Uint8Array | number[]} bytes The input array of bytes to be decoded. It can be a Uint8Array or an array of numbers.
+   * @returns {number[]} An array of decoded integers.
+   * @throws {TypeError} Throws a TypeError if the byte array ends with an incomplete sequence (e.g., the MSB of the last byte is set).
+   */
+  static decode(bytes) {
+    let result = 0, shift = 0;
+    const data = bytes.map(byte => {
+      const current = byte & ALL_BUT_MSB;
+      result |= current << shift;
+
+      if ((byte & JUST_MSB) !== JUST_MSB) {
+        const newResult = result;
+        result = 0;
+        shift = 0;
+        return newResult;
+      }
+      shift += 7;
+    });
+
+    if (result > 0) throw new TypeError('Byte array did not contain valid variant integers');
+
+    return data.filter(v => v !== undefined);
+  }
+
+  /**
    * Encodes a given non-negative integer into a variable-length byte array using a custom encoding scheme.
    *
    * The encoding scheme works by storing 7 bits of the integer in each byte,

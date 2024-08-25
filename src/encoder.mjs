@@ -38,7 +38,7 @@ export default class Encoder {
       throw new ArgumentError('version', `Deck version ${version} is not supported (max supported version ${Factions.maxVersion})`);
 
     const result = new Array();
-    for (let count = 3; count > 0; count -= 1) {
+    for (const count of [3, 2, 1]) {
       const groups = VarInt.pop(bytes);
       for (let group = 0; group < groups; group += 1) {
         const cards = VarInt.pop(bytes);
