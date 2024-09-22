@@ -33,7 +33,7 @@ describe('[Utils] request', function () {
         },
       },
     });
-    ({default: request, HttpError} = await import('../utils/request.mjs'));
+    ({default: request, HttpError} = await import('../../utils/request.mjs'));
   });
 
   it('should make a successful HTTP GET request', async function () {

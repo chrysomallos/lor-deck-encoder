@@ -1,8 +1,8 @@
-import Deck from '../src/deck.mjs';
+import Deck from '../../src/deck.mjs';
 import assert from 'assert';
-import Card from '../src/card.mjs';
-import shuffle from '../utils/shuffle.mjs';
-import Factions from '../src/factions.mjs';
+import Card from '../../src/card.mjs';
+import shuffle from '../../utils/shuffle.mjs';
+import Factions from '../../src/factions.mjs';
 
 describe('[Deck] class tests', function () {
   describe('constructor tests', function () {

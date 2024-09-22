@@ -11,7 +11,7 @@ describe('[DataDragon] class tests', function () {
   let readFileSyncResult = "{}";
 
   beforeEach(async function () {
-    await quibble.esm('../utils/request.mjs', {
+    await quibble.esm('../../utils/request.mjs', {
       default: url => {
           if (url.pathname.startsWith('/latest/core'))
             return coreData;
@@ -25,7 +25,7 @@ describe('[DataDragon] class tests', function () {
         readFileSync: () => readFileSyncResult,
       },
     });
-    DataDragon = (await import('../src/data-dragon.mjs')).default;
+    DataDragon = (await import('../../src/data-dragon.mjs')).default;
     dataDragon = new DataDragon();
   });
 

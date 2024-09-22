@@ -1,6 +1,6 @@
 {
   "name": "lor-deck-encoder",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Legends of Runeterra Deck Encoder",
   "exports": "./index.mjs",
   "author": "Chrysomallos",
@@ -31,9 +31,9 @@
   },
   "scripts": {
     "cli": "node ./cli.mjs",
-    "test": "mocha",
-    "performance": "mocha ./performance/*.perf.mjs",
-    "coverage": "c8 mocha",
+    "test": "mocha ./test/unit/*.spec.mjs",
+    "performance": "mocha ./test/performance/*.perf.mjs",
+    "coverage": "c8 mocha ./test/unit/*.spec.mjs",
     "lint": "eslint"
   },
   "packageManager": "yarn@4.3.1"
