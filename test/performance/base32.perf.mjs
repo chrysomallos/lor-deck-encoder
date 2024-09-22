@@ -1,6 +1,6 @@
-import Base32 from '../utils/base32.mjs';
+import Base32 from '../../utils/base32.mjs';
 import assert from 'assert';
-import VarInt from '../utils/var-int.mjs';
+import VarInt from '../../utils/var-int.mjs';
 
 describe('[Base32] performance test', function () {
   let plain, encoded, decoded;
@@ -12,19 +12,19 @@ describe('[Base32] performance test', function () {
     decoded = Base32.decode(encoded);
   });
 
-  it('encode, padding is true', function () {
+  it(`encode (${performanceCalls} times), padding is true`, function () {
     for (let i = 0; i < performanceCalls; i++) Base32.encode(plain, true);
   });
 
-  it('encode, padding is false', function () {
+  it(`encode (${performanceCalls} times), padding is false`, function () {
     for (let i = 0; i < performanceCalls; i++) Base32.encode(plain);
   });
 
-  it('decode', function () {
+  it(`decode (${performanceCalls} times)`, function () {
     for (let i = 0; i < performanceCalls; i++) Base32.decode(encoded);
   });
 
-  it('validate', function () {
+  it(`validate (${performanceCalls} times)`, function () {
     assert.deepEqual(decoded, plain, 'decoded does not match plain');
   });
 });

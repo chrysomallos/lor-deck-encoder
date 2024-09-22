@@ -1,11 +1,11 @@
 import assert from 'assert';
-import Base32 from '../utils/base32.mjs';
-import Encoder from '../src/encoder.mjs';
-import VarInt from '../utils/var-int.mjs';
+import Base32 from '../../utils/base32.mjs';
+import Encoder from '../../src/encoder.mjs';
+import VarInt from '../../utils/var-int.mjs';
 
-import {ArgumentError} from '../src/errors.mjs';
-import Factions from '../src/factions.mjs';
-import Card from '../src/card.mjs';
+import {ArgumentError} from '../../src/errors.mjs';
+import Factions from '../../src/factions.mjs';
+import Card from '../../src/card.mjs';
 
 const SUPPORTED_FORMAT = 1;
 
@@ -64,21 +64,21 @@ describe('[Encoder] performance test', function () {
   const codeSmall = 'CMAQCBAHBIAQCBAHAMAAIAQAAICQGBQE';
   const performanceCalls = 100000;
 
-  it('Encoder.decode', function () {
+  it(`Encoder.decode (${performanceCalls} times)`, function () {
     for (let i = 0; i < performanceCalls; i += 1) Encoder.decode(code);
   });
 
-  it('decodeImprove', function () {
+  it(`decodeImprove (${performanceCalls} times)`, function () {
     for (let i = 0; i < performanceCalls; i += 1) decodeImprove(code);
   });
 
-  it('Ensure equality bigger deck', function () {
+  it(`Ensure equality bigger deck (${performanceCalls} times)`, function () {
     const oldResult = Encoder.decode(code);
     const newResult = decodeImprove(code);
     assert.equal(oldResult.length, newResult.length);
   });
 
-  it('Ensure equality small deck', function () {
+  it(`Ensure equality small deck (${performanceCalls} times)`, function () {
     const oldResult = Encoder.decode(codeSmall);
     const newResult = decodeImprove(codeSmall);
     assert.equal(oldResult.length, newResult.length);

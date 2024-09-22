@@ -1,7 +1,7 @@
 import assert from 'assert';
-import Card from '../src/card.mjs';
-import Faction from '../src/faction.mjs';
-import Factions from '../src/factions.mjs';
+import Card from '../../src/card.mjs';
+import Faction from '../../src/faction.mjs';
+import Factions from '../../src/factions.mjs';
 
 describe('[Card] class tests', function () {
   describe('constructor tests', function () {

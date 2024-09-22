@@ -1,7 +1,7 @@
-import Base32 from '../utils/base32.mjs';
-import pad from '../utils/pad.mjs';
+import Base32 from '../../utils/base32.mjs';
+import pad from '../../utils/pad.mjs';
 import assert from 'assert';
-import VarInt from '../utils/var-int.mjs';
+import VarInt from '../../utils/var-int.mjs';
 
 describe('[Utils] full tests', function () {
   describe('Base32', function () {
