@@ -1,6 +1,6 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
-## 2.0.1 - unreleased
+## 2.0.1 - 2024-09-22
 
 ### Fixes
 
