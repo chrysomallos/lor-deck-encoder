@@ -2,7 +2,7 @@ import assert from 'assert';
 import Base32 from '../../utils/base32.mjs';
 import VarInt from '../../utils/var-int.mjs';
 
-describe('[Encoder] performance test', function () {
+describe('[VarInt] performance test', function () {
   const code = 'CEBAIAIABEQDINIFAEBAUEATEAYAEAIBAIYQGAIAAIDSUAQCAEBCWLIDAEAAMHJN';
   const performanceCalls = 100000;
   

@@ -8,6 +8,7 @@ import Factions from '../../src/factions.mjs';
 import Card from '../../src/card.mjs';
 
 const SUPPORTED_FORMAT = 1;
+const COUNT_GROUPS = [3, 2, 1];
 
 /**
  * Decodes the code into a list of cards.
@@ -39,7 +40,7 @@ function decodeImprove(code, skipFormatCheck = false) {
 
   const result = new Array();
 
-  for (const count of [3, 2, 1]) {
+  for (const count of COUNT_GROUPS) {
     const groups = values.shift();
     for (let group = 0; group < groups; group += 1) {
       const cards = values.shift();
@@ -72,13 +73,13 @@ describe('[Encoder] performance test', function () {
     for (let i = 0; i < performanceCalls; i += 1) decodeImprove(code);
   });
 
-  it(`Ensure equality bigger deck (${performanceCalls} times)`, function () {
+  it(`Ensure equality bigger deck`, function () {
     const oldResult = Encoder.decode(code);
     const newResult = decodeImprove(code);
     assert.equal(oldResult.length, newResult.length);
   });
 
-  it(`Ensure equality small deck (${performanceCalls} times)`, function () {
+  it(`Ensure equality small deck`, function () {
     const oldResult = Encoder.decode(codeSmall);
     const newResult = decodeImprove(codeSmall);
     assert.equal(oldResult.length, newResult.length);

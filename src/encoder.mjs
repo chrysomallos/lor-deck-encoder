@@ -10,6 +10,7 @@ import VarInt from '../utils/var-int.mjs';
 
 const SUPPORTED_FORMAT = 1;
 const INITIAL_VERSION = 1;
+const COUNT_GROUPS = [3, 2, 1];
 
 /**
  * The encoding helper to generate a code for a deck or a deck from a code.
@@ -38,7 +39,7 @@ export default class Encoder {
       throw new ArgumentError('version', `Deck version ${version} is not supported (max supported version ${Factions.maxVersion})`);
 
     const result = new Array();
-    for (const count of [3, 2, 1]) {
+    for (const count of COUNT_GROUPS) {
       const groups = VarInt.pop(bytes);
       for (let group = 0; group < groups; group += 1) {
         const cards = VarInt.pop(bytes);
@@ -78,7 +79,7 @@ export default class Encoder {
     // cards with count > 3 are handled separately
     const grouped = Object.groupBy(cards, ({count}) => (count > 3 ? 'x' : count));
 
-    const values = [3, 2, 1]
+    const values = COUNT_GROUPS
       .flatMap(count => {
         if (!grouped[count]?.length) return [0];
         // build the map of set and faction combinations within the group of similar card counts
