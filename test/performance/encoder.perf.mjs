@@ -60,28 +60,33 @@ function decodeImprove(code, skipFormatCheck = false) {
   return result;
 }
 
-describe('[Encoder] performance test', function () {
+describe('[Encoder]', function () {
   const code = 'CEBAIAIABEQDINIFAEBAUEATEAYAEAIBAIYQGAIAAIDSUAQCAEBCWLIDAEAAMHJN';
   const codeSmall = 'CMAQCBAHBIAQCBAHAMAAIAQAAICQGBQE';
-  const performanceCalls = 100000;
+  
+  describe('consistency check', function () {
+    it(`Ensure equality bigger deck`, function () {
+      const oldResult = Encoder.decode(code);
+      const newResult = decodeImprove(code);
+      assert.equal(oldResult.length, newResult.length);
+    });
 
-  it(`Encoder.decode (${performanceCalls} times)`, function () {
-    for (let i = 0; i < performanceCalls; i += 1) Encoder.decode(code);
+    it(`Ensure equality small deck`, function () {
+      const oldResult = Encoder.decode(codeSmall);
+      const newResult = decodeImprove(codeSmall);
+      assert.equal(oldResult.length, newResult.length);
+    });
   });
 
-  it(`decodeImprove (${performanceCalls} times)`, function () {
-    for (let i = 0; i < performanceCalls; i += 1) decodeImprove(code);
-  });
+  describe('performance test', function () {
+    const performanceCalls = 100000;
 
-  it(`Ensure equality bigger deck`, function () {
-    const oldResult = Encoder.decode(code);
-    const newResult = decodeImprove(code);
-    assert.equal(oldResult.length, newResult.length);
-  });
+    it(`Encoder.decode (${performanceCalls} times)`, function () {
+      for (let i = 0; i < performanceCalls; i += 1) Encoder.decode(code);
+    });
 
-  it(`Ensure equality small deck`, function () {
-    const oldResult = Encoder.decode(codeSmall);
-    const newResult = decodeImprove(codeSmall);
-    assert.equal(oldResult.length, newResult.length);
+    it(`decodeImprove (${performanceCalls} times)`, function () {
+      for (let i = 0; i < performanceCalls; i += 1) decodeImprove(code);
+    });
   });
 });
