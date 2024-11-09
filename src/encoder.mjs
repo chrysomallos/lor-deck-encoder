@@ -8,8 +8,21 @@ import VarInt from '../utils/var-int.mjs';
  * Port c# code from https://github.com/RiotGames/LoRDeckCodes/blob/main/LoRDeckCodes/LoRDeckEncoder.cs into es6
  */
 
+/**
+ * Deck format version
+ * @type {number}
+ */
 const SUPPORTED_FORMAT = 1;
+
+/**
+ * Deck cards version
+ * @type {number}
+ */
 const INITIAL_VERSION = 1;
+
+/**
+ * The groups used to match the copy lists, see https://github.com/RiotGames/LoRDeckCodes?tab=readme-ov-file#process
+ */
 const COUNT_GROUPS = [3, 2, 1];
 
 /**
@@ -63,16 +76,15 @@ export default class Encoder {
   }
 
   /**
-   * Encodes the deck into a base32 deck code.
+   * Encodes the deck into a base32 deck code. see https://github.com/RiotGames/LoRDeckCodes?tab=readme-ov-file#process
    * @param {Card[]} cards The deck cards to encode.
    * @param {number} [version] The deck version.
    * @returns {string} The base32 deck code.
    */
   static encode(cards, version) {
-    if (cards.some(card => !card?.count)) throw new Error('Invalid deck');
+    if (!cards || cards.some(card => !card?.count)) throw new Error('Invalid deck');
     version ??= Math.max(
-      cards?.reduce((l, {factionVersion: v}) => Math.max(l, v), 0),
-      version,
+      cards.length ? Math.max(...(cards.map(({factionVersion: v}) => v))) : 0,
       INITIAL_VERSION
     );
 

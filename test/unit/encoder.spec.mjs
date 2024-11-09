@@ -28,8 +28,15 @@ describe('[Encoder] class tests', function () {
 
   describe('encode method', function () {
     it('invalid deck', function () {
+      assert.throws(() => Encoder.encode());
       assert.throws(() => Encoder.encode([null]));
       assert.throws(() => Encoder.encode([{count: 0}]));
+    });
+
+    it('encodes correctly', function () {
+      assert.equal(Encoder.encode([], 10), 'DIAAAAA', 'ten');
+      assert.equal(Encoder.encode([]), 'CEAAAAA', 'undefined');
+      assert.equal(Encoder.encode([{count: 1, factionVersion: 3}]), 'CMAAAAIB', 'from card');
     });
   });
 
