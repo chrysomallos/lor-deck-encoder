@@ -25,13 +25,17 @@ import {Buffer} from 'node:buffer';
  * @returns {number} The count of trailing zeros in the binary representation of the input number.
  */
 // prettier-ignore
-function numberOfTrailingZeros(int) {
-  if (int == 0) return 32; let y; let n = 31;
-  y = int << 16; if (y != 0) { n = n - 16; int = y; }
-  y = int << 8;  if (y != 0) { n = n - 8;  int = y; }
-  y = int << 4;  if (y != 0) { n = n - 4;  int = y; }
-  y = int << 2;  if (y != 0) { n = n - 2;  int = y; }
-  return n - ((int << 1) >> 31);
+export function numberOfTrailingZeros(int) {
+  if (int === 0) return 32;
+
+  let n = 0;
+  if ((int & 0xFFFF) === 0) { n += 16; int >>>= 16; }
+  if ((int & 0xFF) === 0) { n += 8; int >>>= 8; }
+  if ((int & 0xF) === 0) { n += 4; int >>>= 4; }
+  if ((int & 3) === 0) { n += 2; int >>>= 2; }
+  if ((int & 1) === 0) n += 1;
+
+  return n;
 }
 
 const CHARACTER = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'];
