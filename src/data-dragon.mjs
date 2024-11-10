@@ -78,9 +78,11 @@ export const DATA_DRAGON_BASE_URL = 'https://dd.b.pvp.net/latest/';
  * @typedef {object} FetchedData
  * @property {Deck} deck The instance of the deck.
  * @property {Record<string, {code: string, count: number}[]>} cardTypes The cards by rarity reference.
- * @property {Record<string, DataDragonCard | undefined>} matchedCards The matching cards by code.
- * @property {Record<string, DataDragonRegion|undefined>} matchedRegions The matching regions by faction code.
+ * @property {Record<string, ?DataDragonCard>} matchedCards The matching cards by code.
+ * @property {Record<string, ?DataDragonRegion>} matchedRegions The matching regions by faction code.
  */
+
+const MAX_TEMP_HEADER_AGE = 12 * 3600 * 1000; // 12 Hours
 
 /**
  * The data dragon interface client.
@@ -103,7 +105,7 @@ export default class DataDragon {
     if (fs.existsSync(tempFile)) {
       try {
         const data = JSON.parse(fs.readFileSync(tempFile));
-        if (data.header.core === hash(data.core) && data.header.cards === hash(data.cards) && Date.now() - 3 * 3600 * 1000 < data.header.date) {
+        if (data.header.core === hash(data.core) && data.header.cards === hash(data.cards) && Date.now() - MAX_TEMP_HEADER_AGE < data.header.date) {
           this.core = data.core;
           this.cards = data.cards;
         }
