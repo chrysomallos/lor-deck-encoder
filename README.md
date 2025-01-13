@@ -1,11 +1,10 @@
 # lor-deck-encoder - Legends of Runeterra - Deck Encoder
 
-This is a JavaScript ES6 port of the Legends of Runeterra deck encoder/decoder. The goal of this project is to keep up-to-date with Riot's [Implementation](https://github.com/RiotGames/LoRDeckCodes), stay as close to the original result schema as possible, and use minimal runtime dependencies (instead of testing).
+This project is a JavaScript ES6 port of the Legends of Runeterra deck encoder/decoder. Its goal is to stay up-to-date with Riot’s [implementation](https://github.com/RiotGames/LoRDeckCodes), maintain close adherence to the original result schema, and use minimize additional runtime dependencies (excluding testing).
 
 ## Installation
 
-The package require [Node.js](https://nodejs.org/en/) min version 22.x, because we using [Object.groupBy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy) and [Map.groupBy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy).
-Use the package manager [yarn](https://yarnpkg.com/) to install this package.
+The package require [Node.js](https://nodejs.org/en/) with version 22.x or above, because we using [Object.groupBy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy) and [Map.groupBy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy). Use the package manager [yarn](https://yarnpkg.com/) to install this package.
 
 Like:
 ```
@@ -106,7 +105,7 @@ Example `yarn cli CEAAECABAIDASDASDISC2OIIAECBGGY4FAWTINZ3AICACAQXDUPCWBABAQGSOK
 
 ## Test
 
-To call the test first check out project and run `yarn install`.
+To run the test, first check out the project and then execute `yarn install`.
 
 Included code tests:
 

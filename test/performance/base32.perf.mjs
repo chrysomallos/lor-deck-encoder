@@ -1,5 +1,5 @@
+import assert from 'node:assert';
 import Base32 from '../../utils/base32.mjs';
-import assert from 'assert';
 import VarInt from '../../utils/var-int.mjs';
 
 describe('[Base32] performance test', function () {

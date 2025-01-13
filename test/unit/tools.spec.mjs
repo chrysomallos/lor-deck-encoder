@@ -1,6 +1,6 @@
+import assert from 'node:assert';
 import Base32, {numberOfTrailingZeros} from '../../utils/base32.mjs';
 import pad from '../../utils/pad.mjs';
-import assert from 'assert';
 import VarInt from '../../utils/var-int.mjs';
 
 describe('[Utils] full tests', function () {

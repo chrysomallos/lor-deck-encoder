@@ -1,5 +1,5 @@
+import assert from 'node:assert';
 import Deck from '../../src/deck.mjs';
-import assert from 'assert';
 import Card from '../../src/card.mjs';
 import shuffle from '../../utils/shuffle.mjs';
 import Factions from '../../src/factions.mjs';
