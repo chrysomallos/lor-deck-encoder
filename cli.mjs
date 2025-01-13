@@ -2,7 +2,7 @@ import camelCase from 'camelcase';
 import fs from 'node:fs/promises';
 import minimist from 'minimist';
 import stringify from 'json-stringify-pretty-compact';
-import {Deck, generateDataDragon} from './index.mjs';
+import {Deck, DataDragon} from './index.mjs';
 import Base32 from './utils/base32.mjs';
 
 const parameters = Object.fromEntries(Object.entries(minimist(process.argv.slice(2))).map(([k, v]) => [camelCase(k), v]));
@@ -27,7 +27,7 @@ if (!code || parameters.help) {
     console.log(JSON.stringify(Deck.fromCode(deck.code).list));
     console.log(JSON.stringify(Base32.decode(deck.code)));
   } else if (outFile?.length) {
-    const dragon = generateDataDragon();
+    const dragon = new DataDragon();
     const data =
       style === 'html' || outFile.endsWith('.html')
         ? await dragon.generatePageFromCode(code, language)
