@@ -7,20 +7,24 @@ import hash from 'object-hash';
 import request from '../utils/request.mjs';
 import Deck from './deck.mjs';
 
+/**
+ * The supported languages found on the data dragon page.
+ */
 export const LANGUAGES = {
-  en_us: 'English',
-  ko_kr: 'Korean',
-  ja_jp: 'Japanese',
-  es_es: 'Spanish',
-  es_mx: 'Mexico',
-  fr_fr: 'French',
-  de_de: 'German',
-  it_it: 'Italian',
-  pl_pl: 'Polish',
-  pt_br: 'Brazil',
-  ru_ru: 'Russian',
-  tr_tr: 'Turkish',
-  zh_cn: 'Chinese',
+  de_de: 'German (Germany)',
+  en_us: 'English (United States)',
+  es_es: 'Spanish (Spain)',
+  es_mx: 'Spanish (Mexico)',
+  fr_fr: 'French (France)',
+  it_it: 'Italian (Italy)',
+  ja_jp: 'Japanese (Japan)',
+  ko_kr: 'Korean (Korea)',
+  pl_pl: 'Polish (Poland)',
+  pt_br: 'Portuguese (Brazil)',
+  th_th: 'Thai (Thailand)',
+  tr_tr: 'Turkish (Turkey)',
+  ru_ru: 'Russian (Russia)',
+  zh_tw: 'Chinese (Taiwan)',
 };
 
 /**
@@ -88,6 +92,9 @@ const MAX_TEMP_HEADER_AGE = 12 * 3600 * 1000; // 12 Hours
  * The data dragon interface client.
  */
 export default class DataDragon {
+  /**
+   * @type {Error}
+   */
   lastError;
 
   /**
