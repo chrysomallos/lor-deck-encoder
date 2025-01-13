@@ -1,42 +1,42 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import Card from '../../src/card.mjs';
 import Faction from '../../src/faction.mjs';
 import Factions from '../../src/factions.mjs';
 
 describe('[Card] class tests', function () {
   describe('constructor tests', function () {
-    it('successful', function () {
+    it('should be successful initialized with valid data', function () {
       const card = new Card(1, new Faction(1, 1, 'DE'), 99);
       const {code, count} = card.codeAndCount;
       assert.equal(code, '01DE099');
       assert.equal(count, 1);
     });
 
-    it('invalid set', function () {
+    it('should throw an error for invalid set in card setup', function () {
       assert.throws(() => new Card(0, new Faction(1, 1, 'DE'), 1));
     });
 
-    it('invalid faction', function () {
+    it('should throw an error for invalid faction in card setup', function () {
       assert.throws(() => new Card(1, 0, 1));
     });
 
-    it('invalid id', function () {
+    it('should throw an error for invalid id in card setup', function () {
       assert.throws(() => new Card(1, new Faction(1, 1, 'DE'), 1111));
     });
   });
 
-  describe('card getter', function () {
+  describe('validate Card class getter', function () {
     const card = new Card(1, new Faction(1, 1, 'DE'), 99, 2);
 
-    it('code', function () {
+    it('should return correct card code', function () {
       assert.equal(card.code, '01DE099');
     });
 
-    it('faction code', function () {
+    it('should return correct faction code', function () {
       assert.equal(card.factionCode, 'DE');
     });
 
-    it('faction version', function () {
+    it('should return correct faction version', function () {
       assert.equal(card.factionVersion, 1);
     });
   });

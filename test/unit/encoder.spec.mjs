@@ -1,7 +1,7 @@
-import Encoder from '../../src/encoder.mjs';
+import assert from 'node:assert';
 import {ArgumentError} from '../../src/errors.mjs';
-import assert from 'assert';
 import Base32 from '../../utils/base32.mjs';
+import Encoder from '../../src/encoder.mjs';
 
 describe('[Encoder] class tests', function () {
   describe('decode method', function () {

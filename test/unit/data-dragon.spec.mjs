@@ -1,4 +1,4 @@
-import assert from 'assert';
+import assert from 'node:assert';
 import quibble from 'quibble';
 import hash from 'object-hash';
 
