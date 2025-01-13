@@ -1,5 +1,15 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
+## 2.0.3 - 2025-01-19
+
+### Changes
+
+- Bump some development dependency module versions.
+
+### Fixes
+
+- Refactor data dragon export and fix languages including descriptions.
+
 ## 2.0.2 - 2024-11-17
 
 ### Changes
