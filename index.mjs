@@ -4,6 +4,7 @@ export {default as Faction} from './src/faction.mjs';
 export {default as Factions} from './src/factions.mjs';
 
 export {default as DataDragon} from './src/data-dragon.mjs';
+export {default as request} from './utils/request.mjs';
 
 import Deck from './src/deck.mjs';
 /**
