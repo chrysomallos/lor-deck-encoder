@@ -1,4 +1,8 @@
+import http from 'node:http';
 import https from 'node:https';
+
+const HTTP_PROTOCOLS_MATCH = /^https?:/;
+const HTTPS_PROTOCOL = 'https:';
 
 /**
  * Base class for HTTP errors.
@@ -7,42 +11,51 @@ import https from 'node:https';
 export class HttpError extends Error {
   /**
    * Constructs a new HttpError instance.
-   * @param {number} status The HTTP status code.
-   * @param {string} message The error message.
+   * @param {http.IncomingMessage} response The client request this error is for.
    */
-  constructor(status, message) {
-    super(message);
-    this.status = status;
+  constructor(response) {
+    const {statusCode, statusMessage, url, method} = response;
+    super(
+      url ? `HTTP ${method} ${statusCode}(${statusMessage}) error at ${url}` : `HTTP ${statusCode}(${statusMessage}) error`
+    );
+    this.status = statusCode;
     this.name = this.constructor.name;
     Error.captureStackTrace(this, this.constructor);
   }
 }
 
 /**
- * Makes an HTTP request with the provided options and body.
+ * Makes an HTTP(S) request with the provided options and body.
  * @template T
- * @param {string|URL|https.RequestOptions} options The options for the HTTP request.
- * @param {string|Buffer} body The body of the HTTP request.
+ * @param {string|URL|http.RequestOptions|https.RequestOptions} options The options for the request.
+ * @param {string|Buffer} body The body of the request.
  * @returns {Promise<T>} A promise that resolves with the response body if the request is successful, or rejects with an error if the request fails.
  */
 export default async function request(options, body) {
+  let protocol = HTTPS_PROTOCOL;
+  if (options instanceof URL || typeof options === 'object') {
+    protocol = options.protocol ?? HTTPS_PROTOCOL; // if not defined we use SSL
+  } else {
+    protocol = HTTP_PROTOCOLS_MATCH.exec(options)?.[0];
+  }
+  if (!protocol.match(HTTP_PROTOCOLS_MATCH)) throw Error(`Unsupported request protocol ${protocol}`);
+
   return new Promise(function (resolve, reject) {
-    const request = https.request(options, response => {
-      const {statusCode, statusMessage} = response;
-      if (statusCode < 200 || statusCode >= 300) {
-        return reject(new HttpError(statusCode, statusMessage));
-      }
+    const request = (protocol === HTTPS_PROTOCOL ? https : http).request(options, response => {
+      const {statusCode} = response;
       let chunks = [];
       response.on('data', chunk => chunks.push(chunk));
       response.on('end', () => {
         try {
-          resolve(JSON.parse(Buffer.concat(chunks).toString()));
+          if (statusCode < 200 || statusCode >= 300) reject(new HttpError(response));
+          else resolve(JSON.parse(Buffer.concat(chunks).toString()));
+          if (!response.destroyed) response.destroy();
         } catch (error) {
           reject(error);
         }
       });
     });
-    request.on('error', error => reject(error));
+    request.once('error', error => reject(error));
     if (body) request.write(body);
     request.end();
   });
