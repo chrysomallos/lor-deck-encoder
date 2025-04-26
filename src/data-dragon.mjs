@@ -122,16 +122,14 @@ export default class DataDragon {
     }
     if (!this.cards) {
       this.core = await request(new URL(`core/${language.toLocaleLowerCase()}/data/globals-${language.toLocaleLowerCase()}.json`, DATA_DRAGON_BASE_URL));
-      const setNames = this.core.sets.map(({nameRef}) => nameRef.toLowerCase());
-      this.cards = (
-        await Promise.allSettled(
-          setNames.map(name =>
-            request(new URL(`${name}/${language.toLocaleLowerCase()}/data/${name}-${language.toLocaleLowerCase()}.json`, DATA_DRAGON_BASE_URL))
-          )
-        )
-      )
-        .flatMap(({value = []}) => value)
-        .sort(({cardCode: a}, {cardCode: b}) => a.localeCompare(b));
+      const setSourceUrls = this.core.sets
+        .map(({nameRef}) => nameRef.toLowerCase())
+        .map(name => new URL(`${name}/${language.toLocaleLowerCase()}/data/${name}-${language.toLocaleLowerCase()}.json`, DATA_DRAGON_BASE_URL));
+
+      const {fulfilled: validSources, rejected: requestErrors} = Object.groupBy(await Promise.allSettled(setSourceUrls.map(url => request(url))), ({status}) => status);
+      this.lastError = new AggregateError(requestErrors.map(({reason}) => reason));
+
+      this.cards = validSources.flatMap(({value = []}) => value).sort(({cardCode: a}, {cardCode: b}) => a.localeCompare(b));
       try {
         fs.writeFileSync(
           tempFile,

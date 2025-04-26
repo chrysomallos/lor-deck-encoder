@@ -1,8 +1,14 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
-## 2.0.4 - unreleased
+## 2.0.4 - 2025-04-27
+
+### Changes
 
 - Bump some development dependency module versions and adjust test imports.
+
+### Fixes
+
+- Fixed an issue that CLI is stuck if the data dragon source is return an error.
 
 ## 2.0.3 - 2025-01-19
 
