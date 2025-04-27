@@ -5,6 +5,7 @@ import stringify from 'json-stringify-pretty-compact';
 import hash from 'object-hash';
 
 import request from '../utils/request.mjs';
+import {isBrowser, isNode} from '../utils/detectors.mjs';
 import Deck from './deck.mjs';
 
 /**
@@ -98,26 +99,42 @@ export default class DataDragon {
   lastError;
 
   /**
+   * @type {Map<string, {cards: Card[], core: unknown}>}
+   */
+  cacheByLanguage;
+
+  /**
    * Initializes the DataDragon instance by fetching core data and card data for the specified language.
    * @param {string} language The language code (e.g. 'en_us') to fetch data for.
    * @returns {Promise<void>}
    */
   async initialize(language) {
+    if (!this.cacheByLanguage) {
+      this.cacheByLanguage = new Map();
+    }
+    const runningAtBrowser = isBrowser();
+    const runningAtNode = isNode();
+
+    if (!runningAtBrowser && !isNode()) throw new Error('This class must be run in browser or node.');
+
     if (!LANGUAGES[language]) {
       language = Object.keys(LANGUAGES).find(key => key === language || key.split('_').includes(language));
       if (!language) language = 'en_us';
     }
-    const tempFile = path.join(os.tmpdir(), `lor-data-dragon-temp-data-${language}.json`);
 
-    if (fs.existsSync(tempFile)) {
-      try {
-        const data = JSON.parse(fs.readFileSync(tempFile));
-        if (data.header.core === hash(data.core) && data.header.cards === hash(data.cards) && Date.now() - MAX_TEMP_HEADER_AGE < data.header.date) {
-          this.core = data.core;
-          this.cards = data.cards;
+    if (runningAtNode) {
+      const tempFile = path.join(os.tmpdir(), `lor-data-dragon-temp-data-${language}.json`);
+
+      if (fs.existsSync(tempFile)) {
+        try {
+          const data = JSON.parse(fs.readFileSync(tempFile));
+          if (data.header.core === hash(data.core) && data.header.cards === hash(data.cards) && Date.now() - MAX_TEMP_HEADER_AGE < data.header.date) {
+            this.core = data.core;
+            this.cards = data.cards;
+          }
+        } catch (err) {
+          this.lastError = err;
         }
-      } catch (err) {
-        this.lastError = err;
       }
     }
     if (!this.cards) {
@@ -126,20 +143,27 @@ export default class DataDragon {
         .map(({nameRef}) => nameRef.toLowerCase())
         .map(name => new URL(`${name}/${language.toLocaleLowerCase()}/data/${name}-${language.toLocaleLowerCase()}.json`, DATA_DRAGON_BASE_URL));
 
-      const {fulfilled: validSources, rejected: requestErrors} = Object.groupBy(await Promise.allSettled(setSourceUrls.map(url => request(url))), ({status}) => status);
-      this.lastError = new AggregateError(requestErrors.map(({reason}) => reason));
+      const {fulfilled: validSources, rejected: requestErrors} = Object.groupBy(
+        await Promise.allSettled(setSourceUrls.map(url => request(url))),
+        ({status}) => status
+      );
+      if (requestErrors?.length) this.lastError = new AggregateError(requestErrors.map(({reason}) => reason));
+      if (!validSources?.length) throw Error('No valid data found.');
 
       this.cards = validSources.flatMap(({value = []}) => value).sort(({cardCode: a}, {cardCode: b}) => a.localeCompare(b));
-      try {
-        fs.writeFileSync(
-          tempFile,
-          stringify(
-            {header: {date: Date.now(), core: hash(this.core), cards: hash(this.cards)}, core: this.core, cards: this.cards},
-            {indent: 1, maxLength: 300}
-          )
-        );
-      } catch (err) {
-        this.lastError = err;
+
+      if (runningAtNode) {
+        try {
+          fs.writeFileSync(
+            tempFile,
+            stringify(
+              {header: {date: Date.now(), core: hash(this.core), cards: hash(this.cards)}, core: this.core, cards: this.cards},
+              {indent: 1, maxLength: 300}
+            )
+          );
+        } catch (err) {
+          this.lastError = err;
+        }
       }
     }
     this.cardsByCode = new Map(this.cards.map(card => [card.cardCode, card]));
