@@ -1,5 +1,11 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
+## 2.1.0 - unrleased
+
+### Features
+
+- Add detection to allow this module to be used in a browser environment instead.
+
 ## 2.0.6 - 2025-11-29
 
 ### Changes
