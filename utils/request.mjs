@@ -40,7 +40,7 @@ export default async function request(options, body) {
   if (!protocol.match(HTTP_PROTOCOLS_MATCH)) throw Error(`Unsupported request protocol ${protocol}`);
 
   if (isBrowser()) {
-    return fetch(url, {
+    return fetch(options, {
       method: options.method ?? 'GET',
       body: body,
     }).then(data => data.json());
