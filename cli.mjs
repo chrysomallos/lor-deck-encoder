@@ -9,9 +9,10 @@ const parameters = Object.fromEntries(Object.entries(minimist(process.argv.slice
 let [code] = parameters[''];
 code ??= parameters.code;
 
-if (!code || parameters.help) {
+if ((!code && !parameters.cards) || parameters.help) {
   console.log('Start by `yarn cli [--code] <code> ...`:');
-  console.log(' [--code <code>] : The code example `yarn cli CEAAECABAIDASDASDISC2OIIAECBGGY4FAWTINZ3AICACAQXDUPCWBABAQGSOKRM`');
+  console.log(' [--code <code>]   : The code example `yarn cli CEAAECABAIDASDASDISC2OIIAECBGGY4FAWTINZ3AICACAQXDUPCWBABAQGSOKRM`');
+  console.log(' [--cards <cards>] : The cards `01SI003:1;01SI999:1`')
   console.log(' [--help]');
   console.log(' [--language <language>]');
   console.log(' [--out-file <file path>]');
@@ -36,6 +37,8 @@ if (!code || parameters.help) {
     await fs.writeFile(outFile, data);
     console.log('written into', outFile);
   } else {
-    console.log(Deck.fromCode(code).list);
+    let deck = parameters.cards ? Deck.fromCardCodes(parameters.cards.split(';')) : Deck.fromCode(code);
+    console.log(deck.code);
+    console.log(deck.list);
   }
 }
