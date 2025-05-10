@@ -297,6 +297,6 @@ ${Object.entries(matchedCards)
 
     const setsData = await Promise.all(setPaths.map(setPath => request(new URL(setPath, this.baseUrl))));
 
-    const 
+    throw Error('Not implemented.')
   }
 }
