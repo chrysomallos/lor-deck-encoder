@@ -5,6 +5,7 @@ import stringify from 'json-stringify-pretty-compact';
 import hash from 'object-hash';
 
 import request from '../utils/request.mjs';
+import {isBrowser, isNode} from '../utils/detectors.mjs';
 import Deck from './deck.mjs';
 
 /**
@@ -98,51 +99,99 @@ export default class DataDragon {
   lastError;
 
   /**
+   * @type {Map<string, {cards: Map<string, DataDragonCard>, regions: Map<string, DataDragonRegion>}>}
+   */
+  cacheByLanguage;
+
+  /**
+   * @type {Map<string, DataDragonCard>}
+   */
+  cardsByCode;
+
+  /**
+   * @type {Map<string, DataDragonRegion>}
+   */
+  regionsByCode;
+
+  /**
+   * Initialize the class with defined Data Dragon base URL.
+   * 
+   * @param {string} [baseUrl] will be able to override for own server or development. Need to follow bucket folder structure.
+   */
+  constructor(baseUrl = DATA_DRAGON_BASE_URL) {
+    this.baseUrl = baseUrl;
+  }
+
+  /**
    * Initializes the DataDragon instance by fetching core data and card data for the specified language.
    * @param {string} language The language code (e.g. 'en_us') to fetch data for.
    * @returns {Promise<void>}
    */
   async initialize(language) {
+    if (!this.cacheByLanguage) {
+      this.cacheByLanguage = new Map();
+    }
+    if (this.cacheByLanguage.has(language)) {
+      ({cards: this.cardsByCode, regions: this.regionsByCode} = this.cacheByLanguage.get(language));
+      return;
+    }
+    const runningAtBrowser = isBrowser();
+    const runningAtNode = isNode();
+
+    if (!runningAtBrowser && !runningAtNode) throw new Error('This class must be run in browser or node.');
+
     if (!LANGUAGES[language]) {
       language = Object.keys(LANGUAGES).find(key => key === language || key.split('_').includes(language));
       if (!language) language = 'en_us';
     }
-    const tempFile = path.join(os.tmpdir(), `lor-data-dragon-temp-data-${language}.json`);
 
-    if (fs.existsSync(tempFile)) {
-      try {
-        const data = JSON.parse(fs.readFileSync(tempFile));
-        if (data.header.core === hash(data.core) && data.header.cards === hash(data.cards) && Date.now() - MAX_TEMP_HEADER_AGE < data.header.date) {
-          this.core = data.core;
-          this.cards = data.cards;
+    let core, cards;
+
+    if (runningAtNode) {
+      const tempFile = path.join(os.tmpdir(), `lor-data-dragon-temp-data-${language}.json`);
+
+      if (fs.existsSync(tempFile)) {
+        try {
+          const data = JSON.parse(fs.readFileSync(tempFile));
+          if (data.header.core === hash(data.core) && data.header.cards === hash(data.cards) && Date.now() - MAX_TEMP_HEADER_AGE < data.header.date) {
+            core = data.core;
+            cards = data.cards;
+          }
+        } catch (err) {
+          this.lastError = err;
         }
-      } catch (err) {
-        this.lastError = err;
       }
     }
-    if (!this.cards) {
-      this.core = await request(new URL(`core/${language.toLocaleLowerCase()}/data/globals-${language.toLocaleLowerCase()}.json`, DATA_DRAGON_BASE_URL));
-      const setSourceUrls = this.core.sets
+    if (!cards || !core) {
+      core = await request(new URL(`core/${language.toLocaleLowerCase()}/data/globals-${language.toLocaleLowerCase()}.json`, this.baseUrl));
+      const setSourceUrls = core.sets
         .map(({nameRef}) => nameRef.toLowerCase())
-        .map(name => new URL(`${name}/${language.toLocaleLowerCase()}/data/${name}-${language.toLocaleLowerCase()}.json`, DATA_DRAGON_BASE_URL));
+        .map(name => new URL(`${name}/${language.toLocaleLowerCase()}/data/${name}-${language.toLocaleLowerCase()}.json`, this.baseUrl));
 
-      const {fulfilled: validSources, rejected: requestErrors} = Object.groupBy(await Promise.allSettled(setSourceUrls.map(url => request(url))), ({status}) => status);
-      this.lastError = new AggregateError(requestErrors.map(({reason}) => reason));
+      const {fulfilled: validSources, rejected: requestErrors} = Object.groupBy(
+        await Promise.allSettled(setSourceUrls.map(url => request(url))),
+        ({status}) => status
+      );
+      if (requestErrors?.length) {
+        this.lastError = new AggregateError(requestErrors.map(({reason}) => reason));
+      }
+      if (!validSources?.length) {
+        throw Error('No valid data found.');
+      }
 
-      this.cards = validSources.flatMap(({value = []}) => value).sort(({cardCode: a}, {cardCode: b}) => a.localeCompare(b));
-      try {
-        fs.writeFileSync(
-          tempFile,
-          stringify(
-            {header: {date: Date.now(), core: hash(this.core), cards: hash(this.cards)}, core: this.core, cards: this.cards},
-            {indent: 1, maxLength: 300}
-          )
-        );
-      } catch (err) {
-        this.lastError = err;
+      cards = validSources.flatMap(({value = []}) => value).sort(({cardCode: a}, {cardCode: b}) => a.localeCompare(b));
+
+      if (runningAtNode) {
+        try {
+          fs.writeFileSync(tempFile, stringify({header: {date: Date.now(), core: hash(core), cards: hash(cards)}, core, cards}, {indent: 1, maxLength: 300}));
+        } catch (err) {
+          this.lastError = err;
+        }
       }
     }
-    this.cardsByCode = new Map(this.cards.map(card => [card.cardCode, card]));
+    this.cardsByCode = new Map(cards.map(card => [card.cardCode, card]));
+    this.regionsByCode = new Map(core.regions.map(region => [region.abbreviation, region]));
+    this.cacheByLanguage.set(language, {cards: this.cardsByCode, regions: this.regionsByCode});
   }
 
   /**
@@ -156,24 +205,15 @@ export default class DataDragon {
     const deck = Deck.fromCode(code);
     return {
       deck,
-      cardTypes: deck.cards.reduce((types, card) => {
-        const {rarityRef} = this.cardsByCode.get(card.code);
-        types[rarityRef] ??= [];
-        types[rarityRef].push(card.codeAndCount);
-        return types;
-      }, {}),
+      cardTypes: Object.groupBy(deck.cards, ({code}) => this.cardsByCode.get(code)?.rarityRef ?? 'unknown'),
       matchedCards: Object.fromEntries(
         deck.cards.map(({code: deckCode}) => {
           const matched = this.cardsByCode.get(deckCode);
+          if (!matched) return [deckCode, undefined];
           return [deckCode, {...matched, associatedCards: matched.associatedCardRefs?.map(cardCode => this.cardsByCode.get(cardCode))}];
         })
       ),
-      matchedRegions: Object.fromEntries(
-        [...new Set(deck.cards.map(({faction}) => faction.code)).values()].map(code => [
-          code,
-          this.core.regions.find(({abbreviation}) => abbreviation === code),
-        ])
-      ),
+      matchedRegions: Object.fromEntries([...new Set(deck.cards.map(({faction}) => faction.code)).values()].map(code => [code, this.regionsByCode.get(code)])),
     };
   }
 
@@ -225,11 +265,13 @@ ${Object.entries(matchedRegions)
   .join('\n')}
 <h2>Cards</h2>
 <div id="cards">
-${Object.values(matchedCards)
-  .map(ddCard => {
-    const card = deck.cards.find(({code}) => code === ddCard.cardCode);
-    const [firstAssets] = ddCard.assets;
-    return `<div id="card" with="150px"><span>[${card.code}](${card.count})</span><img src="${firstAssets.gameAbsolutePath}" width="100" /><span>${ddCard.name}</span></div>`;
+${Object.entries(matchedCards)
+  .map(([cardCode, ddCard]) => {
+    const card = deck.cards.find(({code}) => code === (ddCard?.cardCode ?? cardCode));
+    const [firstAssets] = ddCard?.assets ?? [];
+    return `<div id="card" with="150px"><span>[${card.code}](${card.count})</span><img src="${firstAssets?.gameAbsolutePath}" width="100" /><span>${
+      ddCard?.name ?? 'unknown'
+    }</span></div>`;
   })
   .join('\n')}
 </div>

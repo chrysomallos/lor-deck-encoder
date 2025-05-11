@@ -1,0 +1,10 @@
+{
+  "include": ["index.mjs", "src/*.mjs", "utils/*.mjs"],
+  "compilerOptions": {
+    "lib": ["ES6"],
+    "allowJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true
+  }
+}

@@ -1,5 +1,6 @@
 import http from 'node:http';
 import https from 'node:https';
+import {isBrowser} from './detectors.mjs';
 
 const HTTP_PROTOCOLS_MATCH = /^https?:/;
 const HTTPS_PROTOCOL = 'https:';
@@ -15,9 +16,7 @@ export class HttpError extends Error {
    */
   constructor(response) {
     const {statusCode, statusMessage, url, method} = response;
-    super(
-      url ? `HTTP ${method} ${statusCode}(${statusMessage}) error at ${url}` : `HTTP ${statusCode}(${statusMessage}) error`
-    );
+    super(url ? `HTTP ${method} ${statusCode}(${statusMessage}) error at ${url}` : `HTTP ${statusCode}(${statusMessage}) error`);
     this.status = statusCode;
     this.name = this.constructor.name;
     Error.captureStackTrace(this, this.constructor);
@@ -39,6 +38,13 @@ export default async function request(options, body) {
     protocol = HTTP_PROTOCOLS_MATCH.exec(options)?.[0];
   }
   if (!protocol.match(HTTP_PROTOCOLS_MATCH)) throw Error(`Unsupported request protocol ${protocol}`);
+
+  if (isBrowser()) {
+    return fetch(options, {
+      method: options.method ?? 'GET',
+      body: body,
+    }).then(data => data.json());
+  }
 
   return new Promise(function (resolve, reject) {
     const request = (protocol === HTTPS_PROTOCOL ? https : http).request(options, response => {
