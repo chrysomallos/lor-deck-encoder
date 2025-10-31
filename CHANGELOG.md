@@ -1,5 +1,17 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
+## 2.0.5 - 2025-10-31
+
+### Changes
+
+### Changes
+
+- Bump development dependency modules and _Yarn_ version.
+
+### Fixes
+
+- Fixed errors while running tests.
+
 ## 2.0.4 - 2025-04-27
 
 ### Changes
