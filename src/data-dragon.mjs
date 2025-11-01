@@ -125,7 +125,7 @@ export default class DataDragon {
         .map(({nameRef}) => nameRef.toLowerCase())
         .map(name => new URL(`${name}/${language.toLocaleLowerCase()}/data/${name}-${language.toLocaleLowerCase()}.json`, DATA_DRAGON_BASE_URL));
 
-      const {fulfilled: validSources, rejected: requestErrors} = Object.groupBy(await Promise.allSettled(setSourceUrls.map(url => request(url))), ({status}) => status);
+      const {fulfilled: validSources = [], rejected: requestErrors} = Object.groupBy(await Promise.allSettled(setSourceUrls.map(url => request(url))), ({status}) => status);
       this.lastError = requestErrors?.length ? new AggregateError(requestErrors.map(({reason}) => reason)) : undefined;
 
       this.cards = validSources.flatMap(({value = []}) => value).sort(({cardCode: a}, {cardCode: b}) => a.localeCompare(b));
