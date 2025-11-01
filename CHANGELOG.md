@@ -1,8 +1,12 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
-## 2.0.5 - 2025-10-31
+## 2.0.6 - unreleased
 
 ### Changes
+
+- Improve performance of decode method in `Encoder` by 25%.
+
+## 2.0.5 - 2025-10-31
 
 ### Changes
 

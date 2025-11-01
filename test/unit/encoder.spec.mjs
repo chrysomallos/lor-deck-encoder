@@ -1,7 +1,7 @@
 import assert from 'node:assert';
+import Encoder from '../../src/encoder.mjs';
 import {ArgumentError} from '../../src/errors.mjs';
 import Base32 from '../../utils/base32.mjs';
-import Encoder from '../../src/encoder.mjs';
 
 describe('[Encoder] class tests', function () {
   describe('decode method', function () {
@@ -41,7 +41,6 @@ describe('[Encoder] class tests', function () {
   });
 
   describe('decode algorithm', function () {
-
     const newGrouping = cards => Object.groupBy(cards, ({count}) => (count > 3 ? 'x' : count));
     const newMapping = (grouped, count) => Map.groupBy(grouped[count] ?? [], ({set, factionId}) => set * 100 + factionId);
 

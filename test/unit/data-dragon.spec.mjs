@@ -1,7 +1,6 @@
 import assert from 'node:assert';
-import quibble from 'quibble';
 import hash from 'object-hash';
-
+import quibble from 'quibble';
 import coreData from './resources/core.mjs';
 import setData from './resources/set.mjs';
 

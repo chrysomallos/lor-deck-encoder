@@ -51,37 +51,37 @@ describe('[Utils] full tests', function () {
     });
   });
 
-  describe('numberOfTrailingZeros', function() {
-    it('input 0', function() {
+  describe('numberOfTrailingZeros', function () {
+    it('input 0', function () {
       assert.equal(numberOfTrailingZeros(0), 32);
     });
-  
-    it('positive integers', function() {
+
+    it('positive integers', function () {
       assert.equal(numberOfTrailingZeros(1), 0, 'binary: 1');
       assert.equal(numberOfTrailingZeros(2), 1, 'binary: 10');
       assert.equal(numberOfTrailingZeros(4), 2, 'binary: 100');
       assert.equal(numberOfTrailingZeros(8), 3, 'binary: 1000');
       assert.equal(numberOfTrailingZeros(16), 4, 'binary: 10000');
     });
-  
-    it('powers of 2', function() {
+
+    it('powers of 2', function () {
       assert.equal(numberOfTrailingZeros(32), 5, 'binary: 100000');
       assert.equal(numberOfTrailingZeros(64), 6, 'binary: 1000000');
       assert.equal(numberOfTrailingZeros(128), 7, 'binary: 10000000');
     });
-  
-    it('large numbers', function() {
+
+    it('large numbers', function () {
       assert.equal(numberOfTrailingZeros(1024), 10, 'binary: 10000000000');
       assert.equal(numberOfTrailingZeros(65536), 16, 'binary: 10000000000000000');
     });
-  
-    it('mixed bits', function() {
+
+    it('mixed bits', function () {
       assert.equal(numberOfTrailingZeros(18), 1, 'binary: 10010');
       assert.equal(numberOfTrailingZeros(40), 3, 'binary: 101000');
       assert.equal(numberOfTrailingZeros(72), 3, 'binary: 1001000');
     });
-  
-    it('no trailing zeros', function() {
+
+    it('no trailing zeros', function () {
       assert.equal(numberOfTrailingZeros(3), 0, 'binary: 11');
       assert.equal(numberOfTrailingZeros(5), 0, 'binary: 101');
       assert.equal(numberOfTrailingZeros(7), 0, 'binary: 111');

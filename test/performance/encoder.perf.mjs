@@ -1,92 +1,61 @@
 import assert from 'node:assert';
-import Base32 from '../../utils/base32.mjs';
-import Encoder from '../../src/encoder.mjs';
-import VarInt from '../../utils/var-int.mjs';
-
-import {ArgumentError} from '../../src/errors.mjs';
-import Factions from '../../src/factions.mjs';
-import Card from '../../src/card.mjs';
-
-const SUPPORTED_FORMAT = 1;
-const COUNT_GROUPS = [3, 2, 1];
-
-/**
- * Decodes the code into a list of cards.
- * @param {string} code The base32 deck code.
- * @param {boolean} [skipFormatCheck] skip format check
- * @returns {Card[]} The decoded cards.
- */
-function decodeImprove(code, skipFormatCheck = false) {
-  let bytes;
-  try {
-    bytes = Base32.decode(code);
-  } catch (error) {
-    throw new TypeError(`Invalid deck code: ${error.message}`);
-  }
-  if (bytes.length < 4) throw new SyntaxError(`Code must have some valid bytes to decode.`);
-
-  const [firstByte] = bytes.splice(0, 1);
-  const format = firstByte >> 4;
-  const version = firstByte & 0xf;
-
-  if (!skipFormatCheck && format > SUPPORTED_FORMAT) throw new SyntaxError(`Deck format ${format} is not supported (supported format ${SUPPORTED_FORMAT})`);
-  if (version > Factions.maxVersion)
-    throw new ArgumentError('version', `Deck version ${version} is not supported (max supported version ${Factions.maxVersion})`);
-
-  /**
-   * @type {number[]}
-   */
-  const values = VarInt.decode(bytes);
-
-  const result = new Array();
-
-  for (const count of COUNT_GROUPS) {
-    const groups = values.shift();
-    for (let group = 0; group < groups; group += 1) {
-      const cards = values.shift();
-      const set = values.shift();
-      const faction = values.shift();
-      for (let card = 0; card < cards; card += 1) {
-        result.push(new Card(set, Factions.fromId(faction), values.shift(), count));
-      }
-    }
-  }
-
-  while (values.length) {
-    const [count, set, faction, id] = values.splice(0, 4);
-    result.push(new Card(set, Factions.fromId(faction), id, count));
-  }
-
-  return result;
-}
+import decodeV1 from '../../src/decode_v1.mjs';
+import decodeV2 from '../../src/decode_v2.mjs';
+import decodeV3 from '../../src/decode_v3.mjs';
 
 describe('[Encoder]', function () {
-  const code = 'CEBAIAIABEQDINIFAEBAUEATEAYAEAIBAIYQGAIAAIDSUAQCAEBCWLIDAEAAMHJN';
-  const codeSmall = 'CMAQCBAHBIAQCBAHAMAAIAQAAICQGBQE';
-  
+  const largeDeckCode = 'CEBAIAIABEQDINIFAEBAUEATEAYAEAIBAIYQGAIAAIDSUAQCAEBCWLIDAEAAMHJN';
+  const smallDeckCode = 'CMAQCBAHBIAQCBAHAMAAIAQAAICQGBQE';
+
   describe('consistency check', function () {
     it(`Ensure equality bigger deck`, function () {
-      const oldResult = Encoder.decode(code);
-      const newResult = decodeImprove(code);
+      const oldResult = decodeV1(largeDeckCode);
+      const newResult = decodeV2(largeDeckCode);
       assert.equal(oldResult.length, newResult.length);
     });
 
     it(`Ensure equality small deck`, function () {
-      const oldResult = Encoder.decode(codeSmall);
-      const newResult = decodeImprove(codeSmall);
+      const oldResult = decodeV1(smallDeckCode);
+      const newResult = decodeV2(smallDeckCode);
       assert.equal(oldResult.length, newResult.length);
+    });
+
+    it('Ensure equality improvements', function () {
+      const firstResult = decodeV2(largeDeckCode);
+      const secondResult = decodeV3(largeDeckCode);
+      assert.equal(firstResult.length, secondResult.length);
     });
   });
 
-  describe('performance test', function () {
+  describe('performance test with a large deck', function () {
     const performanceCalls = 100000;
 
-    it(`Encoder.decode (${performanceCalls} times)`, function () {
-      for (let i = 0; i < performanceCalls; i += 1) Encoder.decode(code);
+    it(`decodeV1 (${performanceCalls} times)`, function () {
+      for (let i = 0; i < performanceCalls; i += 1) decodeV1(largeDeckCode);
     });
 
-    it(`decodeImprove (${performanceCalls} times)`, function () {
-      for (let i = 0; i < performanceCalls; i += 1) decodeImprove(code);
+    it(`decodeV2 (${performanceCalls} times)`, function () {
+      for (let i = 0; i < performanceCalls; i += 1) decodeV2(largeDeckCode);
+    });
+
+    it(`decodeV3 (${performanceCalls} times)`, function () {
+      for (let i = 0; i < performanceCalls; i += 1) decodeV3(largeDeckCode);
+    });
+  });
+
+  describe('performance test with a small deck', function () {
+    const performanceCalls = 100000;
+
+    it(`decodeV1 (${performanceCalls} times)`, function () {
+      for (let i = 0; i < performanceCalls; i += 1) decodeV1(smallDeckCode);
+    });
+
+    it(`decodeV2 (${performanceCalls} times)`, function () {
+      for (let i = 0; i < performanceCalls; i += 1) decodeV2(smallDeckCode);
+    });
+
+    it(`decodeV3 (${performanceCalls} times)`, function () {
+      for (let i = 0; i < performanceCalls; i += 1) decodeV3(smallDeckCode);
     });
   });
 });

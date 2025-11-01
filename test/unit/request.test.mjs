@@ -1,5 +1,5 @@
-import assert from 'node:assert';
 import EventEmitter from 'events';
+import assert from 'node:assert';
 import quibble from 'quibble';
 
 const expectedResponse = {success: true};
