@@ -7,20 +7,21 @@ import setData from './resources/set.mjs';
 describe('[DataDragon] class tests', function () {
   let dataDragon, DataDragon;
   let fileExistsResult = false;
-  let readFileSyncResult = "{}";
+  let readFileSyncResult = '{}';
 
   beforeEach(async function () {
     await quibble.esm('../../utils/request.mjs', {
       default: url => {
-          if (url.pathname.startsWith('/latest/core'))
-            return coreData;
-          return setData;
-        },
+        if (url.pathname.startsWith('/latest/core')) return coreData;
+        return setData;
+      },
     });
     await quibble.esm('node:fs', {
       default: {
         existsSync: () => fileExistsResult,
-        writeFileSync: () => {throw new Error('Never write data in tests')},
+        writeFileSync: () => {
+          throw new Error('Never write data in tests');
+        },
         readFileSync: () => readFileSyncResult,
       },
     });
@@ -36,6 +37,19 @@ describe('[DataDragon] class tests', function () {
     await dataDragon.initialize('en_US');
   });
 
+  it('initialize with failed request', async function () {
+    await quibble.esm('../../utils/request.mjs', {
+      default: async url => {
+        if (url.pathname.startsWith('/latest/core')) return coreData;
+        throw new Error('Request failed');        
+      },
+    });
+    DataDragon = (await import('../../src/data-dragon.mjs')).default;
+    dataDragon = new DataDragon();
+    await dataDragon.initialize('en_US');
+    assert.equal(dataDragon.lastError?.name, 'Error');
+  });
+
   it('initialize file exists', async function () {
     fileExistsResult = true;
     await dataDragon.initialize('en_US');
@@ -48,7 +62,7 @@ describe('[DataDragon] class tests', function () {
     assert.deepEqual(dataDragon.core, coreData);
     assert.deepEqual(dataDragon.cards, setData);
   });
-  
+
   it('initialize file exists but not valid', async function () {
     fileExistsResult = true;
     readFileSyncResult = JSON.stringify({header: {date: Date.now(), core: hash(coreData), cards: hash(setData)}, core: coreData, cards: []});
