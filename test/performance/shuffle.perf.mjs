@@ -1,5 +1,5 @@
-import shuffle from '../../utils/shuffle.mjs';
 import range from '../../utils/range.mjs';
+import shuffle from '../../utils/shuffle.mjs';
 
 /**
  * Shuffles an array in place using Sattolo's algorithm (a cyclic version of Fisher-Yates).

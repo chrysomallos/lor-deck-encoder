@@ -65,7 +65,7 @@ export default class VarInt {
    * Decodes an array of bytes into an array of integers, using a variable-length encoding scheme.
    * The method processes each byte in the input array, combining them into integers until the most significant bit (MSB)
    * indicates the end of an integer. It then stores the decoded integers in an output array.
-   * @param {Uint8Array | number[]} bytes The input array of bytes to be decoded. It can be a Uint8Array or an array of numbers.
+   * @param {Uint8Array} bytes The input array of bytes to be decoded. It can be a Uint8Array or an array of numbers.
    * @returns {number[]} An array of decoded integers.
    * @throws {TypeError} Throws a TypeError if the byte array ends with an incomplete sequence (e.g., the MSB of the last byte is set).
    */
@@ -76,10 +76,10 @@ export default class VarInt {
       result |= current << shift;
 
       if ((byte & JUST_MSB) !== JUST_MSB) {
-        const newResult = result;
+        const value = result;
         result = 0;
         shift = 0;
-        return newResult;
+        return value;
       }
       shift += 7;
     });
