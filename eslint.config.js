@@ -7,5 +7,5 @@ export default [
   {languageOptions: {globals: globals.node}},
   pluginJs.configs.recommended,
   pluginJsdoc.configs['flat/recommended'],
-  pluginMocha.configs.flat.recommended,
+  pluginMocha.configs.recommended,
 ];
