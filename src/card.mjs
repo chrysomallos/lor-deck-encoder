@@ -1,6 +1,6 @@
+import pad from '../utils/pad.mjs';
 import Faction from './faction.mjs';
 import Factions from './factions.mjs';
-import pad from '../utils/pad.mjs';
 
 /** Class representing a card in a deck. */
 export default class Card {
