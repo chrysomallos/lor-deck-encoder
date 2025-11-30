@@ -1,10 +1,10 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
-## 2.1.0 - unrleased
+## 2.1.0 - 2026-03-07
 
 ### Features
 
-- Add detection to allow this module to be used in a browser environment instead.
+- Added environment detection to enable this module to work seamlessly in browser environments, allowing deck encoding and decoding directly in client-side applications.
 
 ## 2.0.6 - 2025-11-29
 
