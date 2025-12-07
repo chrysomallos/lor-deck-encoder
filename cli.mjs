@@ -4,22 +4,32 @@ import minimist from 'minimist';
 import stringify from 'json-stringify-pretty-compact';
 import {Deck, DataDragon} from './index.mjs';
 import Base32 from './utils/base32.mjs';
+import {exit} from 'node:process';
 
 const parameters = Object.fromEntries(Object.entries(minimist(process.argv.slice(2))).map(([k, v]) => [camelCase(k), v]));
-let [code] = parameters[''];
+let [code] = parameters[''] ?? [];
 code ??= parameters.code;
+
+const {language, outPath} = parameters;
+if (outPath?.length) {
+  const dragon = new DataDragon();
+  await dragon.download(outPath, language);
+  console.log('downloaded into', outPath);
+  exit(0);
+}
 
 if ((!code && !parameters.cards) || parameters.help) {
   console.log('Start by `yarn cli [--code] <code> ...`:');
   console.log(' [--code <code>]   : The code example `yarn cli CEAAECABAIDASDASDISC2OIIAECBGGY4FAWTINZ3AICACAQXDUPCWBABAQGSOKRM`');
-  console.log(' [--cards <cards>] : The cards `01SI003:1;01SI999:1`')
+  console.log(' [--cards <cards>] : The cards `01SI003:1;01SI999:1`');
   console.log(' [--help]');
   console.log(' [--language <language>]');
   console.log(' [--out-file <file path>]');
+  console.log(' [--out-path <path>]');
   console.log(' [--style]');
   console.log(' [--verify]');
 } else {
-  const {style, language, outFile, verify} = parameters;
+  const {style, outFile, verify} = parameters;
   if (verify) {
     const deck = Deck.fromCode(code);
     console.log(JSON.stringify(deck.list));

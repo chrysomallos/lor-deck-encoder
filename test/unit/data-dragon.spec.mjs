@@ -3,6 +3,7 @@ import hash from 'object-hash';
 import quibble from 'quibble';
 import coreData from './resources/core.mjs';
 import setData from './resources/set.mjs';
+import {HttpError} from '../../utils/request.mjs';
 
 describe('[DataDragon] class tests', function () {
   let dataDragon, DataDragon;
@@ -64,7 +65,7 @@ describe('[DataDragon] class tests', function () {
       default: async url => {
         if (url.pathname.startsWith('/latest/core')) return doubleData;
         if (url.pathname.startsWith('/latest/set1')) return setData;
-        throw new Error('Request failed');        
+        throw new HttpError({statusCode: 404, statusMessage: 'Not Found', url, method: 'GET'});
       },
     });
     DataDragon = (await import('../../src/data-dragon.mjs')).default;
@@ -130,14 +131,14 @@ describe('[DataDragon] class tests', function () {
     assert.equal(result.length > 0, true);
   });
 
-  it('json', async function () {
+  it('json cached', async function () {
     readFileSyncResult = JSON.stringify({header: {date: Date.now(), core: hash(coreData), cards: hash(setData)}, core: coreData, cards: setData});
     fileExistsResult = true;
     const result = await dataDragon.fetchData('CEAAAAICAECQHZYH', 'en_US');
     assert.equal(result.deck.cards.length, 2);
   });
 
-  it('html', async function () {
+  it('html cached', async function () {
     readFileSyncResult = JSON.stringify({header: {date: Date.now(), core: hash(coreData), cards: hash(setData)}, core: coreData, cards: setData});
     fileExistsResult = true;
     const result = await dataDragon.generatePageFromCode('CEAAAAICAEAAHZYH', 'en_US');

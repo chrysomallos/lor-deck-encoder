@@ -2,9 +2,10 @@ import stringify from 'json-stringify-pretty-compact';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import {inspect} from 'node:util';
 import hash from 'object-hash';
-import request from '../utils/request.mjs';
 import {isBrowser, isNode} from '../utils/detectors.mjs';
+import request from '../utils/request.mjs';
 import Deck from './deck.mjs';
 
 /**
@@ -117,7 +118,6 @@ export default class DataDragon {
 
   /**
    * Initialize the class with defined Data Dragon base URL.
-   *
    * @param {string} [baseUrl] will be able to override for own server or development. Need to follow bucket folder structure.
    */
   constructor(baseUrl = DATA_DRAGON_BASE_URL) {
@@ -287,16 +287,37 @@ ${Object.entries(matchedCards)
 </html>`;
   }
 
-  async download(path, language) {
-    const corePath = ROOT_PATH_TEMPLATE.replace(/\{(\w+)\}/g, language.toLocaleLowerCase());
-    const coreData = await request(new URL(corePath, this.baseUrl));
+  /**
+   * Downloads the data dragon data into the target path for all or a specific language.
+   * @param {string} targetPath The target path to download the data into.
+   * @param {string} [language] The optional language code to download data for. If not provided, all languages will be downloaded.
+   * @returns {Promise<void>}
+   */
+  async download(targetPath, language) {
+    for (const lang of language ? [language] : Object.keys(LANGUAGES)) {
+      const corePath = ROOT_PATH_TEMPLATE.replace(/\{(\w+)\}/g, lang.toLocaleLowerCase());
+      const coreData = await request(new URL(corePath, this.baseUrl));
 
-    const setPaths = coreData.sets
-      .map(({nameRef}) => nameRef.toLowerCase())
-      .map(name => SET_PATH_TEMPLATE.replace(/\{\w+\}/g, match => (match === '{name}' ? name : language.toLocaleLowerCase())));
+      const setPaths = coreData.sets
+        .map(({nameRef}) => nameRef.toLowerCase())
+        .map(name => SET_PATH_TEMPLATE.replace(/\{\w+\}/g, match => (match === '{name}' ? name : lang.toLocaleLowerCase())));
 
-    const setsData = await Promise.all(setPaths.map(setPath => request(new URL(setPath, this.baseUrl))));
+      const setsData = await Promise.allSettled(setPaths.map(setPath => request(new URL(setPath, this.baseUrl))));
 
-    throw Error('Not implemented.')
+      let fullPath = path.join(targetPath, corePath);
+      fs.mkdirSync(path.dirname(fullPath), {recursive: true});
+      fs.writeFileSync(fullPath, stringify(coreData, {indent: 2, maxLength: 120}));
+      for (let i = 0; i < setsData.length; i++) {
+        fullPath = path.join(targetPath, setPaths[i]);
+        fs.mkdirSync(path.dirname(fullPath), {recursive: true});
+        fs.writeFileSync(
+          fullPath,
+          stringify(setsData[i].value ?? {...setsData[i].reason, name: setsData[i].reason.name, message: setsData[i].reason.toString()}, {
+            indent: 2,
+            maxLength: 120,
+          })
+        );
+      }
+    }
   }
 }
