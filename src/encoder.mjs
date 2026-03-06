@@ -41,7 +41,7 @@ export default class Encoder {
     try {
       bytes = Base32.decode(code);
     } catch (error) {
-      throw new TypeError(`Invalid deck code: ${error.message}`);
+      throw new TypeError(`Invalid deck code: ${error.message}`, {cause: error});
     }
 
     const [firstByte] = bytes.splice(0, 1);

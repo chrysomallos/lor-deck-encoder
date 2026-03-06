@@ -2,18 +2,17 @@ import EventEmitter from 'events';
 import assert from 'node:assert';
 import quibble from 'quibble';
 
-const expectedResponse = {success: true};
+const expectedResponse = {success: true, ssl: false};
 
 describe('[Utils] request', function () {
-  let request, buffer, HttpError;
-  let browser_process = false;
+  let request, HttpError;
 
   beforeEach(async function () {
-    buffer = Buffer.from(JSON.stringify(expectedResponse));
-    await quibble.esm('node:https', {default: {request: () => Promise.reject(new Error('SSL'))}});
-    await quibble.esm('node:http', {
+    const mock = (ssl = false) => ({
       default: {
         request: (options, callback) => {
+          expectedResponse.ssl = ssl;
+          const buffer = Buffer.from(JSON.stringify(expectedResponse));
           if (typeof options === 'string') options = new URL(options);
           const response = new EventEmitter();
           response.statusCode = options.path === '/failed' ? 404 : 200;
@@ -38,6 +37,8 @@ describe('[Utils] request', function () {
         },
       },
     });
+    await quibble.esm('node:https', mock(true));
+    await quibble.esm('node:http', mock(false));
     ({default: request, HttpError} = await import('../../utils/request.mjs'));
   });
 
@@ -54,7 +55,7 @@ describe('[Utils] request', function () {
   });
 
   it('should make a successful HTTP GET request with URL as string', async function () {
-    const response = await request('http://api.local/sucess');
+    const response = await request('http://api.local/success');
     assert.deepEqual(response, expectedResponse);
   });
 
@@ -92,7 +93,7 @@ describe('[Utils] request', function () {
     await assert.rejects(request(options), SyntaxError);
   });
 
-  it('should call fetch if running in browser', async () => {
+  it('should call fetch if running in browser', async function () {
     global.window = {document: {}};
     const backup = global.fetch;
     try {
@@ -104,6 +105,21 @@ describe('[Utils] request', function () {
       global.fetch = backup;
       delete global.window;
     }
+  });
+
+  it('should use HTTPS protocol if not specified', async function () {
+    const options = {
+      hostname: 'api.local',
+      path: '/success',
+      method: 'GET',
+    };
+
+    const response = await request(options);
+    assert.equal(response.ssl, true);
+  });
+
+  it('should throw error for unsupported protocol', async function () {
+    await assert.rejects(request('ftp://api.local/success'), Error, 'Unsupported request protocol ftp:');
   });
 
   afterEach(function () {

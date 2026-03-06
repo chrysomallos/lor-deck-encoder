@@ -1,6 +1,6 @@
 import VarInt from '../utils/var-int.mjs';
 import Card from './card.mjs';
-import Encoder, { COUNT_GROUPS } from './encoder.mjs';
+import Encoder, {COUNT_GROUPS} from './encoder.mjs';
 import Factions from './factions.mjs';
 
 /**
