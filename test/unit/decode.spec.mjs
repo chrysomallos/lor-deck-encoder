@@ -21,6 +21,7 @@ describe('[decode] functions', function () {
       assert.equal(result.length, largeDeckCardCount);
       assert.equal(joinCards(result), largeDeckCards);
     });
+
     it('with small deck', function () {
       const result = decodeV1(smallDeckCode);
       assert.equal(result.length, smallDeckCardCount);
@@ -34,6 +35,7 @@ describe('[decode] functions', function () {
       assert.equal(result.length, largeDeckCardCount);
       assert.equal(joinCards(result), largeDeckCards);
     });
+
     it('with small deck', function () {
       const result = decodeV2(smallDeckCode);
       assert.equal(result.length, smallDeckCardCount);
@@ -47,6 +49,7 @@ describe('[decode] functions', function () {
       assert.equal(result.length, largeDeckCardCount);
       assert.equal(joinCards(result), largeDeckCards);
     });
+
     it('with small deck', function () {
       const result = decodeV3(smallDeckCode);
       assert.equal(result.length, smallDeckCardCount);

@@ -20,7 +20,7 @@ describe('[Base32] performance test', function () {
   const performanceCalls = 100000;
   let array;
 
-  beforeEach(function() {
+  beforeEach(function () {
     array = [...range(0, 100)];
   });
 

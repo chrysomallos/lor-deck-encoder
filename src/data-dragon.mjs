@@ -2,7 +2,6 @@ import stringify from 'json-stringify-pretty-compact';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {inspect} from 'node:util';
 import hash from 'object-hash';
 import {isBrowser, isNode} from '../utils/detectors.mjs';
 import request from '../utils/request.mjs';
@@ -172,13 +171,13 @@ export default class DataDragon {
           name =>
             new URL(
               SET_PATH_TEMPLATE.replace(/\{\w+\}/g, match => (match === '{name}' ? name : language.toLocaleLowerCase())),
-              this.baseUrl
-            )
+              this.baseUrl,
+            ),
         );
 
       const {fulfilled: validSources, rejected: requestErrors} = Object.groupBy(
         await Promise.allSettled(setSourceUrls.map(url => request(url))),
-        ({status}) => status
+        ({status}) => status,
       );
       if (requestErrors?.length) {
         this.lastError = new AggregateError(requestErrors.map(({reason}) => reason));
@@ -219,7 +218,7 @@ export default class DataDragon {
           const matched = this.cardsByCode.get(deckCode);
           if (!matched) return [deckCode, undefined];
           return [deckCode, {...matched, associatedCards: matched.associatedCardRefs?.map(cardCode => this.cardsByCode.get(cardCode))}];
-        })
+        }),
       ),
       matchedRegions: Object.fromEntries([...new Set(deck.cards.map(({faction}) => faction.code)).values()].map(code => [code, this.regionsByCode.get(code)])),
     };
@@ -315,7 +314,7 @@ ${Object.entries(matchedCards)
           stringify(setsData[i].value ?? {...setsData[i].reason, name: setsData[i].reason.name, message: setsData[i].reason.toString()}, {
             indent: 2,
             maxLength: 120,
-          })
+          }),
         );
       }
     }

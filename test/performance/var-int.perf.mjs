@@ -5,7 +5,7 @@ import VarInt from '../../utils/var-int.mjs';
 describe('[VarInt] performance test', function () {
   const code = 'CEBAIAIABEQDINIFAEBAUEATEAYAEAIBAIYQGAIAAIDSUAQCAEBCWLIDAEAAMHJN';
   const performanceCalls = 100000;
-  
+
   it(`VarInt.pop (${performanceCalls} times)`, function () {
     for (let i = 0; i < performanceCalls; i += 1) {
       const bytes = Base32.decode(code);

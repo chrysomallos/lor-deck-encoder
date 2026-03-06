@@ -3,6 +3,7 @@
  * @returns {boolean} True if running in a browser, false otherwise.
  */
 export function isBrowser() {
+  // eslint-disable-next-line no-undef
   return typeof window !== 'undefined' && typeof window.document !== 'undefined';
 }
 

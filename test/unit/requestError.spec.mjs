@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { HttpError } from '../../utils/request.mjs';
+import {HttpError} from '../../utils/request.mjs';
 
 describe('[HttpError] tests', function () {
   it('should accept empty at constructor', function () {
