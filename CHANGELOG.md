@@ -1,5 +1,16 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
+## 3.0.0 - unreleased
+
+## Changes
+
+- **(BREAKING)** Upgrade to _Node.js_ v26.x.
+- Bump development dependency modules and _Yarn_ version.
+
+## Fixes
+
+- Add resolution for _yargs_ depended by _c8_ to fix incompatibility with _Node.js_ v26.x.
+
 ## 2.1.0 - 2026-03-07
 
 ### Features
