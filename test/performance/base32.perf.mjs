@@ -1,4 +1,5 @@
 import assert from 'node:assert';
+import {performance} from 'node:perf_hooks';
 import Base32 from '../../utils/base32.mjs';
 import VarInt from '../../utils/var-int.mjs';
 
@@ -14,19 +15,35 @@ describe('[Base32] performance test', function () {
   });
 
   it(`encode (${performanceCalls} times), padding is true`, function () {
+    const start = performance.now();
     for (let i = 0; i < performanceCalls; i++) Base32.encode(plain, true);
+    console.log(
+      `Encoding with padding (${performanceCalls} times) took ${performance.now() - start} ms, each call took ${(performance.now() - start) / performanceCalls} ms`,
+    );
   });
 
   it(`encode (${performanceCalls} times), padding is false`, function () {
+    const start = performance.now();
     for (let i = 0; i < performanceCalls; i++) Base32.encode(plain);
+    console.log(
+      `Encoding without padding (${performanceCalls} times) took ${performance.now() - start} ms, each call took ${(performance.now() - start) / performanceCalls} ms`,
+    );
   });
 
   it(`decode (${performanceCalls} times), padding false`, function () {
+    const start = performance.now();
     for (let i = 0; i < performanceCalls; i++) Base32.decode(encoded);
+    console.log(
+      `Decoding without padding (${performanceCalls} times) took ${performance.now() - start} ms, each call took ${(performance.now() - start) / performanceCalls} ms`,
+    );
   });
 
   it(`decode (${performanceCalls} times), padding true`, function () {
+    const start = performance.now();
     for (let i = 0; i < performanceCalls; i++) Base32.decode(encodedWithPadding);
+    console.log(
+      `Decoding with padding (${performanceCalls} times) took ${performance.now() - start} ms, each call took ${(performance.now() - start) / performanceCalls} ms`,
+    );
   });
 
   it(`validate equality`, function () {
