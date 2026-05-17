@@ -1,3 +1,4 @@
+import {performance} from 'node:perf_hooks';
 import range from '../../utils/range.mjs';
 import shuffle from '../../utils/shuffle.mjs';
 
@@ -18,6 +19,7 @@ function sattoloShuffle(array) {
 
 describe('[Base32] performance test', function () {
   const performanceCalls = 100000;
+  const performanceTimes = {};
   let array;
 
   beforeEach(function () {
@@ -25,10 +27,20 @@ describe('[Base32] performance test', function () {
   });
 
   it(`Fisher–Yates shuffle algorithm (${performanceCalls} times)`, function () {
+    const start = performance.now();
     for (let i = 0; i < performanceCalls; i++) shuffle(array);
+    performanceTimes.fisherYates = performance.now() - start;
   });
 
   it(`Sattolo shuffle algorithm (${performanceCalls} times)`, function () {
+    const start = performance.now();
     for (let i = 0; i < performanceCalls; i++) sattoloShuffle(array);
+    performanceTimes.sattolo = performance.now() - start;
+  });
+
+  after(function () {
+    console.log(`Performance times, fast algorithm is ${performanceTimes.fisherYates < performanceTimes.sattolo ? 'Fisher–Yates' : 'Sattolo'}:`);
+    console.log(`Fisher–Yates: ${performanceTimes.fisherYates} ms, each call took ${performanceTimes.fisherYates / performanceCalls} ms`);
+    console.log(`Sattolo: ${performanceTimes.sattolo} ms, each call took ${performanceTimes.sattolo / performanceCalls} ms`);
   });
 });

@@ -6,6 +6,7 @@
 
 - **(BREAKING)** Upgrade to _Node.js_ v26.x.
 - Bump development dependency modules and _Yarn_ version.
+- Add additional performance logging for `Base32`, `Encoder`, `Shuffle`, and `VarInt` performance tests.
 
 ## Fixes
 
