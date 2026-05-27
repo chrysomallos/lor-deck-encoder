@@ -122,6 +122,17 @@ describe('[Utils] request', function () {
     await assert.rejects(request('ftp://api.local/success'), Error, 'Unsupported request protocol ftp:');
   });
 
+  it('should throw error for unsupported protocol in options', async function () {
+    const options = {
+      protocol: 'ftp:',
+      hostname: 'api.local',
+      path: '/unsupported',
+      method: 'GET',
+    };
+
+    await assert.rejects(request(options), Error, 'Unsupported request protocol ftp:');
+  });
+
   afterEach(function () {
     quibble.reset();
   });
