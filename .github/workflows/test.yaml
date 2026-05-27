@@ -1,0 +1,36 @@
+name: Node.js CI
+
+on: [push]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26.x
+
+      - name: Enable corepack
+        shell: bash
+        run: corepack enable
+
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install --immutable
+
+      - name: Run unit tests
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: test:ci
+
+      - name: Publish test report
+        uses: ctrf-io/github-test-reporter@v1
+        with:
+          report-path: './ctrf/*.json'
+          github-report: true
+        if: always()
