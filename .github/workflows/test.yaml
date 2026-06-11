@@ -32,5 +32,10 @@ jobs:
         uses: ctrf-io/github-test-reporter@v1
         with:
           report-path: './ctrf/*.json'
-          github-report: true
+          summary-delta-report: true
+          test-report: true
+          tests-changed-report: true
+          upload-artifact: true
+          fetch-previous-results: true
+          collapse-large-reports: true
         if: always()
