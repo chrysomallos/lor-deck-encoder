@@ -34,19 +34,19 @@ describe('[Encoder]', function () {
     it(`decodeV1 (${performanceCalls} times)`, function () {
       const start = performance.now();
       for (let i = 0; i < performanceCalls; i += 1) decodeV1(largeDeckCode);
-      performanceTimes.decodeV1 = performance.now() - start;
+      performanceTimes.largeDeckDecodeV1 = performance.now() - start;
     });
 
     it(`decodeV2 (${performanceCalls} times)`, function () {
       const start = performance.now();
       for (let i = 0; i < performanceCalls; i += 1) decodeV2(largeDeckCode);
-      performanceTimes.decodeV2 = performance.now() - start;
+      performanceTimes.largeDeckDecodeV2 = performance.now() - start;
     });
 
     it(`decodeV3 (${performanceCalls} times)`, function () {
       const start = performance.now();
       for (let i = 0; i < performanceCalls; i += 1) decodeV3(largeDeckCode);
-      performanceTimes.decodeV3 = performance.now() - start;
+      performanceTimes.largeDeckDecodeV3 = performance.now() - start;
     });
   });
 
@@ -54,30 +54,39 @@ describe('[Encoder]', function () {
     it(`decodeV1 (${performanceCalls} times)`, function () {
       const start = performance.now();
       for (let i = 0; i < performanceCalls; i += 1) decodeV1(smallDeckCode);
-      performanceTimes.decodeV1 = performance.now() - start;
+      performanceTimes.smallDeckDecodeV1 = performance.now() - start;
     });
 
     it(`decodeV2 (${performanceCalls} times)`, function () {
       const start = performance.now();
       for (let i = 0; i < performanceCalls; i += 1) decodeV2(smallDeckCode);
-      performanceTimes.decodeV2 = performance.now() - start;
+      performanceTimes.smallDeckDecodeV2 = performance.now() - start;
     });
 
     it(`decodeV3 (${performanceCalls} times)`, function () {
       const start = performance.now();
       for (let i = 0; i < performanceCalls; i += 1) decodeV3(smallDeckCode);
-      performanceTimes.decodeV3 = performance.now() - start;
+      performanceTimes.smallDeckDecodeV3 = performance.now() - start;
     });
   });
 
   after(function () {
-    console.log('Performance times for large deck:');
-    console.log(`decodeV1: ${performanceTimes.decodeV1} ms, each call took ${performanceTimes.decodeV1 / performanceCalls} ms`);
-    console.log(`decodeV2: ${performanceTimes.decodeV2} ms, each call took ${performanceTimes.decodeV2 / performanceCalls} ms`);
-    console.log(`decodeV3: ${performanceTimes.decodeV3} ms, each call took ${performanceTimes.decodeV3 / performanceCalls} ms`);
-    console.log('Performance times for small deck:');
-    console.log(`decodeV1: ${performanceTimes.decodeV1} ms, each call took ${performanceTimes.decodeV1 / performanceCalls} ms`);
-    console.log(`decodeV2: ${performanceTimes.decodeV2} ms, each call took ${performanceTimes.decodeV2 / performanceCalls} ms`);
-    console.log(`decodeV3: ${performanceTimes.decodeV3} ms, each call took ${performanceTimes.decodeV3 / performanceCalls} ms`);
+    console.log(`Performance times for ${performanceCalls} calls:`);
+    console.log(`Small Deck - decodeV1: ${performanceTimes.smallDeckDecodeV1} ms, each call took ${performanceTimes.smallDeckDecodeV1 / performanceCalls} ms`);
+    console.log(`Small Deck - decodeV2: ${performanceTimes.smallDeckDecodeV2} ms, each call took ${performanceTimes.smallDeckDecodeV2 / performanceCalls} ms`);
+    console.log(`Small Deck - decodeV3: ${performanceTimes.smallDeckDecodeV3} ms, each call took ${performanceTimes.smallDeckDecodeV3 / performanceCalls} ms`);
+    console.log(`Large Deck - decodeV1: ${performanceTimes.largeDeckDecodeV1} ms, each call took ${performanceTimes.largeDeckDecodeV1 / performanceCalls} ms`);
+    console.log(`Large Deck - decodeV2: ${performanceTimes.largeDeckDecodeV2} ms, each call took ${performanceTimes.largeDeckDecodeV2 / performanceCalls} ms`);
+    console.log(`Large Deck - decodeV3: ${performanceTimes.largeDeckDecodeV3} ms, each call took ${performanceTimes.largeDeckDecodeV3 / performanceCalls} ms`);
+
+    console.log('Deck Codes:');
+    console.log(
+      `Small Deck ${smallDeckCode}, with ${decodeV1(smallDeckCode).length} cards:`,
+      decodeV3(smallDeckCode).map(({code, count}) => `${code}:${count}`),
+    );
+    console.log(
+      `Large Deck ${largeDeckCode}, with ${decodeV1(largeDeckCode).length} cards:`,
+      decodeV3(largeDeckCode).map(({code, count}) => `${code}:${count}`),
+    );
   });
 });
