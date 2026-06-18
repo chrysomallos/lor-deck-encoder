@@ -6,6 +6,11 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+
+    permissions:
+      actions: read
+      contents: read
+
     steps:
       - uses: actions/checkout@v6
 
@@ -33,9 +38,16 @@ jobs:
         with:
           report-path: './ctrf/*.json'
           summary-delta-report: true
-          test-report: true
           tests-changed-report: true
           upload-artifact: true
           fetch-previous-results: true
-          collapse-large-reports: true
+          always-group-by: true
+          use-suite-name: true
+          update-comment: true
+          flaky-report: true
+          pull-request-report: true
+          summary-report: true
+          overwrite-comment: true          
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: always()
