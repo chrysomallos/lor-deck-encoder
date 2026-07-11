@@ -164,7 +164,7 @@ export default class DataDragon {
       }
     }
     if (!cards || !core) {
-      core = await request(new URL(ROOT_PATH_TEMPLATE.replace(/\{language\}/g, language.toLocaleLowerCase()), this.baseUrl));
+      ({data: core} = await request(new URL(ROOT_PATH_TEMPLATE.replace(/\{language\}/g, language.toLocaleLowerCase()), this.baseUrl)));
       const setSourceUrls = core.sets
         .map(({nameRef}) => nameRef.toLowerCase())
         .map(
@@ -186,7 +186,7 @@ export default class DataDragon {
         throw Error('No valid data found.');
       }
 
-      cards = validSources.flatMap(({value = []}) => value).sort(({cardCode: a}, {cardCode: b}) => a.localeCompare(b));
+      cards = validSources.flatMap(({value: {data: value = []}}) => value).sort(({cardCode: a}, {cardCode: b}) => a.localeCompare(b));
 
       if (runningAtNode) {
         try {
