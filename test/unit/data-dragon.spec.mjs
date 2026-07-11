@@ -1,9 +1,9 @@
 import assert from 'node:assert';
 import hash from 'object-hash';
 import quibble from 'quibble';
-import coreData from './resources/core.mjs';
-import setData from './resources/set.mjs';
 import {HttpError} from '../../utils/request.mjs';
+import coreData from './resources/core.json' with {type: 'json'};
+import setData from './resources/set.json' with {type: 'json'};
 
 describe('[DataDragon] class tests', function () {
   let dataDragon, DataDragon;
@@ -16,9 +16,9 @@ describe('[DataDragon] class tests', function () {
   beforeEach(async function () {
     await quibble.esm('../../utils/request.mjs', {
       default: async url => {
-        if (url.pathname.startsWith('/latest/core')) return coreData;
+        if (url.pathname.startsWith('/latest/core')) return {data: coreData};
         if (requestRejected) throw requestRejected;
-        return setData;
+        return {data: setData};
       },
     });
     await quibble.esm('node:fs/promises', {
@@ -28,6 +28,7 @@ describe('[DataDragon] class tests', function () {
           throw new Error('Never write data in tests');
         },
         readFile: () => readFileSyncResult,
+        mkdir: () => true,
       },
     });
     await quibble.esm('../utils/detectors.mjs', {
@@ -63,8 +64,8 @@ describe('[DataDragon] class tests', function () {
     const doubleData = {...coreData, sets: [...coreData.sets, {...coreData.sets[0], name: 'Duplicate', nameRef: 'Set2'}]};
     await quibble.esm('../../utils/request.mjs', {
       default: async url => {
-        if (url.pathname.startsWith('/latest/core')) return doubleData;
-        if (url.pathname.startsWith('/latest/set1')) return setData;
+        if (url.pathname.startsWith('/latest/core')) return {data: doubleData};
+        if (url.pathname.startsWith('/latest/set1')) return {data: setData};
         throw new HttpError({statusCode: 404, statusMessage: 'Not Found', url, method: 'GET'});
       },
     });
@@ -105,7 +106,17 @@ describe('[DataDragon] class tests', function () {
   it('initialize file exists but not valid', async function () {
     fileExistsResult = true;
     readFileSyncResult = JSON.stringify({header: {date: Date.now(), core: hash(coreData), cards: hash(setData)}, core: coreData, cards: []});
-    await dataDragon.initialize('en_US');
+    await quibble.esm('node:fs/promises', {
+      default: {
+        exists: () => fileExistsResult,
+        writeFile: () => true,
+        readFile: () => readFileSyncResult,
+        mkdir: () => true,
+      },
+    });
+    DataDragon = (await import('../../src/data-dragon.mjs')).default;
+    dataDragon = new DataDragon();
+    await assert.doesNotReject(dataDragon.initialize('en_US'));
     assert.equal(dataDragon.regionsByCode.size, coreData.regions.length);
     assert.equal(dataDragon.cardsByCode.size, setData.length);
   });
@@ -143,6 +154,20 @@ describe('[DataDragon] class tests', function () {
     fileExistsResult = true;
     const result = await dataDragon.generatePageFromCode('CEAAAAICAEAAHZYH', 'en_US');
     assert.equal(result.length > 0, true);
+  });
+
+  it('download', async function () {
+    await quibble.esm('node:fs/promises', {
+      default: {
+        exists: () => fileExistsResult,
+        writeFile: () => true,
+        readFile: () => readFileSyncResult,
+        mkdir: () => true,
+      },
+    });
+    DataDragon = (await import('../../src/data-dragon.mjs')).default;
+    dataDragon = new DataDragon();
+    await assert.doesNotReject(dataDragon.download('./cache'));
   });
 
   afterEach(function () {
