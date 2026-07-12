@@ -13,15 +13,73 @@ yarn add lor-deck-encoder@https://github.com/chrysomallos/lor-deck-encoder.git
 
 ## Interface `Deck`
 
-The following headlines will describe the _Deck_ class interface.
+Represents a Legends of Runeterra deck and provides helpers for parsing, encoding, and inspecting deck contents.
 
-### _static_ fromCode(_string_) : _Deck_
+### `static fromCode(code: string, skipFormatCheck?: boolean): Deck`
 
-Example:
-```js
-import createDeck from 'lor-deck-encoder';
-const deck = createDeck('CEBQEBADAIIQGAIFAMJC6BABAMCBGFJUAIAQCAZYAQAQKFQ4DUXAEAIEAUIQEBADAEHQ');
-```
+Parse an encoded deck string and return a `Deck` instance.
+
+- `code`: The Legends of Runeterra deck code string.
+- `skipFormatCheck`: Optional. If true, skips validation of the deck code format.
+
+### `static fromCardCodes(codes: string[]): Deck`
+
+Create a deck from a list of simplified card codes.
+
+- `codes`: Array of card codes, e.g. `['01DE123']`.
+
+### `static fromCardCodesAndCounts(cardCounts: {code: string, count: number}[]): Deck`
+
+Create a deck from card codes with explicit counts.
+
+- `cardCounts`: List of objects containing `code` and `count`.
+
+### `constructor(cards?: Card[])`
+
+Create a new deck and optionally initialize it with cards.
+
+- `cards`: Optional initial card list.
+
+### `cards: Card[]`
+
+All cards currently in the deck.
+
+### `size: number`
+
+The total number of cards in the deck, accounting for each card's count.
+
+### `version: number`
+
+The maximum supported deck encoding version for the current cards.
+
+### `code: string`
+
+The encoded Legends of Runeterra deck code for this deck.
+
+### `list: string[]`
+
+The formatted card list for this deck, where each entry is `code:count`.
+
+### `allCodeAndCount: string[]`
+
+The list of all card codes with counts encoded as strings.
+
+### `sort(): void`
+
+Sort the cards in place using the deck card comparer.
+
+### `add(card: Card | string, count?: number): void`
+
+Add a card to the deck.
+
+- `card`: A `Card` instance or a card code string.
+- `count`: Optional count when adding by code.
+
+### `contains(card: Card): boolean`
+
+Check whether the deck contains the given card.
+
+- `card`: The card to check for.
 
 ## Example usage
 
