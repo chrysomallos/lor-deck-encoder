@@ -47,6 +47,7 @@
     "build:types": "npx -p typescript tsc",
     "benchmark:large": "npx nano-bench ./benchmark/decode-large.mjs",
     "benchmark:small": "npx nano-bench ./benchmark/decode-small.mjs",
-    "benchmark:var-int": "npx nano-bench ./benchmark/var-int.mjs"
+    "benchmark:var-int": "npx nano-bench ./benchmark/var-int.mjs",
+    "postinstall": "node ./fill-cache.mjs"
   }
 }
