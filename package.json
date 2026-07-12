@@ -45,7 +45,8 @@
     "test:ci": "mocha --reporter mocha-ctrf-json-reporter ./test/unit/*.spec.mjs",
     "test:coverage": "c8 mocha ./test/unit/*.spec.mjs",
     "build:lint": "eslint src/**.mjs utils/**.mjs",
-    "build:types": "npx -p typescript tsc"
+    "build:types": "npx -p typescript tsc",
+    "postinstall": "node ./fill-cache.mjs"
   },
   "packageManager": "yarn@4.17.0"
 }
