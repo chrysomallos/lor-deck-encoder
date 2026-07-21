@@ -21,13 +21,13 @@ describe('[DataDragon] class tests', function () {
         return setData;
       },
     });
-    await quibble.esm('node:fs', {
+    await quibble.esm('node:fs/promises', {
       default: {
-        existsSync: () => fileExistsResult,
-        writeFileSync: () => {
+        exists: () => fileExistsResult,
+        writeFile: () => {
           throw new Error('Never write data in tests');
         },
-        readFileSync: () => readFileSyncResult,
+        readFile: () => readFileSyncResult,
       },
     });
     await quibble.esm('../utils/detectors.mjs', {
