@@ -1,8 +1,8 @@
 import assert from 'node:assert';
 import quibble from 'quibble';
-import coreData from './resources/core.mjs';
-import setData from './resources/set.mjs';
 import {HttpError} from '../../utils/request.mjs';
+import coreData from './resources/core.json' with {type: 'json'};
+import setData from './resources/set.json' with {type: 'json'};
 
 describe('[DataDragon] download class tests', function () {
   let dataDragon, DataDragon;
@@ -20,12 +20,12 @@ describe('[DataDragon] download class tests', function () {
         return setData;
       },
     });
-    await quibble.esm('node:fs', {
+    await quibble.esm('node:fs/promises', {
       default: {
-        existsSync: () => fileExistsResult,
-        writeFileSync: () => true,
-        readFileSync: () => readFileSyncResult,
-        mkdirSync: () => true,
+        exists: () => fileExistsResult,
+        writeFile: () => true,
+        readFile: () => readFileSyncResult,
+        mkdir: () => true,
       },
     });
     await quibble.esm('../utils/detectors.mjs', {
