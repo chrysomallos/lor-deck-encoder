@@ -23,8 +23,8 @@
     "@babel/plugin-syntax-import-assertions": "^7.29.7",
     "@eslint/js": "^10.0.1",
     "c8": "^11.0.0",
-    "eslint": "^10.6.0",
-    "eslint-plugin-jsdoc": "^63.0.11",
+    "eslint": "^10.7.0",
+    "eslint-plugin-jsdoc": "^63.0.13",
     "eslint-plugin-mocha": "^11.3.0",
     "globals": "^17.7.0",
     "mocha": "^11.7.6",
@@ -45,7 +45,8 @@
     "test:ci": "mocha --reporter mocha-ctrf-json-reporter ./test/unit/*.spec.mjs",
     "test:coverage": "c8 mocha ./test/unit/*.spec.mjs",
     "build:lint": "eslint src/**.mjs utils/**.mjs",
-    "build:types": "npx -p typescript tsc"
+    "build:types": "npx -p typescript tsc",
+    "postinstall": "node ./fill-cache.mjs"
   },
   "packageManager": "yarn@4.17.0"
 }

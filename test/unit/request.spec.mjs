@@ -2,6 +2,10 @@ import EventEmitter from 'events';
 import assert from 'node:assert';
 import quibble from 'quibble';
 
+const CONTENT_TYPE_JSON = 'text/json';
+const CONTENT_TYPE_NAME = 'content-type';
+const CONTENT_LENGTH_NAME = 'content-length';
+
 const expectedResponse = {success: true, ssl: false};
 
 describe('[Utils] request', function () {
@@ -11,14 +15,13 @@ describe('[Utils] request', function () {
     const mock = (ssl = false) => ({
       default: {
         request: (options, callback) => {
-          expectedResponse.ssl = ssl;
-          const buffer = Buffer.from(JSON.stringify(expectedResponse));
+          const buffer = Buffer.from(JSON.stringify({...expectedResponse, ssl}));
           if (typeof options === 'string') options = new URL(options);
           const response = new EventEmitter();
           response.statusCode = options.path === '/failed' ? 404 : 200;
           response.headers = {
-            'content-type': 'text/json',
-            'content-length': `${response.statusCode === 200 ? buffer.length : 0}`,
+            [CONTENT_TYPE_NAME]: CONTENT_TYPE_JSON,
+            [CONTENT_LENGTH_NAME]: `${response.statusCode === 200 ? buffer.length : 0}`,
             connection: 'close',
           };
           callback(response);
@@ -51,12 +54,12 @@ describe('[Utils] request', function () {
     };
 
     const response = await request(options);
-    assert.deepEqual(response, expectedResponse);
+    assert.deepEqual(response.data, expectedResponse);
   });
 
   it('should make a successful HTTP GET request with URL as string', async function () {
     const response = await request('http://api.local/success');
-    assert.deepEqual(response, expectedResponse);
+    assert.deepEqual(response.data, expectedResponse);
   });
 
   it('should make a successful HTTP POST request', async function () {
@@ -68,7 +71,7 @@ describe('[Utils] request', function () {
     };
 
     const response = await request(options, '{"data":"TEST"}');
-    assert.deepEqual(response, expectedResponse);
+    assert.deepEqual(response.data, expectedResponse);
   });
 
   it('should reject the promise on HTTP error status code', async function () {
@@ -115,7 +118,7 @@ describe('[Utils] request', function () {
     };
 
     const response = await request(options);
-    assert.equal(response.ssl, true);
+    assert.equal(response.data.ssl, true);
   });
 
   it('should throw error for unsupported protocol', async function () {

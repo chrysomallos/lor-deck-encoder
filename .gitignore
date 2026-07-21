@@ -2,3 +2,5 @@ node_modules
 *.log
 .yarn
 coverage
+ctrf
+cache
