@@ -4,6 +4,10 @@ import Encoder, {COUNT_GROUPS} from './encoder.mjs';
 import Factions from './factions.mjs';
 
 /**
+ * Optimized implementation of decode with VarInt.decode instead of the original implementation from port source code.
+ */
+
+/**
  * Decodes the code into a list of cards.
  * @param {string} code The base32 deck code.
  * @param {boolean} [skipFormatCheck] skip format check
@@ -22,9 +26,9 @@ export default function decode(code, skipFormatCheck = false) {
     for (let group = 0; group < groups; group += 1) {
       const cards = values.shift();
       const set = values.shift();
-      const faction = values.shift();
+      const faction = Factions.fromId(values.shift());
       for (let card = 0; card < cards; card += 1) {
-        result.push(new Card(set, Factions.fromId(faction), values.shift(), count));
+        result.push(new Card(set, faction, values.shift(), count));
       }
     }
   }
