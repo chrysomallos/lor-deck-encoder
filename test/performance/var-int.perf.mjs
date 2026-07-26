@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import {performance} from 'node:perf_hooks';
 import Base32 from '../../utils/base32.mjs';
 import VarInt from '../../utils/var-int.mjs';
+import logPerformanceTimes from './log-performance.mjs';
 
 describe('[VarInt] performance test', function () {
   const code = 'CEBAIAIABEQDINIFAEBAUEATEAYAEAIBAIYQGAIAAIDSUAQCAEBCWLIDAEAAMHJN';
@@ -27,9 +28,9 @@ describe('[VarInt] performance test', function () {
   });
 
   after(function () {
-    console.log(`Performance times, fast algorithm is ${performanceTimes.pop < performanceTimes.decode ? 'VarInt.pop' : 'VarInt.decode'}:`);
-    console.log(`VarInt.pop: ${performanceTimes.pop} ms, each call took ${performanceTimes.pop / performanceCalls} ms`);
-    console.log(`VarInt.decode: ${performanceTimes.decode} ms, each call took ${performanceTimes.decode / performanceCalls} ms`);
+    console.log(`  Performance times for VarInt calls:`);
+    logPerformanceTimes('VarInt.decode', performanceTimes.decode, performanceCalls);
+    logPerformanceTimes('VarInt.pop', performanceTimes.pop, performanceCalls);
   });
 
   it('must be fail', function () {

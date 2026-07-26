@@ -4,6 +4,10 @@ import Encoder from './encoder.mjs';
 import Factions from './factions.mjs';
 
 /**
+ * The currently fastest implementation of decode with a reduced number of function calls.
+ */
+
+/**
  * Decodes the code into a list of cards.
  * @param {string} code The base32 deck code.
  * @param {boolean} [skipFormatCheck] skip format check

@@ -1,6 +1,7 @@
 import {performance} from 'node:perf_hooks';
 import range from '../../utils/range.mjs';
 import shuffle from '../../utils/shuffle.mjs';
+import logPerformanceTimes from './log-performance.mjs';
 
 /**
  * Shuffles an array in place using Sattolo's algorithm (a cyclic version of Fisher-Yates).
@@ -39,8 +40,8 @@ describe('[Base32] performance test', function () {
   });
 
   after(function () {
-    console.log(`Performance times, fast algorithm is ${performanceTimes.fisherYates < performanceTimes.sattolo ? 'Fisher–Yates' : 'Sattolo'}:`);
-    console.log(`Fisher–Yates: ${performanceTimes.fisherYates} ms, each call took ${performanceTimes.fisherYates / performanceCalls} ms`);
-    console.log(`Sattolo: ${performanceTimes.sattolo} ms, each call took ${performanceTimes.sattolo / performanceCalls} ms`);
+    console.log(`  Performance times, fast algorithm is ${performanceTimes.fisherYates < performanceTimes.sattolo ? 'Fisher–Yates' : 'Sattolo'}:`);
+    logPerformanceTimes('Fisher–Yates', performanceTimes.fisherYates, performanceCalls);
+    logPerformanceTimes('Sattolo', performanceTimes.sattolo, performanceCalls);
   });
 });
