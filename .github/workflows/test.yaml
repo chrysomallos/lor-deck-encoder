@@ -10,6 +10,7 @@ jobs:
     permissions:
       actions: read
       contents: read
+      pull-requests: write # CTRF posts/overwrites the PR comment
 
     steps:
       - uses: actions/checkout@v6
@@ -36,18 +37,17 @@ jobs:
       - name: Publish test report
         uses: ctrf-io/github-test-reporter@v1
         with:
-          report-path: './ctrf/*.json'
-          summary-delta-report: true
-          tests-changed-report: true
-          upload-artifact: true
-          fetch-previous-results: true
-          always-group-by: true
-          use-suite-name: true
-          update-comment: true
+          report-path: 'ctrf/*.json'
+          summary: true
+          pull-request-report: ${{ github.event_name == 'pull_request' }}
+          overwrite-comment: ${{ github.event_name == 'pull_request' }}
+          comment-tag: test-results
           flaky-report: true
-          pull-request-report: true
-          summary-report: true
-          overwrite-comment: true          
+          use-suite-name: true
+          group-by: suite
+          slowest-report: true
+          previous-results-report: true
+          upload-artifact: true       
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: always()
