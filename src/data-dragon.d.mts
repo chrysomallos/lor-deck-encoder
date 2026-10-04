@@ -1,19 +1,23 @@
-export namespace LANGUAGES {
-    let de_de: string;
-    let en_us: string;
-    let es_es: string;
-    let es_mx: string;
-    let fr_fr: string;
-    let it_it: string;
-    let ja_jp: string;
-    let ko_kr: string;
-    let pl_pl: string;
-    let pt_br: string;
-    let th_th: string;
-    let tr_tr: string;
-    let ru_ru: string;
-    let zh_tw: string;
-}
+import Deck from './deck.mjs';
+/**
+ * The supported languages found on the data dragon page.
+ */
+export declare const LANGUAGES: {
+    de_de: string;
+    en_us: string;
+    es_es: string;
+    es_mx: string;
+    fr_fr: string;
+    it_it: string;
+    ja_jp: string;
+    ko_kr: string;
+    pl_pl: string;
+    pt_br: string;
+    th_th: string;
+    tr_tr: string;
+    ru_ru: string;
+    zh_tw: string;
+};
 /**
  * Base URL for data grabbing, see [Data Dragon](https://developer.riotgames.com/docs/lor#data-dragon).
  *
@@ -21,59 +25,7 @@ export namespace LANGUAGES {
  * Assets and data are made available over the internet and are updated in tandem with game releases so the community can update their products with the latest and greatest data.
  * @type {string}
  */
-export const DATA_DRAGON_BASE_URL: string;
-/**
- * The data dragon interface client.
- */
-export default class DataDragon {
-    /**
-     * Initialize the class with defined Data Dragon base URL.
-     *
-     * @param {string} [baseUrl] will be able to override for own server or development. Need to follow bucket folder structure.
-     */
-    constructor(baseUrl?: string);
-    /**
-     * @type {Error}
-     */
-    lastError: Error;
-    /**
-     * @type {Map<string, {cards: Map<string, DataDragonCard>, regions: Map<string, DataDragonRegion>}>}
-     */
-    cacheByLanguage: Map<string, {
-        cards: Map<string, DataDragonCard>;
-        regions: Map<string, DataDragonRegion>;
-    }>;
-    /**
-     * @type {Map<string, DataDragonCard>}
-     */
-    cardsByCode: Map<string, DataDragonCard>;
-    /**
-     * @type {Map<string, DataDragonRegion>}
-     */
-    regionsByCode: Map<string, DataDragonRegion>;
-    baseUrl: string;
-    /**
-     * Initializes the DataDragon instance by fetching core data and card data for the specified language.
-     * @param {string} language The language code (e.g. 'en_us') to fetch data for.
-     * @returns {Promise<void>}
-     */
-    initialize(language: string): Promise<void>;
-    /**
-     * Fetches data for a given deck code, initializing the DataDragon instance if necessary.
-     * @param {string} code The deck code to fetch data for.
-     * @param {string} [language] The language code (e.g. 'en_us') to fetch data for.
-     * @returns {Promise<FetchedData>} The fetched data, including the deck and matching cards.
-     */
-    fetchData(code: string, language?: string): Promise<FetchedData>;
-    /**
-     * Generates an HTML page representing the deck content for a given deck code.
-     * @param {string} code The deck code to generate the page for.
-     * @param {string} [language] The language code (e.g. 'en_us') to generate for.
-     * @returns {Promise<string>} The generated HTML content.
-     */
-    generatePageFromCode(code: string, language?: string): Promise<string>;
-    download(path: any, language: any): Promise<void>;
-}
+export declare const DATA_DRAGON_BASE_URL: string;
 export type Asset = {
     /**
      * URL to the game asset image.
@@ -229,5 +181,61 @@ export type FetchedData = {
      */
     matchedRegions: Record<string, DataDragonRegion | null>;
 };
-import Deck from './deck.mjs';
+/**
+ * The data dragon interface client.
+ */
+export default class DataDragon {
+    baseUrl: string;
+    /**
+     * @type {Error}
+     */
+    lastError: Error;
+    /**
+     * @type {Map<string, {cards: Map<string, DataDragonCard>, regions: Map<string, DataDragonRegion>}>}
+     */
+    cacheByLanguage: Map<string, {
+        cards: Map<string, DataDragonCard>;
+        regions: Map<string, DataDragonRegion>;
+    }>;
+    /**
+     * @type {Map<string, DataDragonCard>}
+     */
+    cardsByCode: Map<string, DataDragonCard>;
+    /**
+     * @type {Map<string, DataDragonRegion>}
+     */
+    regionsByCode: Map<string, DataDragonRegion>;
+    /**
+     * Initialize the class with defined Data Dragon base URL.
+     * @param {string} [baseUrl] will be able to override for own server or development. Need to follow bucket folder structure.
+     */
+    constructor(baseUrl?: string);
+    /**
+     * Initializes the DataDragon instance by fetching core data and card data for the specified language.
+     * @param {string} language The language code (e.g. 'en_us') to fetch data for.
+     * @returns {Promise<void>}
+     */
+    initialize(language: string): Promise<void>;
+    /**
+     * Fetches data for a given deck code, initializing the DataDragon instance if necessary.
+     * @param {string} code The deck code to fetch data for.
+     * @param {string} [language] The language code (e.g. 'en_us') to fetch data for.
+     * @returns {Promise<FetchedData>} The fetched data, including the deck and matching cards.
+     */
+    fetchData(code: string, language?: string): Promise<FetchedData>;
+    /**
+     * Generates an HTML page representing the deck content for a given deck code.
+     * @param {string} code The deck code to generate the page for.
+     * @param {string} [language] The language code (e.g. 'en_us') to generate for.
+     * @returns {Promise<string>} The generated HTML content.
+     */
+    generatePageFromCode(code: string, language?: string): Promise<string>;
+    /**
+     * Downloads the data dragon data into the target path for all or a specific language.
+     * @param {string} targetPath The target path to download the data into.
+     * @param {string} [language] The optional language code to download data for. If not provided, all languages will be downloaded.
+     * @returns {Promise<void>}
+     */
+    download(targetPath: string, language?: string): Promise<void>;
+}
 //# sourceMappingURL=data-dragon.d.mts.map

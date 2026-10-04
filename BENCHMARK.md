@@ -25,10 +25,10 @@ Significance: Kruskal–Wallis H test, α = 0.05; post-hoc: Conover–Iman pairw
 The difference is statistically significant:
 
 |     | #   | name            | 1            | 2            | 3            |
-| --- | ---- | --------------- | ------------ | ------------ | ------------ |
-| 🐢  | 1    | decode_large_v1 |              | 16% slower   | 33.8% slower |
-|     | 2    | decode_large_v2 | 19% faster   |              | 21.2% slower |
-| 🐇  | 3    | decode_large_v3 | 50.9% faster | 26.8% faster |              |
+| --- | --- | --------------- | ------------ | ------------ | ------------ |
+| 🐢  | 1   | decode_large_v1 |              | 16% slower   | 33.8% slower |
+|     | 2   | decode_large_v2 | 19% faster   |              | 21.2% slower |
+| 🐇  | 3   | decode_large_v3 | 50.9% faster | 26.8% faster |              |
 
 ## With small deck code
 
@@ -49,3 +49,22 @@ The difference is statistically significant:
 | 🐢  | 1   | decode_small_v1 |              | 16% slower   | 32.4% slower |
 |     | 2   | decode_small_v2 | 19% faster   |              | 19.5% slower |
 | 🐇  | 3   | decode_small_v3 | 47.9% faster | 24.3% faster |              |
+
+## var int check
+
+Confidence interval: 95% bootstrap-percentile of the median (1,000 resamples), samples: 100
+Measuring 50ms per sample (~10s per function)
+
+| name           | time median | +        | −        | op/s | batch |
+| -------------- | ----------- | -------- | -------- | ---- | ----- |
+| var_int_pop    | 2.719μs     | +0.280μs | −0.044μs | 368k | 20k   |
+| var_int_decode | 1.510μs     | +0.330μs | −0.023μs | 662k | 50k   |
+
+Significance: Mann–Whitney U test (two-sided, tie-corrected), α = 0.05
+Effect size: Cliff's δ = 1.00 (large) — the faster wins 100% of random run pairs
+The difference is statistically significant:
+
+|     | #   | name           | 1            | 2            |
+| --- | --- | -------------- | ------------ | ------------ |
+| 🐢  | 1   | var_int_pop    |              | 44.5% slower |
+| 🐇  | 2   | var_int_decode | 80.1% faster |              |

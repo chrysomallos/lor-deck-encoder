@@ -3,14 +3,6 @@
  */
 export default class Faction {
     /**
-     * Initialized a new instance of the faction.
-     * @param {number} id faction id
-     * @param {number} version version number
-     * @param {string} code faction code
-     * @param {string} name full name
-     */
-    constructor(id: number, version: number, code: string, name: string);
-    /**
      * The unique faction id.
      * @type {number}
      */
@@ -34,5 +26,13 @@ export default class Faction {
      * The full name of the faction.
      */
     name: string;
+    /**
+     * Initialized a new instance of the faction.
+     * @param {number} id faction id
+     * @param {number} version version number
+     * @param {string} code faction code
+     * @param {string} name full name
+     */
+    constructor(id: number, version: number, code: string, name: string);
 }
 //# sourceMappingURL=faction.d.mts.map

@@ -1,3 +1,17 @@
+import http from 'node:http';
+import https from 'node:https';
+/**
+ * Base class for HTTP errors.
+ * Extends the built-in Error class to include an HTTP status code.
+ */
+export declare class HttpError extends Error {
+    status: http.IncomingMessage;
+    /**
+     * Constructs a new HttpError instance.
+     * @param {http.IncomingMessage} response The client request this error is for.
+     */
+    constructor(response: http.IncomingMessage);
+}
 /**
  * Makes an HTTP(S) request with the provided options and body.
  * @template T
@@ -6,16 +20,4 @@
  * @returns {Promise<T>} A promise that resolves with the response body if the request is successful, or rejects with an error if the request fails.
  */
 export default function request<T>(options: string | URL | http.RequestOptions | https.RequestOptions, body: string | Buffer): Promise<T>;
-/**
- * Base class for HTTP errors.
- * Extends the built-in Error class to include an HTTP status code.
- */
-export class HttpError extends Error {
-    /**
-     * Constructs a new HttpError instance.
-     * @param {http.IncomingMessage} response The client request this error is for.
-     */
-    constructor(response: http.IncomingMessage);
-    status: http.IncomingMessage;
-}
 //# sourceMappingURL=request.d.mts.map

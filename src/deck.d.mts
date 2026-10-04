@@ -1,8 +1,19 @@
+import Card from './card.mjs';
 /**
  * Class represents the Riot Games - Legends of Runeterra - deck.
  * See [LoRDeckCodes](https://github.com/RiotGames/LoRDeckCodes?tab=readme-ov-file#cards--decks)
  */
 export default class Deck {
+    /**
+     * The list of the cards in this deck.
+     * @type {Card[]}
+     */
+    cards: Card[];
+    /**
+     * Initialize a new deck instance and assign the cards.
+     * @param {Card[]} cards The list of cards.
+     */
+    constructor(cards?: Card[]);
     /**
      * Parse the code and returns an instance of the deck.
      * @param {string} code The Legends of Runeterra deck as a simple string.
@@ -25,16 +36,6 @@ export default class Deck {
         code: string;
         count: number;
     }[]): Deck;
-    /**
-     * Initialize a new deck instance and assign the cards.
-     * @param {Card[]} cards The list of cards.
-     */
-    constructor(cards?: Card[]);
-    /**
-     * The list of the cards in this deck.
-     * @type {Card[]}
-     */
-    cards: Card[];
     /**
      * Returns the sum of all cards.
      * @returns {number} The size of the deck, all cards (using count).
@@ -77,5 +78,4 @@ export default class Deck {
      */
     contains(card: Card): boolean;
 }
-import Card from './card.mjs';
 //# sourceMappingURL=deck.d.mts.map
