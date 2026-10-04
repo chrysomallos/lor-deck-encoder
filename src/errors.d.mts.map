@@ -1,1 +1,1 @@
-{"version":3,"file":"errors.d.mts","sourceRoot":"","sources":["errors.mjs"],"names":[],"mappings":"AAAA;;;GAGG;AACH;IACE;;;;OAIG;IACH,uBAHW,MAAM,WACN,MAAM,EAMhB;IAED;;;OAGG;IACH,WAFU,MAAM,CAEN;CACX"}
+{"version":3,"file":"errors.d.mts","sourceRoot":"","sources":["errors.mjs"],"names":[],"mappings":"AAAA;;;GAGG;AACH,qBAAa,aAAc,SAAQ,KAAK;IACtC;;;;OAIG;IACH,YAAY,SAAS,EAHV,MAGU,EAAE,OAAO,EAFnB,MAEmB,EAI7B;IAED;;;OAGG;IACH,SAAS,EAFC,MAAM,CAEN;CACX"}

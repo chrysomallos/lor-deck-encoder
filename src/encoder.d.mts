@@ -1,3 +1,5 @@
+import Card from './card.mjs';
+import decode from './decode_v3.mjs';
 /**
  * Port c# code from https://github.com/RiotGames/LoRDeckCodes/blob/main/LoRDeckCodes/LoRDeckEncoder.cs into es6
  */
@@ -5,16 +7,16 @@
  * Deck format version
  * @type {number}
  */
-export const SUPPORTED_FORMAT: number;
+export declare const SUPPORTED_FORMAT: number;
 /**
  * Deck cards version
  * @type {number}
  */
-export const INITIAL_VERSION: number;
+export declare const INITIAL_VERSION: number;
 /**
  * The groups used to match the copy lists, see https://github.com/RiotGames/LoRDeckCodes?tab=readme-ov-file#process
  */
-export const COUNT_GROUPS: number[];
+export declare const COUNT_GROUPS: number[];
 /**
  * The encoding helper to generate a code for a deck or a deck from a code.
  */
@@ -41,6 +43,4 @@ export default class Encoder {
      */
     static encode(cards: Card[], version?: number): string;
 }
-import decode from './decode_v3.mjs';
-import Card from './card.mjs';
 //# sourceMappingURL=encoder.d.mts.map

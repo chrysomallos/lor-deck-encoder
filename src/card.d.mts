@@ -1,5 +1,40 @@
+import Faction from './faction.mjs';
 /** Class representing a card in a deck. */
 export default class Card {
+    /**
+     * The set number.
+     * @type {number}
+     */
+    set: number;
+    /**
+     * The card id
+     * @type {number}
+     */
+    id: number;
+    /**
+     * The faction
+     * @type {Faction}
+     */
+    faction: Faction;
+    /**
+     * The count of this card in a deck.
+     * @type {number}
+     */
+    count: number;
+    /**
+     * Initialize a new instance of the Card.
+     * @param {number} set The set number.
+     * @param {Faction} faction The faction.
+     * @param {number} id The card id.
+     * @param {number} [count] The count of this card, defaults to one.
+     */
+    constructor(set: number, faction: Faction, id: number, count?: number);
+    /**
+     * Return true, if the instance ist equal.
+     * @param {Card} other The other instance to compare.
+     * @returns {boolean} True if equals, otherwise false.
+     */
+    equals(other: Card): boolean;
     /**
      * Return true, if the instances are equal.
      * @param {Card} firstCard The first element for comparison.
@@ -32,40 +67,6 @@ export default class Card {
         code: string;
         count: number;
     }): Card;
-    /**
-     * Initialize a new instance of the Card.
-     * @param {number} set The set number.
-     * @param {Faction} faction The faction.
-     * @param {number} id The card id.
-     * @param {number} [count] The count of this card, defaults to one.
-     */
-    constructor(set: number, faction: Faction, id: number, count?: number);
-    /**
-     * The set number.
-     * @type {number}
-     */
-    set: number;
-    /**
-     * The card id
-     * @type {number}
-     */
-    id: number;
-    /**
-     * The faction
-     * @type {Faction}
-     */
-    faction: Faction;
-    /**
-     * The count of this card in a deck.
-     * @type {number}
-     */
-    count: number;
-    /**
-     * Return true, if the instance ist equal.
-     * @param {Card} other The other instance to compare.
-     * @returns {boolean} True if equals, otherwise false.
-     */
-    equals(other: Card): boolean;
     /**
      * Returns the code for this card.
      * @type {string}
@@ -100,5 +101,4 @@ export default class Card {
      */
     get factionSort(): number;
 }
-import Faction from './faction.mjs';
 //# sourceMappingURL=card.d.mts.map

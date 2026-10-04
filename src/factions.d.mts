@@ -1,3 +1,4 @@
+import Faction from './faction.mjs';
 /**
  * The faction's helper to get a faction.
  */
@@ -19,5 +20,4 @@ export default class Factions {
      */
     static fromId(id: number): Faction;
 }
-import Faction from './faction.mjs';
 //# sourceMappingURL=factions.d.mts.map

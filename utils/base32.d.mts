@@ -4,7 +4,7 @@
  * @param {number} int - The 32-bit integer to check. If the integer is 0, the function returns 32 since there are 32 trailing zeros in the binary representation of 0.
  * @returns {number} The count of trailing zeros in the binary representation of the input number.
  */
-export function numberOfTrailingZeros(int: number): number;
+export declare function numberOfTrailingZeros(int: number): number;
 /**
  * The base32 en/decoder.
  */

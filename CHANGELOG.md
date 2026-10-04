@@ -1,12 +1,13 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
-## 3.0.0 - unreleased
+## 3.0.0 - 2026-10-06
 
 ## Changes
 
 - **(BREAKING)** Upgrade to _Node.js_ v26.x.
 - Bump development dependency modules and _Yarn_ version.
 - Add additional performance logging for `Base32`, `Encoder`, `Shuffle`, and `VarInt` performance tests.
+- Add a node benchmark module to validate performance changes.
 
 ## Fixes
 

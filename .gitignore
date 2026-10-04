@@ -1,5 +1,6 @@
 node_modules
 *.log
-.yarn
+.yarn/cache
+.yarn/install-state.gz
 coverage
 ctrf

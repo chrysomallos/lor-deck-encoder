@@ -2,7 +2,7 @@
  * Class representing an error when an invalid argument is provided.
  * @augments Error
  */
-export class ArgumentError extends Error {
+export declare class ArgumentError extends Error {
     /**
      * Create an ArgumentError.
      * @param {string} parameter  The name of the parameter that caused the error.
