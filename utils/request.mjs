@@ -28,7 +28,7 @@ export class HttpError extends Error {
  * @template T
  * @param {string|URL|http.RequestOptions|https.RequestOptions} options The options for the request.
  * @param {string|Buffer} body The body of the request.
- * @returns {Promise<T>} A promise that resolves with the response body if the request is successful, or rejects with an error if the request fails.
+ * @returns {Promise<{data: T, response: http.IncomingMessage}>} A promise that resolves with the response body and response object if the request is successful, or rejects with an error if the request fails.
  */
 export default async function request(options, body) {
   let protocol = HTTPS_PROTOCOL;
@@ -48,13 +48,13 @@ export default async function request(options, body) {
 
   return new Promise(function (resolve, reject) {
     const request = (protocol === HTTPS_PROTOCOL ? https : http).request(options, response => {
-      const {statusCode} = response;
+      const {statusCode, headers} = response;
       let chunks = [];
       response.on('data', chunk => chunks.push(chunk));
       response.on('end', () => {
         try {
           if (statusCode < 200 || statusCode >= 300) reject(new HttpError(response));
-          else resolve(JSON.parse(Buffer.concat(chunks).toString()));
+          else resolve({data: JSON.parse(Buffer.concat(chunks).toString()), response: {headers, statusCode}});
           if (!response.destroyed) response.destroy();
         } catch (error) {
           reject(error);
