@@ -40,12 +40,12 @@ jobs:
       - name: Run unit tests
         uses: borales/actions-yarn@v5
         with:
-          cmd: test:ci
+          cmd: test-ci
 
       - name: Build types
         uses: borales/actions-yarn@v5
         with:
-          cmd: build:types
+          cmd: build-types
 
       - name: Publish to npm
         run: npm publish --access public

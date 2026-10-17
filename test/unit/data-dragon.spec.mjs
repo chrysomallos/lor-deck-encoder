@@ -1,9 +1,9 @@
 import assert from 'node:assert';
 import hash from 'object-hash';
 import quibble from 'quibble';
-import coreData from './resources/core.mjs';
-import setData from './resources/set.mjs';
 import {HttpError} from '../../utils/request.mjs';
+import coreData from './resources/core.json' with {type: 'json'};
+import setData from './resources/set.json' with {type: 'json'};
 
 describe('[DataDragon] class tests', function () {
   let dataDragon, DataDragon;
@@ -28,6 +28,7 @@ describe('[DataDragon] class tests', function () {
           throw new Error('Never write data in tests');
         },
         readFile: () => readFileSyncResult,
+        mkdir: () => true,
       },
     });
     await quibble.esm('../utils/detectors.mjs', {
@@ -143,6 +144,10 @@ describe('[DataDragon] class tests', function () {
     fileExistsResult = true;
     const result = await dataDragon.generatePageFromCode('CEAAAAICAEAAHZYH', 'en_US');
     assert.equal(result.length > 0, true);
+  });
+
+  it('download', async function () {
+    await assert.doesNotReject(dataDragon.download('./cache'));
   });
 
   afterEach(function () {

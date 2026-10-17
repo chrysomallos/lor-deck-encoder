@@ -167,9 +167,9 @@ To run the test, first check out the project and then execute `yarn install`.
 
 Included code tests:
 
-- `yarn test:unit` executes the existing tests, using [mocha](https://mochajs.org/#arrow-functions)
-- `yarn test:coverage` generate coverage report, using [c8](https://github.com/bcoe/c8)
-- `yarn build:lint` generate code smells report, using [ESLint](https://eslint.org/)
+- `yarn test-unit` executes the existing tests, using [mocha](https://mochajs.org/#arrow-functions)
+- `yarn test-coverage` generate coverage report, using [c8](https://github.com/bcoe/c8)
+- `yarn test-lint` generate code smells report, using [ESLint](https://eslint.org/)
 
 ## License
 
