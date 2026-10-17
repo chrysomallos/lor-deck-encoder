@@ -1,5 +1,5 @@
 import stringify from 'json-stringify-pretty-compact';
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import hash from 'object-hash';
@@ -151,9 +151,9 @@ export default class DataDragon {
     if (runningAtNode) {
       tempFile = path.join(os.tmpdir(), `lor-data-dragon-temp-data-${language}.json`);
 
-      if (fs.existsSync(tempFile)) {
+      if (await fs.exists(tempFile)) {
         try {
-          const data = JSON.parse(fs.readFileSync(tempFile));
+          const data = JSON.parse(await fs.readFile(tempFile));
           if (data.header.core === hash(data.core) && data.header.cards === hash(data.cards) && Date.now() - MAX_TEMP_HEADER_AGE < data.header.date) {
             core = data.core;
             cards = data.cards;
@@ -190,7 +190,7 @@ export default class DataDragon {
 
       if (runningAtNode) {
         try {
-          fs.writeFileSync(tempFile, stringify({header: {date: Date.now(), core: hash(core), cards: hash(cards)}, core, cards}, {indent: 1, maxLength: 300}));
+          await fs.writeFile(tempFile, stringify({header: {date: Date.now(), core: hash(core), cards: hash(cards)}, core, cards}, {indent: 1, maxLength: 300}));
         } catch (err) {
           this.lastError = err;
         }
@@ -295,7 +295,8 @@ ${Object.entries(matchedCards)
   async download(targetPath, language) {
     for (const lang of language ? [language] : Object.keys(LANGUAGES)) {
       const corePath = ROOT_PATH_TEMPLATE.replace(/\{(\w+)\}/g, lang.toLocaleLowerCase());
-      const coreData = await request(new URL(corePath, this.baseUrl));
+      const {data: coreData, response: coreResponse} = await request(new URL(corePath, this.baseUrl));
+      if (process.env.DEBUG_CACHE === 'true') console.log(`Downloaded core data for language ${lang}:`, coreResponse);
 
       const setPaths = coreData.sets
         .map(({nameRef}) => nameRef.toLowerCase())
@@ -304,14 +305,15 @@ ${Object.entries(matchedCards)
       const setsData = await Promise.allSettled(setPaths.map(setPath => request(new URL(setPath, this.baseUrl))));
 
       let fullPath = path.join(targetPath, corePath);
-      fs.mkdirSync(path.dirname(fullPath), {recursive: true});
-      fs.writeFileSync(fullPath, stringify(coreData, {indent: 2, maxLength: 120}));
-      for (let i = 0; i < setsData.length; i++) {
+      await fs.mkdir(path.dirname(fullPath), {recursive: true});
+
+      await fs.writeFile(fullPath, stringify(coreData, {indent: 2, maxLength: 120}));
+      for (const [i, {value, reason}] of setsData.entries()) {
         fullPath = path.join(targetPath, setPaths[i]);
-        fs.mkdirSync(path.dirname(fullPath), {recursive: true});
-        fs.writeFileSync(
+        await fs.mkdir(path.dirname(fullPath), {recursive: true});
+        await fs.writeFile(
           fullPath,
-          stringify(setsData[i].value ?? {...setsData[i].reason, name: setsData[i].reason.name, message: setsData[i].reason.toString()}, {
+          stringify(value?.data ?? {...reason, name: reason.name, message: reason.toString()}, {
             indent: 2,
             maxLength: 120,
           }),
