@@ -37,7 +37,7 @@ jobs:
       - name: Publish test report
         uses: ctrf-io/github-test-reporter@v1
         with:
-          report-path: 'ctrf/*.json'
+          report-path: './ctrf/ctrf-report.json'
           summary: true
           pull-request-report: ${{ github.event_name == 'pull_request' }}
           overwrite-comment: ${{ github.event_name == 'pull_request' }}
