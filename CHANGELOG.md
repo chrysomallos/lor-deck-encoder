@@ -1,5 +1,16 @@
 # lor-deck-codes - Legends of Runeterra - Deck Codes
 
+## 3.0.1 - unreleased
+
+## Changes
+
+- Bump versions of dependency modules.
+- Migrate fs module to fs/promises for async file operations and adjust tests.
+
+## Fixes
+
+- Ensure CTRF report is written.
+
 ## 3.0.0 - 2026-10-06
 
 ## Changes
