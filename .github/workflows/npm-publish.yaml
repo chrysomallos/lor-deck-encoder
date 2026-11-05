@@ -1,0 +1,69 @@
+name: Publish npm package
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Git tag to publish (e.g. 3.0.2)'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    # only the repository owner may publish
+    if: github.actor == github.repository_owner && github.triggering_actor == github.repository_owner
+    environment: npm
+
+    permissions:
+      contents: read
+      id-token: write # npm trusted publishing (OIDC) and provenance
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ inputs.tag || github.event.release.tag_name }}
+
+      - name: Check tag matches package version
+        shell: bash
+        env:
+          TAG: ${{ inputs.tag || github.event.release.tag_name }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [ "$TAG" != "$VERSION" ] && [ "$TAG" != "v$VERSION" ]; then
+            echo "::error::Tag '$TAG' does not match package.json version '$VERSION'"
+            exit 1
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26.x
+          registry-url: https://registry.npmjs.org
+
+      - name: Enable corepack
+        shell: bash
+        run: corepack enable
+
+      - name: Install dependencies
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: install --immutable
+
+      - name: Run unit tests
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: test-ci
+
+      - name: Build types
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: build-types
+
+      - name: Publish to npm
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
