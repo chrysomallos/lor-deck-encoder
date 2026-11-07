@@ -175,10 +175,7 @@ export default class DataDragon {
             ),
         );
 
-      const {fulfilled: validSources, rejected: requestErrors} = Object.groupBy(
-        await Promise.allSettled(setSourceUrls.map(url => request(url))),
-        ({status}) => status,
-      );
+      const {fulfilled: validSources, rejected: requestErrors} = Object.groupBy(await Promise.allSettled(setSourceUrls.map(url => request(url))), ({status}) => status);
       if (requestErrors?.length) {
         this.lastError = new AggregateError(requestErrors.map(({reason}) => reason));
       }
@@ -296,7 +293,7 @@ ${Object.entries(matchedCards)
     for (const lang of language ? [language] : Object.keys(LANGUAGES)) {
       const corePath = ROOT_PATH_TEMPLATE.replace(/\{(\w+)\}/g, lang.toLocaleLowerCase());
       const {data: coreData, response: coreResponse} = await request(new URL(corePath, this.baseUrl));
-      if (process.env.DEBUG_CACHE === 'true') console.log(`Downloaded core data for language ${lang}:`, coreResponse);
+      if (process.env.DATA_DRAGON_DEBUG_CACHE === 'true') console.log(`Downloaded core data for language ${lang}:`, coreResponse);
 
       const setPaths = coreData.sets
         .map(({nameRef}) => nameRef.toLowerCase())

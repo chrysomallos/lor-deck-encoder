@@ -82,8 +82,16 @@ describe('[Encoder]', function () {
 
     console.log('  Deck Codes:');
     console.log(`  - Small Deck ${smallDeckCode}, with ${decodeV1(smallDeckCode).length} cards: `);
-    console.log(`      [${decodeV3(smallDeckCode).map(({code, count}) => `${code}:${count}`).join(',')}]`);
+    console.log(
+      `      [${decodeV3(smallDeckCode)
+        .map(({code, count}) => `${code}:${count}`)
+        .join(',')}]`,
+    );
     console.log(`  - Large Deck ${largeDeckCode}, with ${decodeV1(largeDeckCode).length} cards:`);
-    console.log(`      [${decodeV3(largeDeckCode).map(({code, count}) => `${code}:${count}`).join(',')}]`);
+    console.log(
+      `      [${decodeV3(largeDeckCode)
+        .map(({code, count}) => `${code}:${count}`)
+        .join(',')}]`,
+    );
   });
 });

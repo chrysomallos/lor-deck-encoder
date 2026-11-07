@@ -5,7 +5,6 @@ import logPerformanceTimes from './log-performance.mjs';
 
 /**
  * Shuffles an array in place using Sattolo's algorithm (a cyclic version of Fisher-Yates).
- *
  * @template T
  * @param {T[]} array - The array to shuffle.
  * @returns {T[]} The shuffled array.

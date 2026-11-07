@@ -5,12 +5,12 @@ import https from 'node:https';
  * Extends the built-in Error class to include an HTTP status code.
  */
 export declare class HttpError extends Error {
-    status: http.IncomingMessage;
-    /**
-     * Constructs a new HttpError instance.
-     * @param {http.IncomingMessage} response The client request this error is for.
-     */
-    constructor(response: http.IncomingMessage);
+  status: http.IncomingMessage;
+  /**
+   * Constructs a new HttpError instance.
+   * @param {http.IncomingMessage} response The client request this error is for.
+   */
+  constructor(response: http.IncomingMessage);
 }
 /**
  * Makes an HTTP(S) request with the provided options and body.
@@ -19,8 +19,11 @@ export declare class HttpError extends Error {
  * @param {string|Buffer} body The body of the request.
  * @returns {Promise<{data: T, response: http.IncomingMessage}>} A promise that resolves with the response body and response object if the request is successful, or rejects with an error if the request fails.
  */
-export default function request<T>(options: string | URL | http.RequestOptions | https.RequestOptions, body: string | Buffer): Promise<{
-    data: T;
-    response: http.IncomingMessage;
+export default function request<T>(
+  options: string | URL | http.RequestOptions | https.RequestOptions,
+  body: string | Buffer,
+): Promise<{
+  data: T;
+  response: http.IncomingMessage;
 }>;
 //# sourceMappingURL=request.d.mts.map
