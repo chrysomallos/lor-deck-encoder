@@ -34,6 +34,85 @@ jobs:
         with:
           cmd: test-ci
 
+      - name: Add coverage summary
+        if: always() && hashFiles('coverage/coverage-final.json') != ''
+        shell: bash
+        run: yarn c8 report --reporter=text-summary >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Generate coverage JSON summary
+        if: always() && hashFiles('coverage/coverage-final.json') != ''
+        run: yarn c8 report --reporter=json-summary
+
+      - name: Publish PR coverage comment
+        if: always() && github.event_name == 'pull_request' && hashFiles('coverage/coverage-final.json') != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- coverage-report -->';
+            const {total: current} = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
+            const metrics = ['lines', 'statements', 'branches', 'functions'];
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+            const previousComment = comments.findLast(comment => comment.body?.includes(marker));
+            const previous = {};
+            const previousRows = previousComment?.body?.matchAll(/^\|\s*(lines|statements|branches|functions)\s*\|\s*\d+\s*\/\s*\d+\s*\|\s*([\d.]+)%\s*\|$/gm);
+            for (const [, metric, pct] of previousRows ?? []) previous[metric] = Number(pct);
+
+            const rows = metrics.map(metric => {
+              const {covered, total, pct} = current[metric];
+              return `| ${metric} | ${covered} / ${total} | ${pct}% |`;
+            });
+            const changes = metrics
+              .filter(metric => previous[metric] !== undefined && previous[metric] !== current[metric].pct)
+              .map(metric => {
+                const delta = current[metric].pct - previous[metric];
+                const direction = delta > 0 ? 'increased' : 'decreased';
+                return `${metric} ${direction} by ${Math.abs(delta).toFixed(2)} percentage points`;
+              });
+            const comparison = changes.length
+              ? `> ⚠️ Coverage changed since the previous run: ${changes.join('; ')}.`
+              : Object.keys(previous).length
+                ? '> Coverage is unchanged since the previous run.'
+                : '> No previous coverage report is available for comparison.';
+            const body = [
+              marker,
+              '## Test coverage',
+              '',
+              '| Metric | Covered | Coverage |',
+              '| --- | ---: | ---: |',
+              ...rows,
+              '',
+              comparison,
+            ].join('\n');
+
+            if (previousComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: previousComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Upload coverage report
+        if: always() && hashFiles('coverage/coverage-final.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
       - name: Publish test report
         uses: ctrf-io/github-test-reporter@v1
         with:

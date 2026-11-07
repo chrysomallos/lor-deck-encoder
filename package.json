@@ -52,7 +52,7 @@
   },
   "scripts": {
     "cli": "node ./cli.mjs",
-    "test-ci": "mocha --reporter mocha-ctrf-json-reporter ./test/unit/*.spec.mjs",
+    "test-ci": "c8 mocha --reporter mocha-ctrf-json-reporter ./test/unit/*.spec.mjs",
     "test-unit": "mocha ./test/unit/*.spec.mjs",
     "test-lint": "eslint --fix src/**.mjs utils/**.mjs test/**/**.mjs",
     "test-coverage": "c8 mocha ./test/unit/*.spec.mjs",
