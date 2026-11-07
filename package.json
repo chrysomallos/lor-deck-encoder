@@ -54,7 +54,8 @@
     "test-coverage": "c8 mocha ./test/unit/*.spec.mjs",
     "test-performance": "mocha ./test/performance/*.perf.mjs",
     "nano-benchmark": "npx nano-bench ./benchmark/decode-large.mjs;npx nano-bench ./benchmark/decode-small.mjs;npx nano-bench ./benchmark/var-int.mjs",
-    "build-types": "npx -p typescript tsc",
+    "clean-types": "node -e \"const fs = require('node:fs'); for (const f of fs.globSync(['index.d.mts*', 'src/*.d.mts*', 'utils/*.d.mts*'])) fs.rmSync(f)\"",
+    "build-types": "yarn clean-types && tsc",
     "postinstall": "node ./fill-cache.mjs"
   }
 }
