@@ -17,7 +17,10 @@ export declare class HttpError extends Error {
  * @template T
  * @param {string|URL|http.RequestOptions|https.RequestOptions} options The options for the request.
  * @param {string|Buffer} body The body of the request.
- * @returns {Promise<T>} A promise that resolves with the response body if the request is successful, or rejects with an error if the request fails.
+ * @returns {Promise<{data: T, response: http.IncomingMessage}>} A promise that resolves with the response body and response object if the request is successful, or rejects with an error if the request fails.
  */
-export default function request<T>(options: string | URL | http.RequestOptions | https.RequestOptions, body: string | Buffer): Promise<T>;
+export default function request<T>(options: string | URL | http.RequestOptions | https.RequestOptions, body: string | Buffer): Promise<{
+    data: T;
+    response: http.IncomingMessage;
+}>;
 //# sourceMappingURL=request.d.mts.map
