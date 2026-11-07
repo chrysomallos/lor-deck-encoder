@@ -9,20 +9,20 @@ export declare function numberOfTrailingZeros(int: number): number;
  * The base32 en/decoder.
  */
 export default class Base32 {
-    /**
-     * Decode the base32 value into a byte array.
-     * @param {string} code The encoded base32 string.
-     * @returns {Uint8Array} The decoded bytes.
-     * @throws {TypeError} If the input contains illegal characters.
-     */
-    static decode(code: string): Uint8Array;
-    /**
-     * Encode the byte array into a base32 string.
-     * @param {Uint8Array} bytes The bytes to encode.
-     * @param {boolean} [padOutput] Whether to pad the output with '=' characters.
-     * @returns {string} The encoded base32 string.
-     * @throws {RangeError} If the input is too long to encode as a base32 string.
-     */
-    static encode(bytes: Uint8Array, padOutput?: boolean): string;
+  /**
+   * Decode the base32 value into a byte array.
+   * @param {string} code The encoded base32 string.
+   * @returns {Uint8Array} The decoded bytes.
+   * @throws {TypeError} If the input contains illegal characters.
+   */
+  static decode(code: string): Uint8Array;
+  /**
+   * Encode the byte array into a base32 string.
+   * @param {Uint8Array} bytes The bytes to encode.
+   * @param {boolean} [padOutput] Whether to pad the output with '=' characters.
+   * @returns {string} The encoded base32 string.
+   * @throws {RangeError} If the input is too long to encode as a base32 string.
+   */
+  static encode(bytes: Uint8Array, padOutput?: boolean): string;
 }
 //# sourceMappingURL=base32.d.mts.map

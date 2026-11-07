@@ -304,7 +304,6 @@ describe('[Deck] class tests', function () {
       },
     ];
 
-    // eslint-disable-next-line mocha/no-setup-in-describe
     return decks.map(({code, cards}) => {
       it(`from code ${code}`, function () {
         const deck = Deck.fromCode(code);
@@ -333,7 +332,6 @@ describe('[Deck] class tests', function () {
     ];
 
     return [
-      // eslint-disable-next-line mocha/no-setup-in-describe
       ...decks.map(({code, cards}) => {
         const sorted = cards.slice().sort();
 
@@ -342,7 +340,6 @@ describe('[Deck] class tests', function () {
           assert.equal(deck.code, code, deck.list.join(';'));
         });
       }),
-      // eslint-disable-next-line mocha/no-setup-in-describe
       ...decks.map(({code, cards}) => {
         const shuffled = shuffle(cards.slice());
 

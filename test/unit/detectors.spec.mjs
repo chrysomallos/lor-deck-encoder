@@ -2,6 +2,10 @@ import assert from 'node:assert';
 import {isBrowser, isNode} from '../../utils/detectors.mjs';
 
 describe('[detectors] tests', function () {
+  /**
+   * Executes a callback function without the global process object.
+   * @param {(originProcess: import('node:process')) => void} callback - The callback function to execute without the global process object.
+   */
   function withoutProcess(callback) {
     const backup = global.process;
     delete global.process;
@@ -31,8 +35,8 @@ describe('[detectors] tests', function () {
   });
 
   it('should return true if node', function () {
-    withoutProcess(backup => {
-      global.process = {versions: backup.versions};
+    withoutProcess(originProcess => {
+      global.process = {versions: originProcess.versions};
       assert.equal(isNode(), true);
       delete global.process;
     });
