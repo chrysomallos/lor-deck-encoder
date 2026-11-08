@@ -1,3 +1,6 @@
+import {format} from 'hast-util-format';
+import {toHtml} from 'hast-util-to-html';
+import {h} from 'hastscript';
 import stringify from 'json-stringify-pretty-compact';
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -151,7 +154,7 @@ export default class DataDragon {
     if (runningAtNode) {
       tempFile = path.join(os.tmpdir(), `lor-data-dragon-temp-data-${language}.json`);
 
-      if (await fs.exists(tempFile)) {
+      if (await fs.access(tempFile).catch(() => false)) {
         try {
           const data = JSON.parse(await fs.readFile(tempFile));
           if (data.header.core === hash(data.core) && data.header.cards === hash(data.cards) && Date.now() - MAX_TEMP_HEADER_AGE < data.header.date) {
@@ -229,58 +232,48 @@ export default class DataDragon {
    */
   async generatePageFromCode(code, language) {
     const {deck, cardTypes, matchedCards, matchedRegions} = await this.fetchData(code, language);
-    return `<html>
-<head>
-<title>${code}</title>
-<style>
-body {
-  background-color: #282828;
-  color: #8A8A8A;
-  font-family: monospace;
-}
-#cards {
-  display:flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  align-items: left;
-}
-#cards > div {
-  min-width: 200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 15px;
-}
-</style>
-</head>
-<body>
-<h1>Deck content<h1>
-<h2>Code</h2>
-<span>${deck.code}</span>
-<h2>Summary</h2>
-<h3>Types</h3>
-${Object.entries(cardTypes)
-  .sort(([a], [b]) => a.localeCompare(b))
-  .map(([type, cardCodes]) => `<span>${type}: ${cardCodes.reduce((last, {count}) => last + count, 0)}</span>`)
-  .join('\n')}
-<h3>Regions</h3>
-${Object.entries(matchedRegions)
-  .map(([id, region]) => `<div><img src="${region.iconAbsolutePath}" width="30"/><span>${id}: ${region.name}</span></div>`)
-  .join('\n')}
-<h2>Cards</h2>
-<div id="cards">
-${Object.entries(matchedCards)
-  .map(([cardCode, ddCard]) => {
-    const card = deck.cards.find(({code}) => code === (ddCard?.cardCode ?? cardCode));
-    const [firstAssets] = ddCard?.assets ?? [];
-    return `<div id="card" with="150px"><span>[${card.code}](${card.count})</span><img src="${firstAssets?.gameAbsolutePath}" width="100" /><span>${
-      ddCard?.name ?? 'unknown'
-    }</span></div>`;
-  })
-  .join('\n')}
-</div>
-</body>
-</html>`;
+    const tree = h(null, [
+      {type: 'doctype'},
+      h('html', [
+        h('head', [
+          h('meta', {charset: 'utf-8'}),
+          h('title', code),
+          h(
+            'style',
+            [
+              '',
+              'body { background-color: #282828; color: #8a8a8a; font-family: monospace; }',
+              '#cards { display: flex; justify-content: space-around; flex-wrap: wrap; }',
+              '#cards > .card { min-width: 200px; display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; }',
+              ''
+            ].join('\n'),
+          ),
+        ]),
+        h('body', [
+          h('h1', 'Deck content'),
+          h('h2', 'Code'),
+          h('span', deck.code),
+          h('h2', 'Summary'),
+          h('h3', 'Types'),
+          Object.entries(cardTypes)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([type, cards]) => h('div', `${type}: ${cards.reduce((last, {count}) => last + count, 0)}`)),
+          h('h3', 'Regions'),
+          Object.entries(matchedRegions).map(([id, region]) => h('div', [h('img', {src: region.iconAbsolutePath, width: 30}), h('span', `${id}: ${region.name}`)])),
+          h('h2', 'Cards'),
+          h(
+            'div#cards',
+            Object.entries(matchedCards).map(([cardCode, ddCard]) => {
+              const card = deck.cards.find(({code}) => code === (ddCard?.cardCode ?? cardCode));
+              const [firstAssets] = ddCard?.assets ?? [];
+              return h('div.card', [h('span', `[${card.code}](${card.count})`), h('img', {src: firstAssets?.gameAbsolutePath, width: 100}), h('span', ddCard?.name ?? 'unknown')]);
+            }),
+          ),
+        ]),
+      ]),
+    ]);
+    format(tree, {indent: 0, maxLineLength: 100, tight: true});
+    return toHtml(tree);
   }
 
   /**
