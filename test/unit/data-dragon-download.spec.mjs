@@ -24,10 +24,10 @@ describe('[DataDragon] download class tests', function () {
     });
     await quibble.esm('node:fs/promises', {
       default: {
-        exists: () => fileExistsResult,
-        writeFile: () => true,
-        readFile: () => readFileSyncResult,
-        mkdir: () => true,
+        access: async () => fileExistsResult,
+        writeFile: async () => true,
+        readFile: async () => readFileSyncResult,
+        mkdir: async () => true,
       },
     });
     await quibble.esm('../utils/detectors.mjs', {

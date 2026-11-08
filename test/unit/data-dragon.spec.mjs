@@ -23,12 +23,12 @@ describe('[DataDragon] class tests', function () {
     });
     await quibble.esm('node:fs/promises', {
       default: {
-        exists: () => fileExistsResult,
-        writeFile: () => {
+        access: async () => fileExistsResult ? Promise.resolve() : Promise.reject(new Error('File does not exist')),
+        writeFile: async () => {
           throw new Error('Never write data in tests');
         },
-        readFile: () => readFileSyncResult,
-        mkdir: () => true,
+        readFile: async () => readFileSyncResult,
+        mkdir: async () => true,
       },
     });
     await quibble.esm('../utils/detectors.mjs', {
@@ -108,10 +108,10 @@ describe('[DataDragon] class tests', function () {
     readFileSyncResult = JSON.stringify({header: {date: Date.now(), core: hash(coreData), cards: hash(setData)}, core: coreData, cards: []});
     await quibble.esm('node:fs/promises', {
       default: {
-        exists: () => fileExistsResult,
-        writeFile: () => true,
-        readFile: () => readFileSyncResult,
-        mkdir: () => true,
+        access: async () => fileExistsResult,
+        writeFile: async () => true,
+        readFile: async () => readFileSyncResult,
+        mkdir: async () => true,
       },
     });
     DataDragon = (await import('../../src/data-dragon.mjs')).default;
@@ -159,10 +159,10 @@ describe('[DataDragon] class tests', function () {
   it('download', async function () {
     await quibble.esm('node:fs/promises', {
       default: {
-        exists: () => fileExistsResult,
-        writeFile: () => true,
-        readFile: () => readFileSyncResult,
-        mkdir: () => true,
+        access: async () => fileExistsResult,
+        writeFile: async () => true,
+        readFile: async () => readFileSyncResult,
+        mkdir: async () => true,
       },
     });
     DataDragon = (await import('../../src/data-dragon.mjs')).default;

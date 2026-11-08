@@ -151,7 +151,7 @@ export default class DataDragon {
     if (runningAtNode) {
       tempFile = path.join(os.tmpdir(), `lor-data-dragon-temp-data-${language}.json`);
 
-      if (await fs.exists(tempFile)) {
+      if (await fs.access(tempFile).then(() => true).catch(() => false)) {
         try {
           const data = JSON.parse(await fs.readFile(tempFile));
           if (data.header.core === hash(data.core) && data.header.cards === hash(data.cards) && Date.now() - MAX_TEMP_HEADER_AGE < data.header.date) {
