@@ -26,6 +26,9 @@
   },
   "dependencies": {
     "camelcase": "^10.0.0",
+    "hast-util-format": "^1.1.0",
+    "hast-util-to-html": "^9.0.6",
+    "hastscript": "^9.0.3",
     "json-stringify-pretty-compact": "^4.0.0",
     "minimist": "^1.2.8",
     "object-hash": "^3.0.0"
